@@ -105,3 +105,38 @@ select translate('JORGE LUIS BORGES','OSG','056') from dual;
 -- Se pueden emplear estas funciones enviando como argumento el nombre de un campo de tipo caracter.
 
 -- Ejercicio 1
+
+drop table libros;
+
+create table libros(
+  codigo number(5),
+  titulo varchar2(40) not null,
+  autor varchar2(20) default 'Desconocido',
+  editorial varchar2(20),
+  precio number(6,2),
+  cantidad number(3)
+);
+
+insert into libros values(1,'El aleph','Borges','Emece',25,100);
+insert into libros values(2,'Java en 10 minutos','Mario Molina','Siglo XXI',50.40,100);
+insert into libros values(3,'Alicia en el pais de las maravillas','Lewis Carroll','Emece',15.50,200);
+insert into libros values(4,'El pais de las hadas',default,'Emece',25.50,150);
+
+select substr(titulo, 1, 12) as titulo from libros;
+
+select rpad(titulo, 20, '*') as titulo from libros;
+
+select initcap(titulo) as titulo from libros;
+
+select titulo, upper(autor) as autor from libros;
+
+select concat(titulo, autor) from libros;
+
+select titulo, concat('$ ', precio) as precio from libros;
+
+select titulo, replace(editorial, 'Emece', 'Sudamericana') from libros;
+
+select translate(autor, 'abc ', 'ABC') from libros;
+
+select instr(titulo, 'pais') from libros;
+
