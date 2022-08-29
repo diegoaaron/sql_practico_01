@@ -62,3 +62,43 @@ select sqrt(9) from dual;
 
 -- oracle tambien dispone de funciones trigonométricas
 
+-- Ejercicio 1
+
+drop table empleados;
+
+create table empleados(
+    legajo number(5),
+    documento char(8) not null,
+    nombre varchar2(30) not null,
+    domicilio varchar2(30),
+    sueldo number(6,2),
+    hijos number(2),
+    primary key(legajo)
+);
+
+insert into empleados values(1,'22333444','Ana Acosta','Avellaneda 213',870.79,2); 
+insert into empleados values(20,'27888999','Betina Bustos','Bulnes 345',950.85,1);
+insert into empleados values(31,'30111222','Carlos Caseres','Caseros 985',1190,0);
+insert into empleados values(39,'33444555','Daniel Duarte','Dominicana 345',1250.56,3);
+
+-- mostrar sueldo redondeado hacia abajo y luego hacia arriba
+
+select floor(sueldo) as "sueldo hacia abajo", ceil(sueldo) as "sueldo hacia arriba" from empleados;
+
+-- mostrar nombres, sueldo, sueldo redoando a su valor entero y truncado a entero
+
+select nombre, sueldo, round(sueldo) as "sueldo redondeado", trunc(sueldo) as "sueldo truncado" from empleados;
+
+-- mostrar la potencia de 2 a la 5
+
+select power(2,5) from dual;
+
+-- mostramos el resto de la division "1234 / 5"
+
+select mod(1234,5) from dual;
+
+-- calculamos la raiz cuadrada de 81
+
+select sqrt(81) from dual;
+
+
