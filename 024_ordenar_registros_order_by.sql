@@ -76,3 +76,34 @@ select  titulo, editorial, edicion from libros order by edicion;
 
 select titulo, extract(year from edicion) as edicion from libros order by 2;
 
+-- Ejercicio 2
+
+drop table visitas;
+
+create table visitas (
+  nombre varchar2(30) default 'Anonimo',
+  mail varchar2(50),
+  pais varchar2(20),
+  fecha date
+  );
+  
+insert into visitas values ('Ana Maria Lopez','AnaMaria@hotmail.com','Argentina',to_date('2020/05/03 21:02:44', 'yyyy/mm/dd hh24:mi:ss'));
+insert into visitas values ('Gustavo Gonzalez','GustavoGGonzalez@hotmail.com','Chile',to_date('2020/02/13 11:08:10', 'yyyy/mm/dd hh24:mi:ss'));
+insert into visitas values ('Juancito','JuanJosePerez@hotmail.com','Argentina',to_date('2020/07/02 14:12:00', 'yyyy/mm/dd hh24:mi:ss'));
+insert into visitas values ('Fabiola Martinez','MartinezFabiola@hotmail.com','Mexico',to_date('2020/06/17 20:00:00', 'yyyy/mm/dd hh24:mi:ss'));
+insert into visitas values ('Fabiola Martinez','MartinezFabiola@hotmail.com','Mexico',to_date('2020/02/08 20:05:40', 'yyyy/mm/dd hh24:mi:ss'));
+insert into visitas values ('Juancito','JuanJosePerez@hotmail.com','Argentina',to_date('2020/07/06 18:00:00', 'yyyy/mm/dd hh24:mi:ss'));
+insert into visitas values ('Juancito','JuanJosePerez@hotmail.com','Argentina',to_date('2019/10/05 23:00:00', 'yyyy/mm/dd hh24:mi:ss'));
+
+-- ordenar por fecha en orden descendente
+
+select * from visitas order by fecha desc;
+
+-- muestre el nombre del usuario, pais y el mes, ordenado por pais (ascendente) y el mes (descendente)
+
+select nombre, pais, extract(month from fecha) as "mes" from visitas order by pais asc, 3 desc;
+
+-- muestre los mail, país, ordenado por país, de todos los que visitaron la página en octubre
+
+select mail, pais from visitas where extract(month from fecha) = 10 order by pais;
+
