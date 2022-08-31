@@ -1,5 +1,5 @@
 -- operador between
--- "between" significa "entre". Trabaja con intervalo de valores. Este operador no tiene en cuenta los valores "null".
+--.No tiene en cuenta los valores "null" e incluyen en el resultado los registros que coindicen con los valores del rango
 -- Si agregamos el operador "not" antes de "between" el resultado se invierte, es decir, se recuperan los registros 
 -- que están fuera del intervalo especificado.
 
@@ -36,6 +36,28 @@ select * from libros where precio>=20 and precio <= 40; -- tampoco concidera los
 
 select titulo, edicion from libros where edicion between '01/05/2000' and '01/05/2007' order by edicion;
 
+-- Ejercicio 1 
 
+drop table visitas;
+
+create table visitas (
+  nombre varchar2(30) default 'Anonimo',
+  mail varchar2(50),
+  pais varchar2(20),
+  fecha date
+);
+
+insert into visitas values ('Ana Maria Lopez','AnaMaria@hotmail.com','Argentina','10/10/2016');
+insert into visitas values ('Gustavo Gonzalez','GustavoGGonzalez@gotmail.com','Chile','10/10/2016');
+insert into visitas values ('Juancito','JuanJosePerez@hotmail.com','Argentina','11/10/2016');
+insert into visitas values ('Fabiola Martinez','MartinezFabiola@hotmail.com','Mexico','12/10/2016');
+insert into visitas values ('Fabiola Martinez','MartinezFabiola@hotmail.com','Mexico','12/09/2016');
+insert into visitas values ('Juancito','JuanJosePerez@gmail.com','Argentina','12/09/2016');
+insert into visitas values ('Juancito','JuanJosePerez@hotmail.com','Argentina','15/09/2016');
+insert into visitas values ('Federico1','federicogarcia@xaxamail.com','Argentina',null);
+
+-- seleccione los usuarios que visitaron la página entre el '12/09/2016' y '11/10/2016' 
+
+select * from visitas where fecha between '12/09/2016' and '11/10/2016' order by fecha;
 
 
