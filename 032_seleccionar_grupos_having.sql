@@ -124,6 +124,16 @@ having count(*) < 2 and ciudad <> 'Cordoba';
 
 drop table visitantes;
 
+create table visitantes(
+  nombre varchar2(30),
+  edad number(2),
+  sexo char(1),
+  domicilio varchar2(30),
+  ciudad varchar2(20),
+  telefono varchar2(11),
+  montocompra number(6,2) not null
+);
+
 insert into visitantes values ('Susana Molina',28,'f',null,'Cordoba',null,45.50); 
 insert into visitantes values ('Marcela Mercado',36,'f','Avellaneda 345','Cordoba','4545454',22.40);
 insert into visitantes values ('Alberto Garcia',35,'m','Gral. Paz 123','Alta Gracia','03547123456',25); 
@@ -134,3 +144,7 @@ insert into visitantes values ('Julieta Gomez',24,'f','San Martin 333','Alta Gra
 insert into visitantes values ('Roxana Lopez',20,'f','null','Alta Gracia',null,240);
 insert into visitantes values ('Liliana Garcia',50,'f','Paso 999','Cordoba','4588778',48);
 insert into visitantes values ('Juan Torres',43,'m','Sarmiento 876','Cordoba',null,15.30);
+
+-- Obtenga el total de las compras agrupados por ciudad y sexo de aquellas filas que devuelvan un valor superior a 50
+
+select * from visitantes;
