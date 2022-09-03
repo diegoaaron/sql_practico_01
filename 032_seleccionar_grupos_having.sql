@@ -147,4 +147,26 @@ insert into visitantes values ('Juan Torres',43,'m','Sarmiento 876','Cordoba',nu
 
 -- Obtenga el total de las compras agrupados por ciudad y sexo de aquellas filas que devuelvan un valor superior a 50
 
-select * from visitantes;
+select ciudad, sexo, sum(montocompra) from visitantes group by ciudad, sexo having sum(montocompra)  > 50;
+
+-- Obtenga el total de las compras agrupados por ciudad y sexo (group by), considerando sólo los montos de compra 
+-- superiores a 50 (where), los visitantes con teléfono (where), sin considerar la ciudad de "Cordoba" (having), 
+-- ordenados por ciudad (order by) (2 filas) 
+
+select ciudad, sexo, sum(montocompra) from visitantes where montocompra > 0 and telefono is not null 
+group by ciudad, sexo having ciudad <> 'Cordoba' order by ciudad;
+
+-- Muestre el monto mayor de compra agrupado por ciudad, siempre que dicho valor supere los 50 pesos (having), 
+-- considerando sólo los visitantes de sexo femenino y domicilio conocido (where)
+
+select ciudad, max(montocompra) from visitantes where sexo = 'f' and domicilio is not null group by ciudad 
+having max(montocompra) > 50;
+
+-- Agrupe por ciudad y sexo, muestre para cada grupo el total de visitantes, la suma de sus compras y el promedio de compras, 
+-- ordenado por la suma total y considerando las filas con promedio superior a 30 
+
+select ciudad, sexo, count(*), sum(montocompra), avg(montocompra) from visitantes group by ciudad, sexo
+having avg(montocompra) > 30 order by sum(montocompra);
+
+
+
