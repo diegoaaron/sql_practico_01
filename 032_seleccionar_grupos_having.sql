@@ -14,9 +14,6 @@ select editorial, count(*) from libros group by editorial having editorial<>'Pla
 -- de editorial "Planeta" y luego los agrupa para contarlos. La segunda, selecciona todos los registros, los agrupa para 
 -- contarlos y finalmente rechaza fila con la cuenta correspondiente a la editorial "Planeta".
 
--- Veamos la conbinacion de "where" y "having". Queremos la cantidad de libros, sin considerar los que tienen precio nulo, 
--- agrupados por editorial, sin considerar la editorial "Planeta":
-
 select editorial, count(*) from libros where precio is not null group by editorial having editorial<>'Planeta';
 
 -- Aquí, selecciona los registros rechazando los que no cumplan con la condición dada en "where", luego los agrupa 
@@ -28,8 +25,9 @@ select editorial, count(*) from libros where precio is not null group by editori
 -- Podemos encontrar el mayor valor de los libros agrupados y ordenados por editorial y seleccionar las filas que tengan un 
 -- valor menor a 100 y mayor a 30:
 
- select editorial, max(precio) as mayor from libros group by editorial having min(precio)<100 
- and min(precio)>30 order by editorial; 
+ select editorial, max(precio) as mayor from libros group by editorial having max(precio)<100 
+ and max(precio)>30 order by editorial; 
+
  
 drop table libros;
 
