@@ -110,7 +110,9 @@ insert into clientes values ('Lopez Lucas','San Martin 1010','Posadas','Misiones
 
 select provincia, ciudad, count(*) from clientes group by provincia, ciudad;
 
--- Obtenga el total de los registros agrupados por ciudad y provincia sin considerar los que tienen menos de 2 clientes
+select * from clientes; 
+
+-- Obtenga el total de los registros agrupados por ciudad y provincia sin considerar las que tengan menos de 2 clientes
 
 select provincia, ciudad, count(*) from clientes group by provincia, ciudad having count(*) >= 2; 
 
