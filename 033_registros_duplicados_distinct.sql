@@ -98,6 +98,70 @@ select distinct ciudad from clientes where provincia = 'Cordoba';
 
 -- Contamos las distintas ciudades de cada provincia empleando "group by" 
 
-select provincia, count(*) from clientes group by provincia;
+select provincia, count(distinct ciudad) from clientes group by provincia;
 
+-- Ejercicio 2 
+
+drop table inmuebles;
+
+create table inmuebles (
+  documento varchar2(8) not null,
+  apellido varchar2(30),
+  nombre varchar2(30),
+  domicilio varchar2(20),
+  barrio varchar2(20),
+  ciudad varchar2(20),
+  tipo char(1),--b=baldio, e: edificado
+  superficie number(8,2)
+);
+ 
+insert into inmuebles values ('11000000','Perez','Alberto','San Martin 800','Centro','Cordoba','e',100);
+insert into inmuebles values ('11000000','Perez','Alberto','Sarmiento 245','Gral. Paz','Cordoba','e',200);
+insert into inmuebles values ('12222222','Lopez','Maria','San Martin 202','Centro','Cordoba','e',250);
+insert into inmuebles values ('13333333','Garcia','Carlos','Paso 1234','Alberdi','Cordoba','b',200);
+insert into inmuebles values ('13333333','Garcia','Carlos','Guemes 876','Alberdi','Cordoba','b',300);
+insert into inmuebles values ('14444444','Perez','Mariana','Caseros 456','Flores','Cordoba','b',200);
+insert into inmuebles values ('15555555','Lopez','Luis','San Martin 321','Centro','Carlos Paz','e',500);
+insert into inmuebles values ('15555555','Lopez','Luis','Lopez y Planes 853','Flores','Carlos Paz','e',350);
+insert into inmuebles values ('16666666','Perez','Alberto','Sucre 1877','Flores','Cordoba','e',150);
+
+-- Muestre los distintos apellidos de los propietarios, sin repetir 
+
+select distinct apellido from inmuebles;
+
+-- Recupere los distintos documentos de los propietarios y luego muestre los distintos documentos 
+-- de los propietarios, sin repetir y vea la diferencia
+
+select documento from inmuebles;
+
+select distinct documento from inmuebles;
+
+-- Cuente, sin repetir, la cantidad de propietarios de inmuebles de la ciudad de Cordoba 
+
+select count(distinct documento) from inmuebles where ciudad = 'Cordoba';
+
+-- Cuente la cantidad de inmuebles con domicilio en 'San Martin' 
+
+select count(ciudad) from inmuebles where domicilio like '%San Martin%';
+
+-- Cuente la cantidad de inmuebles con domicilio en 'San Martin', sin repetir la ciudad. Compare con la sentencia anterior.
+
+select count(distinct ciudad) from inmuebles where domicilio like '%San Martin%';
+
+-- Muestre los apellidos y nombres de todos los registros
+
+select nombre, apellido from inmuebles;
+
+-- Muestre los apellidos y nombres, sin repetir 
+
+select distinct nombre, apellido from inmuebles;
+
+-- Muestre la cantidad de inmuebles que tiene cada propietario en barrios conocidos, agrupando por documento 
+
+select documento, count(barrio) from inmuebles group by documento;
+
+-- Realice la misma consulta anterior pero en esta oportunidad, sin repetir barrio 
+-- Compare los valores con los obtenidos en el punto 11.
+
+select documento, count(distinct barrio) from inmuebles group by documento;
 
