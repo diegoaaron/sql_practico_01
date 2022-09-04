@@ -119,7 +119,7 @@ select provincia, ciudad, count(*) from clientes group by provincia, ciudad havi
 -- Obtenga el total de los clientes que viven en calle "San Martin" (where), agrupados por provincia (group by), de aquellas 
 -- ciudades que tengan menos de 2 clientes (having) y omitiendo la fila correspondiente a la ciudad de "Cordoba" (having)
 
-select ciudad, count(ciudad) from clientes  where domicilio like '%San Martin%'  group by  ciudad 
+select provincia, ciudad, count(*) from clientes  where domicilio like '%San Martin%'  group by  provincia, ciudad 
 having count(*) < 2 and ciudad <> 'Cordoba'; 
 
 -- Ejercicio 2
@@ -155,7 +155,7 @@ select ciudad, sexo, sum(montocompra) from visitantes group by ciudad, sexo havi
 -- superiores a 50 (where), los visitantes con teléfono (where), sin considerar la ciudad de "Cordoba" (having), 
 -- ordenados por ciudad (order by) (2 filas) 
 
-select ciudad, sexo, sum(montocompra) from visitantes where montocompra > 0 and telefono is not null 
+select ciudad, sexo, sum(montocompra) from visitantes where montocompra > 50 and telefono is not null 
 group by ciudad, sexo having ciudad <> 'Cordoba' order by ciudad;
 
 -- Muestre el monto mayor de compra agrupado por ciudad, siempre que dicho valor supere los 50 pesos (having), 
