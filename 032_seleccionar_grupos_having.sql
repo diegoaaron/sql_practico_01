@@ -54,10 +54,10 @@ insert into libros values('Uno','Richard Bach','Planeta',25,null);
 
 -- Queremos saber la cantidad de libros agrupados por editorial:
 
-select editorial, count(*) from libros group by editorial;
+select editorial, count(*) from libros group by editorial; 
 
--- Queremos saber la cantidad de libros agrupados por editorial pero considerando sólo algunos grupos, 
--- por ejemplo, los que devuelvan un valor mayor a 2
+-- Queremos saber la cantidad de libros agrupados por editorial, considerando sólo los grupos los que devuelvan 
+-- un valor mayor a 2
 
 select editorial, count(*) from libros group by editorial having count(*) > 2;
 
@@ -71,9 +71,11 @@ select editorial, avg(precio) from libros group by editorial having avg(precio) 
 
 select editorial, count(*) from libros where precio is not null group by editorial having editorial <> 'Planeta';
 
+select editorial, count(precio) from libros group by editorial having editorial <> 'Planeta'; -- 2da forma. al contar por precio, este anula los valores nulos
+
 -- Necesitamos el promedio de los precios agrupados por editorial, de aquellas editoriales que tienen más de 2 libros:
 
-select editorial, avg(precio) from libros group by editorial having count(*) > 2;
+select editorial, avg(precio) from libros group by editorial having count(editorial) > 2;
 
 -- Buscamos el mayor valor de los libros agrupados y ordenados por editorial y seleccionamos las filas que tienen un valor 
 -- menor a 100 y mayor a 30:
