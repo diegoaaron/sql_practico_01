@@ -54,12 +54,50 @@ select distinct titulo, editorial from libros order by titulo;
 
 -- Note que los registros no están duplicados, aparecen títulos iguales pero con editorial diferente, cada registro es diferente.
 
+-- Ejercicio 1
 
+drop table clientes;
+
+create table clientes (
+  nombre varchar2(30) not null,
+  domicilio varchar2(30),
+  ciudad varchar2(20),
+  provincia varchar2(20)
+);
  
+insert into clientes values ('Lopez Marcos','Colon 111','Cordoba','Cordoba');
+insert into clientes values ('Perez Ana','San Martin 222','Cruz del Eje','Cordoba');
+insert into clientes values ('Garcia Juan','Rivadavia 333','Villa del Rosario','Cordoba');
+insert into clientes values ('Perez Luis','Sarmiento 444','Rosario','Santa Fe');
+insert into clientes values ('Pereyra Lucas','San Martin 555','Cruz del Eje','Cordoba');
+insert into clientes values ('Gomez Ines','San Martin 666','Santa Fe','Santa Fe');
+insert into clientes values ('Torres Fabiola','Alem 777','Villa del Rosario','Cordoba');
+insert into clientes values ('Lopez Carlos',null,'Cruz del Eje','Cordoba');
+insert into clientes values ('Ramos Betina','San Martin 999','Cordoba','Cordoba');
+insert into clientes values ('Lopez Lucas','San Martin 1010','Posadas','Misiones'); 
  
- 
+-- Obtenga las provincias sin repetir 
 
+select distinct provincia from clientes;
 
+-- Cuente las distintas provincias
 
+select count(distinct provincia) from clientes;
+
+-- Se necesitan los nombres de las ciudades sin repetir 
+
+select distinct ciudad from clientes;
+
+-- Obtenga la cantidad de ciudades distintas 
+
+select count(distinct ciudad) from clientes;
+
+-- Combine con "where" para obtener las distintas ciudades de la provincia de Cordoba 
+
+select distinct ciudad from clientes where provincia = 'Cordoba';
+
+-- Contamos las distintas ciudades de cada provincia empleando "group by" 
+
+select provincia, count(*) from clientes group by provincia;
 
 
