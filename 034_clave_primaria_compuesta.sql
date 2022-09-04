@@ -82,7 +82,62 @@ describe vehiculos;
 
 -- Ejercicio 1
 
+drop table consultas;
 
+/*
+  - fechayhora: date not null, fecha y hora de la consulta,
+  - medico: varchar2(30), not null, nombre del médico (Perez,Lopez,Duarte),
+  - documento: char(8) not null, documento del paciente,
+  - paciente: varchar2(30), nombre del paciente,
+  - obrasocial: varchar2(30), nombre de la obra social (IPAM,PAMI, etc.).
+*/
+
+ALTER SESSION SET NLS_DATE_FORMAT = 'DD/MM/YYYY HH24:MI';
+
+create table consultas(
+  fechayhora date not null,
+  medico varchar2(30) not null,
+  documento char(8) not null,
+  paciente varchar2(30),
+  obrasocial varchar2(30),
+  primary key(fechayhora,medico)
+);
+
+insert into consultas values ('05/11/2006 8:00','Lopez','12222222','Acosta Betina','PAMI');
+insert into consultas values ('05/11/2006 8:30','Lopez','23333333','Fuentes Carlos','PAMI');
+insert into consultas values ('05/11/2006 8:00','Perez','34444444','Garcia Marisa','IPAM');
+insert into consultas values ('05/11/2006 8:00','Duarte','45555555','Pereyra Luis','PAMI');
+
+-- Intente ingresar una consulta para un mismo médico en la misma hora el mismo día (mensaje de error)
+
+insert into consultas values('05/11/2006 8:00','Lopez','88888888','Luis Palacios','IPAMI');
+
+-- Intente cambiar la hora de la consulta de "Acosta Betina" por una no disponible ("8:30") (error)
+
+update consultas set fechayhora = '05/11/2006 8:30' where paciente='Acosta Betina';
+
+-- Cambie la hora de la consulta de "Acosta Betina" por una disponible ("9:30")
+
+update consultas set fechayhora = '05/11/2006 9:30', medico='Lopez' where paciente='Acosta Betina';
+
+-- Ingrese una consulta para el día "06/11/2006" a las 10 hs. para el doctor "Perez"
+
+insert into consultas values('06/11/2006 10:00','Perez','34444444','Garcia Marisa','IPAM');
+
+-- Recupere todos los datos de las consultas de "Lopez" (3 registros)
+
+select * from consultas where medico = 'Lopez';
+
+-- Recupere todos los datos de las consultas programadas para el "05/11/2006 8:00" (2 registros)
+
+select * from consultas where fechayhora = '05/11/2006 8:00';
+
+-- Muestre día y mes de todas las consultas de "Lopez"
+
+select extract(month from fechayhora) as mes,  extract(day from fechayhora) as dia 
+from consultas where medico = 'Lopez';
+
+-- Ejercicio 2
 
 
 
