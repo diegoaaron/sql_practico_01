@@ -139,5 +139,69 @@ from consultas where medico = 'Lopez';
 
 -- Ejercicio 2
 
+drop table inscriptos;
 
+/*
+ - documento del socio alumno: char(8) not null
+ - nombre del socio: varchar2(30),
+ - nombre del deporte (tenis, futbol, natación, basquet): varchar2(15) not null,
+ - año de inscripcion: date,
+ - matrícula: si la matrícula ha sido o no pagada ('s' o 'n').
+ 
+ Necesitamos una clave primaria que identifique cada registro. Un socio puede inscribirse en varios deportes 
+ en distintos años. Un socio no puede inscribirse en el mismo deporte el mismo año. Varios socios se inscriben 
+ en un mismo deporte en distintos años. Cree la tabla con una clave compuesta
+ 
+*/
 
+create table inscriptos(
+  documento char(8) not null, 
+  nombre varchar2(30),
+  deporte varchar2(15) not null,
+  año date,
+  matricula char(1),
+  primary key(documento,deporte,año)
+);
+
+ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY';
+
+-- Inscriba a varios alumnos en el mismo deporte en el mismo año
+
+insert into inscriptos values ('12222222','Juan Perez','tenis','2005','s');
+insert into inscriptos values ('23333333','Marta Garcia','tenis','2005','s');
+insert into inscriptos values ('34444444','Luis Perez','tenis','2005','n');
+
+-- Inscriba a un mismo alumno en varios deportes en el mismo año
+
+insert into inscriptos values ('12222222','Juan Perez','futbol','2005','s');
+insert into inscriptos values ('12222222','Juan Perez','natacion','2005','s');
+insert into inscriptos values ('12222222','Juan Perez','basquet','2005','n');
+
+-- Ingrese un registro con el mismo documento de socio en el mismo deporte en distintos años
+
+insert into inscriptos values ('12222222','Juan Perez','tenis','2006','s');
+insert into inscriptos values ('12222222','Juan Perez','tenis','2007','s');
+
+-- Intente inscribir a un socio alumno en un deporte en el cual ya esté inscripto en un año en el cual 
+-- ya se haya inscripto (mensaje de error)
+
+insert into inscriptos values('12222222','Juan Perez','tenis','2006','s');
+
+-- Intente actualizar un registro para que la clave primaria se repita (error)
+
+update inscriptos set documento='12222222', deporte='futbol', año = '2005' where nombre='Juan Perez' and
+documento='12222222' and deporte='tenis' and año = '2005';
+
+-- Muestre los nombres y años de los inscriptos en "tenis" (5 registros)
+
+select * from inscriptos where deporte='tenis';
+
+-- Muestre los nombres y deportes de los inscriptos en el año 2005 (6 registros)
+
+select nombre, deporte from inscriptos where año = '2005';
+
+-- Muestre el deporte y año de todas las inscripciones del socio documento "12222222" (6 registros)
+
+select deporte, año from inscriptos where documento = '12222222';
+
+commit;
