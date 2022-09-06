@@ -206,3 +206,48 @@ select sec_legajoempleados.nextval from dual;
 
 insert into empleados values(sec_legajoempleados.currval,'26444888','Estela Esper');
 
+-- Recupere los registros de "empleados" para ver el valor de clave primaria ingresado anteriormente.
+
+select * from empleados;
+
+-- Incremente el valor de la secuencia empleando la tabla "dual" (retorna 112)
+
+select sec_legajoempleados.nextval from dual;
+
+-- Ingrese un empleado con valor de legajo "112".
+
+insert into empleados values(sec_legajoempleados.currval,'33334444','Luis Quiroz');
+
+-- Intente ingresar un registro empleando "currval" (error porque ya utilizo el valor actual)
+
+insert into empleados values(sec_legajoempleados.currval,'55556666','Maria Perez');
+
+-- Incremente el valor de la secuencia. Retorna 114.
+
+select sec_legajoempleados.nextval from dual;
+
+-- intente ingresar el registro del enunciado anterior
+
+insert into empleados values(sec_legajoempleados.currval,'55556666','Maria Perez');
+
+-- Recupere los registros.
+
+select * from empleados;
+
+-- Vea las secuencias existentes y analice la información retornada
+
+select object_name from all_objects where object_type = 'SEQUENCE';
+
+-- Vea todos los objetos de la base de datos actual que contengan en su nombre la cadena "EMPLEADOS".
+
+select object_name, object_type from all_objects where object_name like '%EMPLEADOS%';
+
+-- Elimine la secuencia creada.
+
+drop sequence sec_legajoempleados;
+
+-- Consulte todos los objetos de la base de datos que sean secuencias y verifique que "sec_legajoempleados" ya no existe.
+
+select object_name, object_type from all_objects where object_name like '%EMPLEADOS%';
+
+
