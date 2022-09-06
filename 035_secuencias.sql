@@ -100,3 +100,55 @@ select object_name from all_objects where object_type = 'SEQUENCE';
 
  drop sequence sec_codigolibros;
 
+-- Vamos a crear una secuencia denominada "sec_codigolibros" para utilizarla en la clave primaria de la tabla "libros".
+
+-- Primero eliminamos la secuencia "sec_codigolibros"
+
+drop sequence sec_codigolibros;
+
+-- Creamos la secuencia llamada "sec_codigolibros", estableciendo que comience en 1, sus valores estén entre 
+-- 1 y 99999 y se incrementen en 1, por defecto, será "nocycle":
+
+create sequence sec_codigolibros
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+-- Inicializamos la secuencia
+
+select sec_codigolibros.nextval from dual;
+
+-- Recuperamos el valor actual de nuestra secuencia
+
+select sec_codigolibros.currval from dual;
+
+-- Definimos una tabla libros
+
+drop table libros;
+
+create table libros(
+  codigo number(5) not null,
+  titulo varchar2(40) not null,
+  autor varchar2(30),
+  editorial varchar2(20),
+  primary key(codigo)
+);
+
+-- Ingresamos un registro en "libros", almacenando en el campo "codigo" el valor actual de la secuencia
+
+insert into libros values(sec_codigolibros.nextval,'Matematica estas ahi', 'Paenza','Nuevo siglo');
+
+-- validamos los objetos registrados en libros
+
+select * from libros;
+
+-- Veamos todos los objetos de la base de datos actual que contengan en su nombre la cadena "LIBROS"
+
+select object_name, object_type from all_objects where object_name like '%LIBROS%';
+
+-- Eliminamos las secuencias creadas
+
+drop sequence sec_codigolibros;
+
+
