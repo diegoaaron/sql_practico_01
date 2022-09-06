@@ -181,3 +181,28 @@ select sec_legajoempleados.nextval from dual;
 
 select sec_legajoempleados.currval from dual;
 
+-- Ingrese algunos registros, empleando la secuencia creada para los valores de la clave primaria:
+
+insert into empleados values (sec_legajoempleados.currval,'22333444','Ana Acosta');
+insert into empleados values (sec_legajoempleados.nextval,'23444555','Betina Bustamante');
+insert into empleados values (sec_legajoempleados.nextval,'24555666','Carlos Caseros');
+insert into empleados values (sec_legajoempleados.nextval,'25666777','Diana Dominguez');
+insert into empleados values (sec_legajoempleados.nextval,'26777888','Estela Esper');
+
+-- Recupere los registros de "empleados" para ver los valores de clave primaria.
+
+select * from empleados;
+
+-- Vea el valor actual de la secuencia empleando la tabla "dual".
+
+select sec_legajoempleados.currval from dual;
+
+-- Recupere el valor siguiente de la secuencia empleando la tabla "dual" 
+
+select sec_legajoempleados.nextval from dual;
+
+-- Ingrese un nuevo empleado (recuerde que la secuencia ya tiene el próximo valor, emplee "currval" 
+-- para almacenar el valor de legajo)
+
+insert into empleados values(sec_legajoempleados.currval,'26444888','Estela Esper');
+
