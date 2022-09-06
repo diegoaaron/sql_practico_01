@@ -151,4 +151,33 @@ select object_name, object_type from all_objects where object_name like '%LIBROS
 
 drop sequence sec_codigolibros;
 
+-- Ejercicio 1 
+
+-- eliminamos la tabla empleados
+
+drop table empleados;
+
+-- creamos la tabla empleados
+
+create table empleados(
+  legajo number(3),
+  documento char(8) not null,
+  nombre varchar2(30) not null,
+  primary key(legajo)
+);
+
+-- Elimine la secuencia "sec_legajoempleados" y luego créela estableciendo el valor mínimo (1), máximo (999), 
+-- valor inicial (100), valor de incremento (2) y no circular. Finalmente inicialice la secuencia.
+
+drop sequence sec_legajoempleados;
+
+create sequence sec_legajoempleados
+    start with 100
+    increment by 2
+    maxvalue 999
+    minvalue 100;
+
+select sec_legajoempleados.nextval from dual;
+
+select sec_legajoempleados.currval from dual;
 
