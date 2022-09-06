@@ -21,5 +21,39 @@ se pueden aplicar a un campo o a varios. También es posible habilitarlas y desha
 
 Oracle ofrece varios tipos de restricciones:
 
+- not null: a nivel de campo.
+
+- primary key: a nivel de tabla. Es un campo o varios que identifican cada registro de una tabla.
+
+- foreign key: a nivel de tabla. Establece que un campo (o varios) relacione una clave primaria de una tabla con otra.
+
+- check: a nivel de tabla. Restringe los valores que pueden ingresarse en un campo especifico.
+
+- unique: a nivel de tabla.
+
+Se pueden crear, modificar y eliminar las restricciones sin eliminar la tabla y volver a crearla.
+
+Para obtener información de las restricciones podemos consultar los catálogos 
+"all_objects", "all_constraints" y "all_cons_columns".
+
+El catálogo "all_constraints" retorna varias columnas, entre ellas: OWNER (propietario), CONSTRAINT_NAME 
+(nombre de la restricción), CONSTRAINT_TYPE (tipo de restricción, si es primary key (P), foreign key (), unique (U), etc.), 
+TABLE_NAME (nombre de la tabla), SEARCH_CONDITION (en caso de ser Check u otra), DELETE_RULE (), 
+STATUS (estado), DEFERRABLE (), DEFERRED (), VALIDATED (), GENERATED (), INDEX_OWNER (), INDEX_NAME ().
+
+El catálogo "all_cons_columns" retorna las siguientes columnas: OWNER (propietario), CONSTRAINT_NAME (nombre), 
+TABLE_NAME (nombre de la tabla), COLUMN_NAME (campo), POSITION (posición).
 
 */
+
+select * from all_constraints;
+
+select * from all_cons_columns;
+
+
+
+
+
+
+
+
