@@ -166,3 +166,49 @@ select * from user_cons_columns where table_name = 'EMPLEADOS';
 
 -- Ejercicio 2 
 
+drop table remis;
+
+create table remis(
+  numero number(5),
+  patente char(6),
+  marca varchar2(15),
+  modelo char(4)
+);
+
+-- Ingrese algunos registros sin repetir patente y repitiendo número.
+
+insert into remis values (123,'luis','EC2','xyz');
+insert into remis values (124,'marcos','EC2','exy');
+insert into remis values (124,'alex','EC2','exy');
+
+-- Ingrese un registro con patente nula.
+
+insert into remis values (126,null,'EC2','exy');
+
+-- Intente definir una restricción "primary key" para el campo "numero".
+
+alter table remis
+add constraint PK_REMIS_NUMERO
+primary key(numero);
+
+-- Intente establecer una restricción "primary key" para el campo "patente".
+
+alter table remis
+add constraint PK_REMIS_PATENTE
+primary key(patente);
+
+-- Modifique el valor "null" de la patente.
+
+update remis set patente = 'mario' where numero = 126;
+
+-- Establezca una restricción "primary key" PATENTE
+
+-- Vea la información de las restricciones consultando "user_constraints" (1 restricción "P")
+
+select * from user_constraints where table_name = 'REMIS';
+
+-- Consulte el catálogo "user_cons_columns" y analice la información retornada (1 restricción)
+
+select * from user_cons_columns where table_name = 'REMIS';
+
+
