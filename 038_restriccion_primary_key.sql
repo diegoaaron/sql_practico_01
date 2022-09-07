@@ -123,5 +123,46 @@ primary key(titulo);
 
 -- Ejercicio 1 
 
+drop table empleados;
 
+create table empleados (
+  documento char(8),
+  nombre varchar2(30),
+  seccion varchar2(20)
+);
+
+insert into empleados values ('11122255','luis perez','EC2');
+insert into empleados values ('22222255','marcos perez','EC2');
+insert into empleados values ('44422255','alejandro perez','EC2');
+insert into empleados values ('11122255','percy perez','EC2');
+
+-- Intente establecer una restricción "primary key" para la tabla para que el documento no se repita ni admita valores nulos.
+-- No lo permite porque la tabla contiene datos que no cumplen con la restricción, debemos eliminar (o modificar) el 
+-- registro que tiene documento duplicado.
+
+alter table empleados
+add constraint PK_EMPLEADOS_DOCUMENTO
+primary key(documento);
+
+update empleados set documento = '12322255' where nombre = 'percy perez'; 
+
+-- Intente actualizar un documento para que se repita. No lo permite porque va contra la restricción.
+
+update empleados set documento = '11122255' where nombre = 'percy perez'; 
+
+-- Intente establecer otra restricción "primary key" con el campo "nombre".
+
+alter table empleados
+add constraint PK_EMPLEADOS_NOMBRE
+primary key(nombre);
+
+-- Vea las restricciones de la tabla "empleados" consultando el catálogo "user_constraints" (1 restricción "P")
+
+select * from user_constraints where table_name = 'EMPLEADOS';
+
+-- Consulte el catálogo "user_cons_columns"
+
+select * from user_cons_columns where table_name = 'EMPLEADOS';
+
+-- Ejercicio 2 
 
