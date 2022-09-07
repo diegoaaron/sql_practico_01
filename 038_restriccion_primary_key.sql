@@ -79,4 +79,49 @@ create table libros(
   editorial varchar2(15)
 );
 
+insert into libros values(1,'El aleph','Borges','Emece');
+insert into libros values(1,'Ilusiones','Bach','Planeta');
+
+-- Al intentar agregar una restricción "primary key" a la tabla, aparecerá un mensaje indicando que la clave primaria 
+-- se viola y proponiendo que se elimine la clave repetida.
+
+-- modificamos el código repetido 
+
+update libros set codigo = 2 where titulo = 'Ilusiones';
+
+-- Realizamos la corrección(agregando el campo codigo como llave primaria en la tabla)
+
+alter table libros
+add constraint PK_LIBROS_CODIGO
+primary key(codigo);
+
+-- vemos la restriccion definida en la tabla "user_constraints" 
+
+select * from user_constraints where table_name='LIBROS';
+
+-- al intentar ingresar un registro con el campo codigo duplicado, nos arrojara error
+
+insert into libros values(1,'El quijote de la mancha','Cervantes','Emece');
+
+-- tampoco se puede ingresar un valor nulo en el campo codigo
+
+insert into libros values(null,'El quijote de la mancha','Cervantes','Emece');
+
+-- El campo, luego de agregarse la restricción "primary key" se estableció como "not null"
+
+describe libros;
+
+-- Si intentamos agregar otra restricción "primary key", Oracle no lo permite:
+
+alter table libros
+add constraint PK_libros_titulo
+primary key(titulo);
+
+-- Veamos lo que nos informa el catálogo "user_const_columns":
+
+ select * from user_cons_columns where table_name='LIBROS';
+
+-- Ejercicio 1 
+
+
 
