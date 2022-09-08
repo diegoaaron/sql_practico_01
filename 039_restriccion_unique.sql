@@ -100,5 +100,21 @@ alter table remis
 add constraint UQ_REMIS_PATENTE
 unique(patente);
 
+-- Intente ingresar un registro con patente repetida (no lo permite)
+
+insert into remis values(12395,'aaa444','aksdjfl','aaaa');
+
+-- Ingrese un registro con valor nulo para el campo "patente".
+
+insert into remis values(12395,null,'aksdjfl','aaaa');
+
+insert into remis values(12385,null,'aksdjfl','aaaa');
+
+-- Muestre la información de las restricciones consultando "user_constraints" y "user_cons_columns" y 
+-- analice la información retornada (2 filas en cada consulta)
+
+select * from user_constraints where table_name like '%REMIS%';
+
+select * from user_cons_columns where table_name like '%REMIS%';
 
 select * from remis;
