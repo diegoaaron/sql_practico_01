@@ -36,6 +36,35 @@ el nombre de la restricción (CONSTRAINT_NAME), la tabla a la cual se aplica (TAB
 
 */
 
+drop table alumnos;
 
+create table alumnos(
+  legajo char(4),
+  apellido varchar2(20),
+  nombre varchar2(20),
+  documento char(8)
+);
 
+alter table alumnos
+add constraint PK_ALUMNOS_LEGAJO
+primary key(legajo);
+
+alter table alumnos
+add constraint UQ_ALUMNOS_DOCUMENTO
+unique(documento);
+
+insert into alumnos values('A111','Lopez','Ana','22223212');
+insert into alumnos values('A123','Garcia','Maria','23333333');
+insert into alumnos values('A230','Perez','Juan','23333433');
+insert into alumnos values('A124','Suarez','Silvana','30111222');
+
+-- validando en user_constraints 
+
+select * from user_constraints where table_name='ALUMNOS';
+
+-- validando en user_cons_columns 
+
+select * from user_cons_columns where table_name='ALUMNOS';
+
+-- Ejercicio 1
 
