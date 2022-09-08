@@ -106,9 +106,9 @@ insert into remis values(12395,'aaa444','aksdjfl','aaaa');
 
 -- Ingrese un registro con valor nulo para el campo "patente".
 
-insert into remis values(12395,null,'aksdjfl','aaaa');
+insert into remis values(12395,null,'aksdjfl','aaaa'); -- agrega el registro a pesar que es nulo
 
-insert into remis values(12385,null,'aksdjfl','aaaa');
+insert into remis values(12385,null,'aksdjfl','aaaa'); -- agrega el registro a pesar que es nulo
 
 -- Muestre la información de las restricciones consultando "user_constraints" y "user_cons_columns" y 
 -- analice la información retornada (2 filas en cada consulta)
