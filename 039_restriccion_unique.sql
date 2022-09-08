@@ -68,3 +68,37 @@ select * from user_cons_columns where table_name='ALUMNOS';
 
 -- Ejercicio 1
 
+drop table remis;
+  
+create table remis(
+  numero number(5),
+  patente char(6),
+  marca varchar2(15),
+  modelo char(4)
+);
+  
+-- Ingrese algunos registros, 2 de ellos con patente repetida y alguno con patente nula.
+
+insert into remis values(12345,'aaa444','aksdjfl','aaaa');
+insert into remis values(12346,'aaa444','aksdjfl','aabb');
+insert into remis values(12345,null,'aksdjfl','aaaa');
+
+-- Agregue una restricción "primary key" para el campo "numero".
+
+update remis set numero=12347 where patente is null;
+
+alter table remis
+add constraint PK_REMIS_NUMERO
+primary key(numero);
+
+-- Intente agregar una restricción "unique" para asegurarse que la patente del remis no tomará valores repetidos.
+
+update remis set patente='cc444' where patente is null;
+update remis set patente='bbb444' where numero = 12345;
+
+alter table remis
+add constraint UQ_REMIS_PATENTE
+unique(patente);
+
+
+select * from remis;
