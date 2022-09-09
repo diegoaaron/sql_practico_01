@@ -137,4 +137,116 @@ select * from user_cons_columns where table_name = 'LIBROS';
 -- La restricción de control "CK_libros_preciominmax" ocupa 2 filas porque en su definición se nombran 2 campos 
 -- (indicados en "COLUMN_NAME").
 
+-- Ejercicio 1
+
+drop table empleados;
+
+create table empleados (
+  documento char(8),
+  nombre varchar2(30),
+  cantidadhijos number(2),
+  seccion varchar2(20),
+  sueldo number(6,2) default -1
+);
+
+-- Agregue una restricción "check" para asegurarse que no se ingresen valores negativos para el sueldo.
+-- Note que el campo "sueldo" tiene establecido un valor por defecto (el valor -1) que va contra la restricción; 
+-- Oracle no controla esto, permite establecer la restricción, pero al intentar ingresar un registro con el valor por 
+-- defecto en tal campo, muestra un mensaje de error.
+
+alter table empleados
+add constraint CK_EMPLEADOS_SUELDO
+check(sueldo > 0);
+
+-- Intente ingresar un registro con la palabra clave "default" en el campo "sueldo" 
+
+insert into empleados values('88822222','Alberto Lopez',1,'Sistemas',default);
+
+-- Ingrese registros validos
+
+insert into empleados values ('22222222','Alberto Lopez',1,'Sistemas',1000);
+insert into empleados values ('33333333','Beatriz Garcia',2,'Administracion',3000);
+insert into empleados values ('34444444','Carlos Caseres',0,'Contaduría',6000);
+
+-- Intente agregar otra restricción "check" al campo sueldo para asegurar que ninguno supere el valor 5000.
+-- La sentencia no se ejecuta porque hay un sueldo que no cumple la restricción.
+
+delete from empleados where documento = '34444444';
+
+alter table empleados
+add constraint CK_EMPLEADOS_SUELDO2
+check(sueldo < 5000);
+
+-- Establezca una restricción "check" para "seccion" que permita solamente los valores "Sistemas", "Administracion" y 
+-- "Contaduría".
+
+alter table empleados
+add constraint CK_EMPLEADOS_SECCION
+check (seccion in ('Sistemas','Administracion','Contaduría'));
+
+-- Ingrese un registro con valor "null" en el campo "seccion".
+
+insert into empleados values ('34554444','Carlos Caseres',0,null,2000);
+
+-- Establezca una restricción "check" para "cantidadhijos" que permita solamente valores entre 0 y 15.
+
+alter table empleados
+add constraint CK_EMPLEADOS_HIJOS
+check(cantidadhijos between 0 and 15);
+
+-- Vea todas las restricciones de la tabla (4 filas)
+
+select * from user_constraints where table_name='EMPLEADOS';
+
+-- Intente agregar un registro que vaya contra alguna de las restricciones al campo "sueldo".
+-- Mensaje de error porque se infringe la restricción "CK_empleados_sueldo_positivo".
+
+insert into empleados values('34559944','Carlos Caseres',0,'Sistemas',-800);
+
+-- Intente modificar un registro colocando en "cantidadhijos" el valor "21".
+
+update empleados set cantidadhijos = 21 where documento = '33333333';
+
+-- Intente modificar el valor de algún registro en el campo "seccion" cambiándolo por uno que no esté 
+-- incluido en la lista de permitidos.
+
+update empleados set seccion = 'Quimica' where documento = '33333333';
+
+-- Intente agregar una restricción al campo sección para aceptar solamente valores que comiencen con la letra "B".
+-- Note que NO se puede establecer esta restricción porque va en contra de la establecida anteriormente para 
+-- el mismo campo, si lo permitiera, no podríamos ingresar ningún valor para "seccion".
+
+alter table empleados
+add constraint CK_EMPLEADOS_SECCION
+check(seccion like '%B');
+
+-- Agregue un registro con documento nulo.
+
+insert into empleados values(null,'Beatriz Garcia',2,'Administracion',1500);
+
+-- Intente agregar una restricción "primary key" para el campo "documento".
+-- No lo permite porque existe un registro con valor nulo en tal campo.
+
+alter table empleados
+add constraint PK_EMPLEADOS_DOCUMENTO
+primary key(documento);
+
+-- Elimine el registro que infringe la restricción y establezca la restricción del punto 17.
+
+delete from empleados where documento is null;
+
+-- 
+
+select * from empleados;
+
+
+insert into empleados values ('33333333','Beatriz Garcia',2,'Administracion',3000);
+
+alter table libros
+add constraint CK_LIBROS_PRECIOMINMAY2
+check (preciomay <= preciomin);
+
+
+
+
 
