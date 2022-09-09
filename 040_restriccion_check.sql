@@ -61,3 +61,80 @@ check (titulo is not null);
  
 */
 
+drop table libros;
+
+create table libros(
+  codigo number(5),
+  titulo varchar2(40),
+  autor varchar2(30),
+  editorial varchar2(15),
+  preciomin number(5,2),
+  preciomay number(5,2)
+);
+
+insert into libros values (1,'Uno','Bach','Planeta',22,20);
+insert into libros values (2,'El quijote','Cervantes','Emece',15,13);
+insert into libros values (3,'Aprenda PHP','Mario Molina','Siglo XXI',53,48);
+insert into libros values (4,'Java en 10 minutos','Garcia','Siglo XXI',35,40);
+
+-- Agregamos una restricción "primary key" para el campo "codigo":
+
+alter table libros
+add constraint PK_LIBROS_CODIGO
+primary key(codigo);
+
+-- Agregamos una restricción única, la clave única consta de 3 campos, "titulo", "autor" y "editorial":
+
+alter table libros
+add constraint UQ_LIBROS
+unique(titulo,codigo,editorial);
+
+-- Agregamos una restricción "check" para asegurar que los valores de los campos correspondientes a 
+-- precios no puedan ser negativos:
+
+alter table libros
+add constraint CK_LIBROS_PRECIO_POSITIVO
+check (preciomin>=0 and preciomay>=0);
+
+-- Intentamos ingresar un valor inválido para algún campo correspondiente al precio, que vaya en contra de 
+-- la restricción (por ejemplo el valor "-15") (muestra error)
+
+insert into libros values(10,'Mtematico','Emece',-1h,11); 
+
+-- Igualmente si intentamos actualizar un precio, que vaya en contra de la restricción:
+
+update libros set preciomay = -20 where titulo = 'Uno';
+
+-- Si intentamos agregar una restricción que no permita que el precio mayorista supere el precio minorista:
+
+alter table libros
+add constraint CK_LIBROS_PRECIOMINMAY2
+check (preciomay <= preciomin);
+
+-- corregimos el error en los registros, lo cual evitan insertar la restriccion
+
+update libros set preciomay = 30 where titulo = 'Java en 10 minutos';
+
+-- Veamos las restricciones de la tabla:
+
+select * from user_constraints where table_name='LIBROS';
+
+-- Note que en el caso de las restricciones de control, en las cuales muestra "C" en el tipo de constraint, 
+-- la columna "SEARCH_CONDITION" muestra la regla que debe cumplirse; en caso de ser una 
+-- restricción "primary key" o unique", esa columna queda vacía.
+
+-- Consultamos "user_cons_columns":
+
+select * from user_cons_columns where table_name = 'LIBROS';
+
+
+-- Analizamos la información: la tabla tiene 4 restricciones, 1 "primary key", 1 "unique" y 2 "check". La restricción 
+-- "primarykey" ocupa una sola fila porque fue definida para 1 solo campo, por ello, en la columna 
+-- "POSITION" aparece "1". La restricción única ocupa tres filas porque fue definida con 3 campos cuyo orden está 
+-- indicado en la columna "POSITION". La columna "POSITION" muestra información si la restricción es 
+-- "primary key" o "unique" indicando el orden de los campos. La restricción de control "CK_libros_precios_positivo" 
+-- ocupa 2 filas porque en su definición se nombran 2 campos (indicados en "COLUMN_NAME"). 
+-- La restricción de control "CK_libros_preciominmax" ocupa 2 filas porque en su definición se nombran 2 campos 
+-- (indicados en "COLUMN_NAME").
+
+
