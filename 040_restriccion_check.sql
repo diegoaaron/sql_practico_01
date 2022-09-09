@@ -265,6 +265,44 @@ insert into vehiculos values(3,'DSE367','moto','17/01/2017 8:30','17/01/2017 18:
 
 -- Agregue una restricción de control que especifique que el campo "tipo" acepte solamente los valores "auto" y "moto"
 
+alter table vehiculos
+add constraint CK_VEHICULOS_TIPO
+check (tipo in ('auto','moto'));
 
+-- Intente modificar el valor del campo "tipo" ingresando un valor inexistente en la lista de valores permitidos 
+-- por la restricción establecida a dicho campo.
 
+update vehiculos set tipo = 'avion' where patente='DSE367';
 
+-- Ingrese un registro con valor nulo para "tipo".
+
+insert into vehiculos values(4,'DXE367',null,'17/01/2017 8:30','17/01/2017 18:00');
+
+-- Agregue una restricción de control al campo "fechahoraentrada" que establezca que sus valores no sean 
+-- posteriores a "fechahorasalida".
+
+alter table vehiculos
+add constraint CK_VEHICULOS_FECHAENTRADA
+check (fechahoraentrada < fechahorasalida);
+
+-- Intente modificar un registro para que la salida sea anterior a la entrada.
+
+update vehiculos set fechahorasalida = '17/01/2017 8:00' where fechahoraentrada = '17/01/2017 8:30';
+
+-- Vea todas las restricciones para la tabla "vehiculos".
+
+select * from user_constraints where table_name = 'VEHICULOS';
+
+--  Ingrese un registro con valor nulo para "fechahoraentrada".
+
+insert into vehiculos values(5,'DXE567',null,null,'17/01/2017 18:00');
+
+-- Vea todos los registros.
+
+select * from vehiculos;
+
+-- Consulte "user_cons_columns" y analice la información retornada.
+
+select * from user_cons_columns where table_name = 'VEHICULOS';
+
+commit;
