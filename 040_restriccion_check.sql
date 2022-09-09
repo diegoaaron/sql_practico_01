@@ -235,17 +235,35 @@ primary key(documento);
 
 delete from empleados where documento is null;
 
--- 
+-- Consulte "user_constraints", mostrando los campos "constraint_name", "constraint_type" y "search_condition" 
+-- de la tabla "empleados" (5 filas)
 
-select * from empleados;
+select *  from user_constraints where table_name = 'EMPLEADOS';
 
+-- Consulte el catálogo "user_cons_colums" recuperando el nombre de las restricciones establecidas en el campo 
+-- sueldo de la tabla "empleados" (2 filas)
 
-insert into empleados values ('33333333','Beatriz Garcia',2,'Administracion',3000);
+select *  from user_cons_columns where table_name = 'EMPLEADOS' AND COLUMN_NAME = 'SUELDO';
 
-alter table libros
-add constraint CK_LIBROS_PRECIOMINMAY2
-check (preciomay <= preciomin);
+-- Ejercicio 2
 
+alter session set NLS_DATE_FORMAT = 'DD/MM/YYYY HH24:MI';
+
+drop table vehiculos;
+
+create table vehiculos(
+  numero number(5),
+  patente char(6),
+  tipo char(4),
+  fechahoraentrada date,
+  fechahorasalida date
+);
+
+insert into vehiculos values(1,'AIC124','auto','17/01/2017 8:05','17/01/2017 12:30');
+insert into vehiculos values(2,'CAA258','auto','17/01/2017 8:10',null);
+insert into vehiculos values(3,'DSE367','moto','17/01/2017 8:30','17/01/2017 18:00');
+
+-- Agregue una restricción de control que especifique que el campo "tipo" acepte solamente los valores "auto" y "moto"
 
 
 
