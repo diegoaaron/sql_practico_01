@@ -133,11 +133,45 @@ check(precio >= 0) novalidate;
 
 -- Veamos el estado de la restricción de control:
 
+select constraint_type, status, validated from user_constraints
+where table_name='LIBROS' and constraint_name='CK_LIBROS_PRECIO';
 
+-- Si intentamos ingresar un valor negativo para el precio, aparecerá un mensaje de error, 
+-- porque la restricción de control creada está habilitada:
 
+insert into libros values (3,'Momo','Michael Ende','Alfaragua',-25);
 
+-- Deshabilitamos la restricción "CK_LIBROS_PRECIO":
 
+alter table libros
+disable constraint CK_LIBROS_PRECIO;
 
+-- Veamos el estado actual:
 
+select constraint_type, status, validated
+from user_constraints
+where table_name='LIBROS' and
+constraint_name='CK_LIBROS_PRECIO';
 
+-- Nos muestra que está deshabilitada y no valida los datos existentes.
+
+-- Ahora si podemos ingresar el registro:
+
+insert into libros values (3,'Momo','Michael Ende','Alfaragua',-25);
+
+-- Habilitamos la restricción para futuros ingresos pero no para los existentes:
+
+alter table libros
+enable novalidate constraint CK_LIBROS_PRECIO;
+
+-- Note que Oracle lo permite, no valida los datos existentes, pero si fuera otro tipo de restricción, no lo permitiría.
+
+-- Consultamos "user_constraints":
+
+select constraint_type, status, validated
+from user_constraints
+where table_name='LIBROS' and
+constraint_name='CK_LIBROS_PRECIO';
+
+-- Nos muestra que está habilitada y no valida los datos existentes.
 
