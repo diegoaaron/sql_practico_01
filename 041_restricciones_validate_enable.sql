@@ -296,8 +296,58 @@ constraint_name like '%EMPLEADOS%';
 
 -- Deshabilite todas las restricciones de "empleados"
 
+alter table empleados
+disable constraint PK_EMPLEADOS;
 
+alter table empleados
+disable constraint UQ_EMPLEADOS_DOCUMENTO;
 
-select * from empleados;
+alter table empleados
+disable constraint CK_EMPLEADOS_SUELDO_POSITIVO;
 
-update empleados set  codigo = 5 where documento = '33333344';
+alter table empleados
+disable constraint CK_EMPLEADOS_SECCION_LISTA;
+
+-- Ingrese un registro que viole todas las restricciones.
+
+insert into empleados values (2,'33333344','Beatriz Benitez','Conta',-50);
+
+-- Habilite la restricción "CK_empleados_sueldo_positivo" sin validar los datos existentes.
+
+alter table empleados
+disable novalidate constraint CK_EMPLEADOS_SUELDO_POSITIVO;
+
+-- Habilite la restricción "CK_empleados_seccion_lista" sin validar los datos existentes.
+
+alter table empleados
+disable novalidate constraint CK_EMPLEADOS_SECCION_LISTA;
+
+-- Intente habilitar la restricción "PK_empleados_codigo" sin validar los datos existentes.
+
+alter table empleados
+disable novalidate constraint PK_EMPLEADOS;
+
+-- Intente habilitar la restricción "UQ_empleados_documento" sin validar los datos existentes.
+
+alter table empleados
+disable novalidate constraint UQ_EMPLEADOS_DOCUMENTO;
+
+-- Elimine el registro que infringe con las restricciones "primary key" y "unique".
+
+delete from empleados where codigo = 2 and documento = '33333344';
+
+-- Habilite las restricciones "PK_empleados_codigo" y "UQ_empleados_documento" sin validar los datos existentes.
+
+alter table empleados
+enable novalidate constraint UQ_EMPLEADOS_DOCUMENTO;
+
+alter table empleados
+enable novalidate constraint PK_EMPLEADOS;
+
+-- Consulte el catálogo "user_constraints" y analice la información.
+
+select constraint_type, status, validated, constraint_name
+from user_constraints
+where table_name='EMPLEADOS' and
+constraint_name like '%EMPLEADOS%';
+
