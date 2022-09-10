@@ -234,7 +234,7 @@ check (seccion in ('Sistemas','Administracion','Contaduria')) novalidate;
 -- Muestra 2 filas, una por cada restricción; ambas son de control, ninguna valida los datos existentes,
 -- "CK_empleados_sueldo_positivo" está deshabilitada, la otra habilitada.
 
-select constraint_type, status, validated
+select constraint_type, status, validated, constraint_name
 from user_constraints
 where table_name='EMPLEADOS' and
 constraint_name like '%EMPLEADOS%';
@@ -242,5 +242,62 @@ constraint_name like '%EMPLEADOS%';
 -- Habilite la restricción deshabilitada.
 -- Note que existe un sueldo que infringe la condición.
 
+alter table empleados
+enable constraint CK_EMPLEADOS_SUELDO_POSITIVO;
+
+-- Intente modificar la sección del empleado "Carlos Caseres" a "Recursos"
+-- No lo permite.
+
+update empleados set seccion = 'Recursos' where nombre = 'Carlos Caseres';
+
+-- Deshabilite la restricción para poder realizar la actualización del punto precedente.
+
+alter table empleados
+disable constraint CK_EMPLEADOS_SECCION_LISTA;
+
+-- Agregue una restricción "primary key" para el campo "codigo" deshabilitada.
+
+alter table empleados
+add constraint PK_EMPLEADOS
+primary key(codigo) disable;
+
+-- Ingrese un registro con código existente.
+
+insert into empleados values (2,'33333344','Beatriz Benitez','Recursos',3000);
+
+-- Intente habilitar la restricción.
+-- No se permite porque aun cuando se especifica que no lo haga, Oracle verifica los 
+-- datos existentes, y existe un código repetido
+
+alter table empleados 
+enable constraint PK_EMPLEADOS;
+
+-- Modifique el registro con clave primaria repetida.
+
+delete from empleados where codigo = 2;
+
+-- Habilite la restricción "primary key"
+
+alter table empleados 
+enable constraint PK_EMPLEADOS;
+
+-- Agregue una restricción "unique" para el campo "documento"
+
+alter table empleados
+add constraint UQ_EMPLEADOS_DOCUMENTO
+unique (documento);
+
+-- Vea todas las restricciones de la tabla "empleados"
+
+select constraint_type, status, validated, constraint_name
+from user_constraints
+where table_name='EMPLEADOS' and
+constraint_name like '%EMPLEADOS%';
+
+-- Deshabilite todas las restricciones de "empleados"
 
 
+
+select * from empleados;
+
+update empleados set  codigo = 5 where documento = '33333344';
