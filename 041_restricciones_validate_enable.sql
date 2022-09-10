@@ -175,3 +175,72 @@ constraint_name='CK_LIBROS_PRECIO';
 
 -- Nos muestra que está habilitada y no valida los datos existentes.
 
+-- Ejercicio 1
+
+drop table empleados;
+
+create table empleados (
+  codigo number(6),
+  documento char(8),
+  nombre varchar2(30),
+  seccion varchar2(20),
+  sueldo number(6,2)
+);
+
+insert into empleados  values (1,'22222222','Alberto Acosta','Sistemas',-10);
+insert into empleados values (2,'33333333','Beatriz Benitez','Recursos',3000);
+insert into empleados values (3,'34444444','Carlos Caseres','Contaduria',4000);
+
+-- Intente agregar una restricción "check" para asegurarse que no se 
+-- ingresen valores negativos para el sueldo sin especificar validación ni estado:
+
+alter table empleados
+add constraint CK_EMPLEADOS_SUELDO_POSITIVO
+check (sueldo >= 0);
+
+-- No se permite porque hay un valor negativo almacenado y por defecto la opción es "validate".
+
+-- Vuelva a intentarlo agregando la opción "novalidate".
+
+alter table empleados
+add constraint CK_EMPLEADOS_SUELDO_POSITIVO
+check (sueldo >= 0) novalidate;
+
+-- Intente ingresar un valor negativo para sueldo.
+
+insert into empleados  values (1,'22222222','Alberto Acosta','Sistemas',-10);
+
+-- Deshabilite la restricción e ingrese el registro anterior.
+
+alter table empleados
+disable constraint CK_EMPLEADOS_SUELDO_POSITIVO;
+
+-- Intente establecer una restricción "check" para "seccion" que permita solamente los valores 
+-- "Sistemas", "Administracion" y "Contaduría" sin especificar validación:
+
+alter table empleados
+add constraint CK_EMPLEADOS_SECCION_LISTA
+check (seccion in ('Sistemas','Administracion','Contaduria'));
+
+-- No lo permite porque existe un valor fuera de la lista.
+
+-- Establezca la restricción anterior evitando que se controlen los datos existentes.
+
+alter table empleados
+add constraint CK_EMPLEADOS_SECCION_LISTA
+check (seccion in ('Sistemas','Administracion','Contaduria')) novalidate;
+
+-- Vea si las restricciones de la tabla están o no habilitadas y validadas.
+-- Muestra 2 filas, una por cada restricción; ambas son de control, ninguna valida los datos existentes,
+-- "CK_empleados_sueldo_positivo" está deshabilitada, la otra habilitada.
+
+select constraint_type, status, validated
+from user_constraints
+where table_name='EMPLEADOS' and
+constraint_name like '%EMPLEADOS%';
+
+-- Habilite la restricción deshabilitada.
+-- Note que existe un sueldo que infringe la condición.
+
+
+
