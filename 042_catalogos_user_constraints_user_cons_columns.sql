@@ -33,6 +33,6 @@ los campos que componen la clave (primaria o única).
 
 */
 
-select * from user_constraints;
+select * from user_constraints where table_name = 'LIBROS'; -- muestra las restriccione asociada a la tabla
 
-select * from user_cons_columns;
+select * from user_cons_columns where table_name = 'LIBROS'; -- muetra las restricciones asociadas a las columnas de la tabla
