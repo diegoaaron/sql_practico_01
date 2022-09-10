@@ -46,7 +46,34 @@ unique (titulo, autor, editorial);
 
 select * from user_constraints where table_name = 'LIBROS';
 
+/*
+Aparecen 4 restricciones:
 
+- 1 "check" que controla que el precio sea positivo
+
+- 1 "check" , que se creó al definir "not null" el campo "codigo", el nombre le fue dado por Oracle
+
+- 1 "primary key" 
+
+- 1 "unique".
+
+*/
+
+-- Eliminamos la restricción "PK_libros_codigo"
+
+alter table libros
+drop constraint PK_LIBROS_CODIGO;
+
+-- Eliminamos la restricción de control "CK_libros_precio"
+
+alter table libros
+drop constraint CK_LIBROS_PRECIO;
+
+-- Vemos si se eliminaron:
+
+select * from user_constraints where table_name = 'LIBROS';
+
+-- solo aparecen 2 restricciones (1 de not null, creada al definir el PK y la restriccion UNIQUE
 
 
 
