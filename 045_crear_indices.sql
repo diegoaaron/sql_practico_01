@@ -168,3 +168,92 @@ insert into empleados values(5,'30111222','Perez','Juan','Bulnes 233');
 
 -- oracle no lo permite. 
 
+-- Ejercicio 1
+
+drop table alumnos;
+
+create table alumnos(
+  legajo char(5) not null,
+  documento char(8) not null,
+  nombre varchar2(30),
+  curso char(1),
+  materia varchar2(30),
+  notafinal number(4,2)
+);
+
+insert into alumnos values ('A123','22222222','Perez Patricia','5','Matematica',9);
+insert into alumnos values ('A234','23333333','Lopez Ana','5','Matematica',9);
+insert into alumnos values ('A345','24444444','Garcia Carlos','6','Matematica',8.5);
+insert into alumnos values ('A348','25555555','Perez Patricia','6','Lengua',7.85);
+insert into alumnos values ('A457','26666666','Perez Fabian','6','Lengua',3.2);
+
+-- Intente crear un índice único para el campo "nombre".
+-- No lo permite porque hay valores duplicados.
+
+create unique index I_ALUMNOS_NOMBRE
+on alumnos(nombre);
+
+-- Cree un índice no único, para el campo "nombre"
+
+create index I_ALUMNOS_NOMBRE
+on alumnos(nombre);
+
+-- Cree un índice único, para el campo "legajo".
+
+create unique index I_ALUMNOS_LEGAJO 
+on alumnos(legajo);
+
+-- Establezca una restricción "primary key" sobre el campo "legajo"
+
+alter table alumnos
+add constraint PK_ALUMNOS_LEGAJO
+primary key(legajo);
+
+-- Verifique que Oracle no creó un índice al agregar la restricción, utilizó el índice "I_alumnos_legajo" existente
+
+select index_name, column_name, column_position from user_ind_columns 
+where table_name='ALUMNOS';
+
+-- Agregue una restricción única sobre el campo "documento"
+
+alter table alumnos
+add constraint UQ_ALUMNOS_DOCUMENTO
+unique (documento);
+
+-- Verifique que Oracle creó un índice al agregar la restricción y le dio el nombre de la restricción.
+
+select index_name, column_name, column_position from user_ind_columns
+where table_name='ALUMNOS';
+
+-- Intente crear un índice único para la tabla "alumnos" sobre el campo "notafinal"
+
+create unique index I_ALUMNOS_NOTAFINAL
+on alumnos(notafinal);
+
+-- Indexe la tabla "alumnos" por el campo "notafinal" (índice no único)
+
+create index I_ALUMNOS_NOTAFINAL
+on alumnos(notafinal);
+
+-- Indexe la tabla "alumnos" por los campos "curso" y "materia" (índice no único)
+
+create index I_ALUMNOS_CURSOMATERIA
+on alumnos(curso, materia);
+
+-- Intente crear un índice único sobre "materia" (error pues hay datos duplicados)
+
+create unique index I_ALUMNOS_MATERIA
+on alumnos(materia);
+
+-- Vea los indices de "alumnos"
+
+select index_name, column_name, column_position from user_ind_columns 
+where table_name='ALUMNOS';
+
+-- Consulte el diccionario "user_ind_columns" y analice la información retornada.
+
+select * from user_ind_columns;
+
+-- Vea todos los índices de la base de datos activa que contengan en su nombre el patrón "%EMPLEADOS%" (5 filas retornadas)
+
+select * from user_ind_columns where table_name like '%EMPLEADOS%';
