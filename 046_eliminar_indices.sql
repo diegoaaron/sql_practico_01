@@ -76,5 +76,21 @@ where index_name='I_EMPLEADOS_LEGAJO';
 
 drop index I_EMPLEADOS_NOMBRE;
 
+-- Corroboremos que se eliminó
 
+select *from user_objects
+where object_type='INDEX' and object_name like '%EMPLEADOS%';
+
+-- Eliminamos la tabla
+
+drop table empleados;
  
+ -- Verificamos que se eliminaron todos los índices establecidos sobre la tabla
+
+select * from user_indexes where table_name = 'EMPLEADOS';
+ 
+ -- Lo verificamos nuevamente consultando el diccionario de todos los objetos
+
+select *from user_objects
+where object_type='INDEX' and object_name like '%EMPLEADOS%';
+
