@@ -94,3 +94,31 @@ select * from user_indexes where table_name = 'EMPLEADOS';
 select *from user_objects
 where object_type='INDEX' and object_name like '%EMPLEADOS%';
 
+-- Ejercicio 1 
+
+drop table alumnos;
+ 
+create table alumnos(
+  legajo char(5) not null,
+  documento char(8) not null,
+  nombre varchar2(30),
+  curso char(1) not null,
+  materia varchar2(20) not null,
+  notafinal number(4,2)
+);
+
+-- Cree un índice no único para el campo "nombre"
+
+create index I_ALUMNOS_NOMBRE
+on alumnos(nombre); 
+
+-- Establezca una restricción "primary key" para el campo "legajo"
+
+alter table alumnos
+add constraint PK_ALUMNOS_LEGAJO
+primary key(legajo);
+
+-- Verifique que se creó un índice con el nombre de la restricción
+
+
+
