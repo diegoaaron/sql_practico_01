@@ -120,5 +120,43 @@ primary key(legajo);
 
 -- Verifique que se creó un índice con el nombre de la restricción
 
+select * from user_indexes where table_name = 'ALUMNOS';
+
+-- Verifique que se creó un índice único con el nombre de la restricción consultando el diccionario de índices.
+
+select * from user_ind_columns  where table_name = 'ALUMNOS';
+
+-- Intente eliminar el índice "PK_alumnos_legajo" con "drop index"
+
+drop index PK_ALUMNOS_LEGAJO;
+
+-- Cree un índice único para el campo "documento"
+
+create index I_ALUMNOS_DOCUMENTO
+on alumnos(documento); 
+
+-- Agregue a la tabla una restricción única sobre el campo "documento" y verifique que no se creó un índice,
+-- Oracle emplea el índice creado en el punto anterior.
+
+alter table alumnos
+add constraint UQ_ALUMNOS_DOCUMENTO
+unique (documento);
+
+-- Intente eliminar el índice "I_alumnos_documento" (no se puede porque una restricción lo está utilizando)
+
+drop index I_ALUMNOS_DOCUMENTO;
+
+-- Elimine la restricción única establecida sobre "documento"
+
+alter table alumnos
+drop constraint UQ_ALUMNOS_DOCUMENTO;
+
+-- Verifique que el índice "I_alumnos_documento" aún existe.
+
+select * from user_ind_columns  where table_name = 'ALUMNOS';
+
+-- 
+
+
 
 
