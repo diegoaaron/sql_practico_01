@@ -48,7 +48,33 @@ where table_name='EMPLEADOS';
  
 --  Consultamos todos los índices y sus tipos consultando "user_indexes"
 
+select index_name,uniqueness
+from user_indexes
+where table_name='EMPLEADOS';
 
+-- Creamos un índice no único sobre "nombre"
+
+create index I_EMPLEADOS_NOMBRE
+on empleados(nombre);
+
+-- Creamos un índice no único sobre "apellido"
+
+create index I_EMPLEADOS_APELLIDO
+on empleados(apellido);
+ 
+ -- Si intentamos eliminar un índice que utiliza una restricción Oracle no lo permite:
+
+drop index I_EMPLEADOS_LEGAJO;
+
+-- Verificamos que tal índice es utilizado por una restricción
+
+select constraint_name, constraint_type, index_name
+from user_constraints
+where index_name='I_EMPLEADOS_LEGAJO';
+
+-- Eliminamos el índice "I_empleados_nombre"
+
+drop index I_EMPLEADOS_NOMBRE;
 
 
  
