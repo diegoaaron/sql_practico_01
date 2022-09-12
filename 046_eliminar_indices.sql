@@ -155,8 +155,34 @@ drop constraint UQ_ALUMNOS_DOCUMENTO;
 
 select * from user_ind_columns  where table_name = 'ALUMNOS';
 
--- 
+-- Elimine el índice "I_alumnos_documento", ahora puede hacerlo porque no hay restricción que lo utilice.
 
+drop index I_ALUMNOS_DOCUMENTO;
 
+--Elimine el índice "I_alumnos_nombre".
 
+drop index I_ALUMNOS_NOMBRE;
 
+-- Elimine la restricción "primary key"/
+
+alter table alumnos
+drop constraint PK_ALUMNOS_LEGAJO;
+
+-- Verifique que el índice "PK_alumnos_legajo" fue eliminado (porque fue creado por Oracle al establecerse la restricción)
+
+select * from user_ind_columns  where table_name = 'ALUMNOS';
+
+-- Cree un índice compuesto por los campos "curso" y "materia", no único.
+
+create index I_ALUMNOS_CURSOMATERIA
+on alumnos(curso, materia);
+
+-- Verifique su existencia.
+
+select * from user_ind_columns  where table_name = 'ALUMNOS';
+
+-- Elimine la tabla "alumnos" y verifique que todos los índices han sido eliminados junto con ella.
+
+drop table alumnos;
+
+select * from user_ind_columns  where table_name = 'ALUMNOS';
