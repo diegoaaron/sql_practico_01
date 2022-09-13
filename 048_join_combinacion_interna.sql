@@ -70,5 +70,42 @@ En algunos casos (como en este ejemplo) el uso de alias es para fines de simplif
 si es larga y compleja, pero en algunas consultas es absolutamente necesario.
 */
 
+drop table libros;
+drop table editoriales;
 
+create table libros(
+  codigo number(5),
+  titulo varchar2(40),
+  autor varchar2(30),
+  codigoeditorial number(3)
+);
+
+create table editoriales(
+  codigo number(3),
+  nombre varchar2(20),
+  direccion varchar2(40),
+  primary key (codigo)
+);
+
+insert into editoriales values(1,'Planeta','Colon 120');
+insert into editoriales values(2,'Emece','Estrada 356');
+insert into editoriales values(3,'Siglo XXI','General Paz 700');
+
+insert into libros values(100,'El aleph','Borges',1);
+insert into libros values(200,'Martin Fierro','Jose Hernandez',2);
+insert into libros values(300,'Aprenda PHP','Mario Molina',3);
+insert into libros values(400,'Java en 10 minutos',null,5);
+insert into libros values(500,'Matematica estas ahi','Paenza',null);
+
+-- Recuperamos los datos de libros:
+
+ select *from libros;
+
+-- vemos que en el campo "editorial" aparece el código, pero no sabemos el nombre de la editorial y su dirección. 
+-- Realizamos un join para obtener datos de ambas tablas (titulo, autor y nombre de la editorial):
+
+select titulo, autor, nombre, direccion
+from libros
+join editoriales
+on libros.codigo = editoriales.codigo;
 
