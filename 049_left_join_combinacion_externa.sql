@@ -150,6 +150,88 @@ where codigoeditorial is null;
 
 -- Ejercicio 1 
 
+   drop table clientes;
+   drop table provincias;
+
+ create table clientes (
+  codigo number(5),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  ciudad varchar2(20),
+  codigoprovincia number(3)
+ );
+
+ create table provincias(
+  codigo number(3),
+  nombre varchar2(20)
+ );
+
+ alter table clientes
+  add constraints UQ_clientes_codigo
+  unique (codigo);
+
+ alter table provincias
+  add constraints UQ_provincias_codigo
+  unique (codigo);
+
+
+ insert into provincias values(1,'Cordoba');
+ insert into provincias values(2,'Santa Fe');
+ insert into provincias values(3,'Corrientes');
+ insert into provincias values(4,'Santa Cruz');
+ insert into provincias values(null,'Salta');
+ insert into provincias values(null,'Jujuy');
+
+ insert into clientes values (100,'Lopez Marcos','Colon 111','Córdoba',1);
+ insert into clientes values (200,'Perez Ana','San Martin 222','Cruz del Eje',1);
+ insert into clientes values (300,'Garcia Juan','Rivadavia 333','Villa Maria',null);
+ insert into clientes values (400,'Perez Luis','Sarmiento 444','Rosario',2);
+ insert into clientes values (500,'Gomez Ines','San Martin 666','Santa Fe',2);
+ insert into clientes values (600,'Torres Fabiola','Alem 777','La Plata',5);
+ insert into clientes values (700,'Garcia Luis','Sucre 475','Santa Rosa',null);
+
+-- Muestre todos los datos de los clientes, incluido el nombre de la provincia
+-- Note que los clientes de "Santa Rosa", "Villa Maria" y "La Plata" se muestran seteados a null en la columna corespondiente 
+-- al nombre de la provincia porque tienen valores nulos o inexistentes.
+
+select c.codigo, c.nombre, domicilio, ciudad, p.nombre 
+from clientes c
+left join provincias p
+on c.codigoprovincia = p.codigo
+
+-- Realice la misma consulta anterior pero alterando el orden de las tablas.
+
+select c.codigo, c.nombre, domicilio, ciudad, p.nombre 
+from provincias p
+left join clientes c
+on p.codigo = c.codigoprovincia;
+
+-- Muestre solamente los clientes de las provincias que existen en "provincias" (4 registros)
+-- Note que los clientes de "Jujuy", "Salta", "Santa Cruz" y "Corrientes" se muestran seteados a null en los campos 
+-- pertenecientes a la tabla "clientes" porque tienen valores nulos o inexistentes en dicha tabla.
+
+select c.codigo, c.nombre, domicilio, ciudad, p.nombre 
+from clientes c
+left join provincias p
+on c.codigoprovincia = p.codigo
+where p.codigo is not null;
+
+-- Muestre todos los clientes cuyo código de provincia NO existe en "provincias" ordenados por nombre del cliente (3 registros)
+
+select c.codigo, c.nombre, domicilio, ciudad, p.nombre 
+from clientes c
+left join provincias p
+on c.codigoprovincia = p.codigo
+where p.codigo is null
+order by c.nombre;
+
+-- Obtenga todos los datos de los clientes de "Cordoba" (2 registros)
+
+select c.codigo, c.nombre, domicilio, ciudad, p.nombre 
+from clientes c
+left join provincias p
+on c.codigoprovincia = p.codigo
+where p.nombre = 'Cordoba';
 
 
 
