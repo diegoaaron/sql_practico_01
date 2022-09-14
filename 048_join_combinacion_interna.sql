@@ -99,7 +99,7 @@ insert into libros values(500,'Matematica estas ahi','Paenza',null);
 
 -- Recuperamos los datos de libros:
 
- select *from libros;
+ select * from libros;
 
 -- vemos que en el campo "editorial" aparece el código, pero no sabemos el nombre de la editorial y su dirección. 
 -- Realizamos un join para obtener datos de ambas tablas (titulo, autor y nombre de la editorial):
@@ -107,5 +107,38 @@ insert into libros values(500,'Matematica estas ahi','Paenza',null);
 select titulo, autor, nombre, direccion
 from libros
 join editoriales
-on libros.codigo = editoriales.codigo;
+on libros.codigoeditorial = editoriales.codigo;
+
+-- Note que los libros cuyo código de editorial NO se encuentra en "editoriales" no aparecen en el resultado de la consulta. 
+-- El libro "Java en 10 minutos" tiene código de editorial 5, y ese código no está presente en "editoriales"; 
+-- el libro "Matemática estas ahi" tiene valor nulo en "codigoeditorial", por lo tanto, tampoco se muestra en el join.
+
+-- Mostramos el código del libro, título, autor, nombre de la editorial y su dirección realizando un join y empleando alias:
+
+select l.codigo, titulo, autor, nombre, direccion
+from libros l
+join editoriales e
+on codigoeditorial = e.codigo;
+
+-- Note que al listar el campo "codigo" especificamos a qué tabla pertenece; si no lo hacemos Oracle no sabrá si 
+-- nos referimos al de la tabla "libros" o "editoriales". Los demás campos no tienen referencia a la tabla porque 
+-- tienen nombres que no se repiten.
+
+-- Realizamos la misma consulta anterior agregando un "where" para obtener solamente los libros de la editorial "Siglo XXI":
+
+select titulo, autor, nombre, direccion
+from libros l
+join editoriales e
+on codigoeditorial = e.codigo
+where e.nombre = 'Siglo XXI';
+
+-- Obtenemos título, autor y nombre de la editorial, esta vez ordenados por título
+
+select titulo, autor, nombre
+from libros l
+join editoriales e
+on codigoeditorial = e.codigo
+order by titulo;
+
+
 
