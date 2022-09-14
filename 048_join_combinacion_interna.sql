@@ -140,5 +140,62 @@ join editoriales e
 on codigoeditorial = e.codigo
 order by titulo;
 
+-- Ejercicio 1
 
+drop table clientes;
+drop table provincias;
+
+create table clientes (
+  codigo number(5),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  ciudad varchar2(20),
+  codigoprovincia number(2)
+);
+
+create table provincias(
+  codigo number(2),
+  nombre varchar2(20)
+);
+
+insert into provincias values(1,'Cordoba');
+insert into provincias values(2,'Santa Fe');
+insert into provincias values(3,'Corrientes');
+insert into provincias values(null,'La Pampa');
+
+insert into clientes values (1,'Lopez Marcos','Colon 111','Córdoba',1);
+insert into clientes values (2,'Perez Ana','San Martin 222','Cruz del Eje',1);
+insert into clientes values (3,'Garcia Juan','Rivadavia 333','Villa Maria',null);
+insert into clientes values (4,'Perez Luis','Sarmiento 444','Rosario',2);
+insert into clientes values (5,'Pereyra Lucas','San Martin 555','Cruz del Eje',1);
+insert into clientes values (6,'Gomez Ines','San Martin 666','Santa Fe',2);
+insert into clientes values (7,'Torres Fabiola','Alem 777','Ibera',3);
+insert into clientes values (8,'Garcia Paco','Avellaneda 888','Rawson',5);
+
+-- Obtenga los datos de ambas tablas, usando alias.
+-- Note que los registros de "clientes" cuyo valor de "codigoprovincia" que NO encuentran coincidencia con 
+-- "codigo" de "provincias" no aparecen en el resultado de la consulta; caso de "Garcia Juan", que código de provincia nulo 
+-- y "Garcia Paco", que tiene un código de provincia que no está presente en "provincias".
+
+select c.codigo, c.nombre, domicilio, ciudad, pr.codigo, pr.nombre
+from clientes c
+join provincias pr
+on c.codigoprovincia = pr.codigo;
+
+-- Obtenga la misma información anterior pero ordenada por nombre de provincia (join y order by)
+
+select c.codigo, c.nombre, domicilio, ciudad, pr.codigo, pr.nombre
+from clientes c
+join provincias pr
+on c.codigoprovincia = pr.codigo
+order by pr.nombre;
+
+-- Recupere todos los datos de los clientes de la provincia "Santa Fe" (join con where) (2 registros devueltos)
+
+select c.codigo, c.nombre, domicilio, ciudad, pr.codigo, pr.nombre
+from clientes c
+join provincias pr
+on c.codigoprovincia = pr.codigo
+where pr.nombre = 'Santa Fe'
+order by pr.nombre;
 
