@@ -129,9 +129,20 @@ on d.codigo = i.codigodeporte;
 
 -- Muestre los deportes para los cuales no hay inscriptos, empleando un "left join" (1 registro)
 
+select documento, matricula, nombre, profesor
+from deportes d 
+left join inscriptos i
+on i.codigodeporte = d.codigo
+where i.codigodeporte is null;
+
 
 -- Muestre los documentos de los inscriptos a deportes que no existen en la tabla "deportes" (1 registro)
 
+select documento, matricula, nombre, profesor
+from inscriptos i  
+left join deportes d
+on i.codigodeporte = d.codigo
+where d.codigo is null;
 
 -- Emplee un "full join" para obtener todos los datos de ambas tablas, incluyendo las inscripciones a deportes inexistentes 
 -- en "deportes" y los deportes que no tienen inscriptos (8 registros)
