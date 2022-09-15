@@ -150,8 +150,8 @@ where d.codigo is null;
 -- porque el código "5" no está presente en "deportes"; otro registro, que muestra "tenis" y "Marcelo Roca", tiene valores 
 -- nulos en los campos correspondientes a la tabla "inscriptos", ya que, para el deporte con código 1, no hay inscriptos.
 
-
-
-
-
+select documento, matricula, nombre, profesor
+from inscriptos i  
+full join deportes d
+on i.codigodeporte = d.codigo;
 
