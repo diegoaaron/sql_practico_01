@@ -66,5 +66,81 @@ on codigoeditorial = e.codigo;
 -- Note que el libro "El aleph" cuyo valor de "codigoeditorial" es null, muestra "null" en la columna "editorial" y las 
 -- editoriales "Sudamericana" y "Siglo XXI" muestran "null" en el campo "titulo".
 
+-- Ejercicio 1 
 
+drop table deportes;
+drop table inscriptos;
+
+create table deportes(
+  codigo number(2),
+  nombre varchar2(30),
+  profesor varchar2(30)
+);
+
+create table inscriptos(
+  documento char(8),
+  codigodeporte number(2),
+  matricula char(1) --'s'=paga; 'n'=impaga
+);
+
+alter table deportes
+add constraint PK_deportes
+primary key(codigo);
+
+alter table inscriptos
+add constraint PK_inscriptos
+primary key(documento,codigodeporte);
+
+ insert into deportes values(1,'tenis','Marcelo Roca');
+ insert into deportes values(2,'natacion','Marta Torres');
+ insert into deportes values(3,'basquet','Luis Garcia');
+ insert into deportes values(4,'futbol','Marcelo Roca');
  
+ insert into inscriptos values('22222222',3,'s');
+ insert into inscriptos values('23333333',3,'s');
+ insert into inscriptos values('24444444',3,'n');
+ insert into inscriptos values('22222222',2,'s');
+ insert into inscriptos values('23333333',2,'s');
+ insert into inscriptos values('22222222',4,'n'); 
+ insert into inscriptos values('22222222',5,'n'); 
+ 
+ -- Muestre todos la información de la tabla "inscriptos", y consulte la tabla "deportes" 
+ -- para obtener el nombre de cada deporte (6 registros). Note que uno de los registros tiene seteado a null la columna "deporte".
+ 
+select documento, matricula, nombre, profesor 
+from inscriptos i
+inner join deportes d
+on i.codigodeporte = d.codigo;
+ 
+--  Empleando un "left join" con "deportes" obtenga todos los datos de los inscriptos (7 registros)
+
+select documento, matricula, nombre, profesor
+from inscriptos i
+left join deportes d
+on i.codigodeporte = d.codigo;
+
+-- Obtenga la misma salida anterior empleando un "rigth join"
+-- Note que se cambia el orden de las tablas y "right" por "left".
+
+select documento, matricula, nombre, profesor
+from deportes d
+right join inscriptos i 
+on d.codigo = i.codigodeporte;
+
+-- Muestre los deportes para los cuales no hay inscriptos, empleando un "left join" (1 registro)
+
+
+-- Muestre los documentos de los inscriptos a deportes que no existen en la tabla "deportes" (1 registro)
+
+
+-- Emplee un "full join" para obtener todos los datos de ambas tablas, incluyendo las inscripciones a deportes inexistentes 
+-- en "deportes" y los deportes que no tienen inscriptos (8 registros)
+-- Note que uno de los registros con documento "22222222" tiene seteado a "null" los campos correspondientes a "deportes" 
+-- porque el código "5" no está presente en "deportes"; otro registro, que muestra "tenis" y "Marcelo Roca", tiene valores 
+-- nulos en los campos correspondientes a la tabla "inscriptos", ya que, para el deporte con código 1, no hay inscriptos.
+
+
+
+
+
+
