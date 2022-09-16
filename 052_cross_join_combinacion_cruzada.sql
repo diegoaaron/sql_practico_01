@@ -34,3 +34,37 @@ Como cualquier tipo de "join", puede emplearse una cláusula "where" que condicio
 Este tipo de join no es muy utilizado.
 */
 
+drop table comidas;
+drop table postres;
+ 
+create table comidas(
+  codigo number(2),
+  nombre varchar2(30),
+  precio number(4,2)
+);
+
+create table postres(
+  codigo number(2),
+  nombre varchar2(30),
+  precio number(4,2)
+);
+ 
+  insert into comidas values(1,'ravioles',5);
+ insert into comidas values(2,'tallarines',4);
+ insert into comidas values(3,'milanesa',7);
+ insert into comidas values(4,'cuarto de pollo',6);
+
+ insert into postres values(1,'flan',2.5);
+ insert into postres values(2,'porcion torta',3.5);
+ 
+ -- El restaurante quiere combinar los registros de ambas tablas para mostrar los distintos menúes que ofrece. Lo hacemos 
+ -- usando un "cross join"
+ 
+ -- La salida muestra cada plato combinado con cada uno de los postres y el precio total de cada menú. Se obtienen 8 registros
+
+select c.nombre as "plato principal",
+p.nombre as "postre"
+from comidas c
+cross join postres p;
+ 
+ 
