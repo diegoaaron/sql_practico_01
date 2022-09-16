@@ -66,5 +66,46 @@ select c.nombre as "plato principal",
 p.nombre as "postre"
 from comidas c
 cross join postres p;
+
+-- Ejercicio 1
+
+drop table mujeres;
+drop table varones;
+
+create table mujeres(
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  edad number(2)
+);
+
+create table varones(
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  edad number(2)
+);
  
+insert into mujeres values('Maria Lopez','Colon 123',45);
+insert into mujeres values('Liliana Garcia','Sucre 456',35);
+insert into mujeres values('Susana Lopez','Avellaneda 98',41);
+
+insert into varones values('Juan Torres','Sarmiento 755',44);
+insert into varones values('Marcelo Oliva','San Martin 874',56);
+insert into varones values('Federico Pereyra','Colon 234',38);
+insert into varones values('Juan Garcia','Peru 333',50);
+ 
+ -- La agencia necesita la combinación de todas las personas de sexo femenino con las de sexo masculino. 
+ -- Use un "cross join" (12 filas)
+ 
+ select m.nombre, v.nombre 
+ from mujeres m
+ cross join varones v;
+ 
+ -- Realice la misma combinación pero considerando solamente las personas mayores de 40 años (6 filas)
+ 
+  select m.nombre, v.nombre 
+ from mujeres m
+ cross join varones v
+ where m.edad > 40 and v.edad > 40;
+ 
+ -- 
  
