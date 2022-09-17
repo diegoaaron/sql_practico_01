@@ -42,3 +42,47 @@ c2.rubro='postre';
 
 Para que no aparezcan filas duplicadas se agrega un "where".
 */
+
+drop table comidas;
+
+create table comidas(
+codigo number(2),
+nombre varchar2(30),
+precio number(4,2),
+rubro char(6),-- 'plato'=plato principal', 'postre'=postre
+primary key(codigo)
+);
+
+insert into comidas values(1,'ravioles',5,'plato');
+insert into comidas values(2,'tallarines',4,'plato');
+insert into comidas values(3,'milanesa',7,'plato');
+insert into comidas values(4,'cuarto de pollo',6,'plato');
+insert into comidas values(5,'flan',2.5,'postre');
+insert into comidas values(6,'porcion torta',3.5,'postre');
+
+-- Realizamos un "cross join":
+
+select c1.nombre,
+c2.nombre,
+c1.precio + c2.precio as total
+from comidas c1
+cross join comidas c2;
+
+-- Note que aparecen filas duplicadas, por ejemplo, "ravioles" se combina con "ravioles" y la combinación "ravioles- flan" 
+-- se repite como "flan- ravioles". Debemos especificar que combine el rubro "plato" con "postre":
+
+select c1.nombre as "plato principal",
+c2.nombre as postre,
+c1.precio + c2.precio as total
+from comidas c1
+cross join comidas c2
+where c1.rubro = 'plato' and
+c2.rubro = 'postre';
+
+-- La salida muestra cada plato combinado con cada postre, y una columna extra que calcula el total del menú.
+
+
+
+
+
+
