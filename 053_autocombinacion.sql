@@ -94,6 +94,48 @@ c2.rubro='postre';
 
 -- Para que no aparezcan filas duplicadas se agrega un "where".
 
+-- Ejercicio 1
 
+ drop table clientes;
 
+ create table clientes(
+  nombre varchar2(30),
+  sexo char(1),--'f'=femenino, 'm'=masculino
+  edad number(2),
+  domicilio varchar2(30)
+ );
+
+ insert into clientes values('Maria Lopez','f',45,'Colon 123');
+ insert into clientes values('Liliana Garcia','f',35,'Sucre 456');
+ insert into clientes values('Susana Lopez','f',41,'Avellaneda 98');
+ insert into clientes values('Juan Torres','m',44,'Sarmiento 755');
+ insert into clientes values('Marcelo Oliva','m',56,'San Martin 874');
+ insert into clientes values('Federico Pereyra','m',38,'Colon 234');
+ insert into clientes values('Juan Garcia','m',50,'Peru 333');
+
+-- La agencia necesita la combinación de todas las personas de sexo femenino con las de sexo masculino. Use un 
+-- "cross join" (12 filas)
+
+select c1.nombre, c2.nombre
+from clientes c1
+cross join clientes c2
+where c1.sexo ='f' and c2.sexo='m';
+
+-- Obtenga la misma salida anterior pero realizando un "join"
+
+select c1.nombre, c2.nombre
+from clientes c1
+join clientes c2
+on c1.nombre <> c2.nombre
+where c1.sexo ='f' and c2.sexo='m';
+
+-- Realice la misma autocombinación que el punto 3 pero agregue la condición que las parejas no tengan una diferencia 
+-- superior a 5 años (5 filas)
+
+select c1.nombre, c2.nombre
+from clientes c1
+cross join clientes c2
+where c1.sexo ='f' and c2.sexo='m' and (c1.edad - c2.edad between -5 and 5);
+
+-- Ejercicio 2
 
