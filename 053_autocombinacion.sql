@@ -152,6 +152,7 @@ where c1.sexo ='f' and c2.sexo='m' and (c1.edad - c2.edad between -5 and 5);
  insert into equipos values('Los leones','Centro','Colon 123','Gustavo Fuentes');
  insert into equipos values('Campeones','Pueyrredon','Guemes 346','Carlos Moreno');
  insert into equipos values('Cebollitas','Alberdi','Colon 1234','Luis Duarte');
+  insert into equipos values('Campeonas','AAlberdi','CColon 11234','LLuis Duarte');
  
  -- Cada equipo jugará con todos los demás 2 veces, una vez en cada sede. Realice un "cross join" para combinar los 
  -- equipos teniendo en cuenta que un equipo no juega consigo mismo (12 filas)
@@ -173,5 +174,5 @@ on e1.nombre <> e2.nombre;
 select e1.nombre, e2.nombre
 from equipos e1
 cross join equipos e2
-where e1.nombre < e2.nombre;
+where e1.nombre > e2.nombre;
  
