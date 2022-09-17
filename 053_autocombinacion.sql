@@ -81,7 +81,18 @@ c2.rubro = 'postre';
 
 -- La salida muestra cada plato combinado con cada postre, y una columna extra que calcula el total del menú.
 
+-- También se puede realizar una autocombinación con "join":
 
+select c1.nombre as "plato principal",
+c2.nombre as postre,
+c1.precio + c2.precio total
+from comidas c1
+join comidas c2
+on c1.codigo <> c2.codigo
+where c1.rubro='plato' and
+c2.rubro='postre';
+
+-- Para que no aparezcan filas duplicadas se agrega un "where".
 
 
 
