@@ -139,3 +139,39 @@ where c1.sexo ='f' and c2.sexo='m' and (c1.edad - c2.edad between -5 and 5);
 
 -- Ejercicio 2
 
+ drop table equipos;
+
+ create table equipos(
+  nombre varchar2(30),
+  barrio varchar2(20),
+  domicilio varchar2(30),
+  entrenador varchar2(30)
+ );
+
+ insert into equipos values('Los tigres','Gral. Paz','Sarmiento 234','Juan Lopez');
+ insert into equipos values('Los leones','Centro','Colon 123','Gustavo Fuentes');
+ insert into equipos values('Campeones','Pueyrredon','Guemes 346','Carlos Moreno');
+ insert into equipos values('Cebollitas','Alberdi','Colon 1234','Luis Duarte');
+ 
+ -- Cada equipo jugará con todos los demás 2 veces, una vez en cada sede. Realice un "cross join" para combinar los 
+ -- equipos teniendo en cuenta que un equipo no juega consigo mismo (12 filas)
+
+select e1.nombre, e2.nombre
+from equipos e1
+cross join equipos e2
+where e1.nombre <> e2.nombre;
+
+-- Obtenga el mismo resultado empleando un "join".
+
+select e1.nombre, e2.nombre
+from equipos e1
+join equipos e2
+on e1.nombre <> e2.nombre;
+
+-- Realice un "cross join" para combinar los equipos para que cada equipo juegue con cada uno de los otros una sola vez (6 filas)
+
+select e1.nombre, e2.nombre
+from equipos e1
+cross join equipos e2
+where e1.nombre < e2.nombre;
+ 
