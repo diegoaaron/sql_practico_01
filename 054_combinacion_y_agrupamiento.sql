@@ -136,9 +136,25 @@ inner join visitantes v
 on c. codigo = v.codigociudad
 group by c.nombre;
 
-
 -- Obtenga el monto de compra más alto de cada ciudad (3 filas)
+
+select c.nombre as "ciudad",
+max(v.montocompra) as "max monto compra"
+from ciudades c
+inner join visitantes v
+on c. codigo = v.codigociudad
+group by c.nombre;
 
 -- Realice la misma consulta anterior pero con "left join" (4 filas)
 -- Note que aparece el monto "95,4" con valor nulo en el campo correspondiente a la ciudad, ya que ese registro tiene un valor 
 -- inexistente en "ciudades".
+
+select c.nombre as "ciudad",
+max(v.montocompra) as "max monto compra"
+from ciudades c
+inner join visitantes v
+on c. codigo = v.codigociudad
+group by c.nombre;
+
+
+
