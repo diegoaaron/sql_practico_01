@@ -119,7 +119,23 @@ group by c.nombre;
 
 -- Muestre el promedio de gastos de las visitas agrupados por ciudad y sexo (4 filas)
 
+select c.nombre as "ciudad",
+v.sexo,
+avg(v.montocompra) as "promedio de compra"
+from ciudades c
+inner join visitantes v
+on c. codigo = v.codigociudad
+group by c.nombre,v.sexo;
+
 -- Muestre la cantidad de visitantes con mail, agrupados por ciudad (3 filas)
+
+select c.nombre as "ciudad",
+count(v.mail) as "correos"
+from ciudades c
+inner join visitantes v
+on c. codigo = v.codigociudad
+group by c.nombre;
+
 
 -- Obtenga el monto de compra más alto de cada ciudad (3 filas)
 
