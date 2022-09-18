@@ -151,8 +151,8 @@ group by c.nombre;
 
 select c.nombre as "ciudad",
 max(v.montocompra) as "max monto compra"
-from ciudades c
-inner join visitantes v
+from visitantes v 
+left join ciudades c
 on c. codigo = v.codigociudad
 group by c.nombre;
 
