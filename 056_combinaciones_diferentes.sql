@@ -273,7 +273,65 @@ using(codigoprovincia);
 
  -- Ejercicio 2
  
+  drop table inscriptos;
+ drop table inasistencias;
+
+ create table inscriptos(
+  nombre varchar2(30),
+  documento char(8),
+  deporte varchar2(15),
+  matricula char(1), --'s'=paga; 'n'=impaga
+  primary key(documento,deporte)
+ );
+
+ create table inasistencias(
+  documento char(8),
+  deporte varchar2(15),
+  fecha date
+ );
  
+  insert into inscriptos values('Juan Perez','22222222','tenis','s');
+ insert into inscriptos values('Maria Lopez','23333333','tenis','s');
+ insert into inscriptos values('Agustin Juarez','24444444','tenis','n');
+ insert into inscriptos values('Marta Garcia','25555555','natacion','s');
+ insert into inscriptos values('Juan Perez','22222222','natacion','s');
+ insert into inscriptos values('Maria Lopez','23333333','natacion','n');
+
+ insert into inasistencias values('22222222','tenis','01/12/2016');
+ insert into inasistencias values('22222222','tenis','08/12/2016');
+ insert into inasistencias values('23333333','tenis','01/12/2016');
+ insert into inasistencias values('24444444','tenis','08/12/2016');
+ insert into inasistencias values('22222222','natacion','02/12/2016');
+ insert into inasistencias values('23333333','natacion','02/12/2016');
  
+-- Muestre toda la información de "inscriptos", realizando una combinación con "inasistencias". Realice un "left join" para 
+-- incluir todos los "inscriptos" aunque no se encuentren en "inasistencias" (7 filas)
+-- Note que la condición es compuesta porque para identificar los registros necesitamos ambos campos. Note que la 
+-- persona con documento '25555555' aparece en la consulta aún cuando no está presente en "inasistencias".
+
+select a.nombre, a.documento, i.deporte, a.matricula
+from inscriptos a
+left join inasistencias i
+on a.documento = i.documento and a.deporte = i.deporte;
+
+-- Obtenga el mismo resultado anterior empleando un "join" y el modificador "(+)" (7 filas)
+-- Note que se coloca el modificador en ambos campos. Si se omite en alguno de ellos, el resultado será diferente (6 filas)
+
+select a.nombre, a.documento, i.deporte, a.matricula
+from inscriptos a
+join inasistencias i
+on a.documento = i.documento(+) and a.deporte = i.deporte(+);
+
+-- Intente realizar un natural join entre ambas tablas mostrando el nombre del inscripto, el deporte y la fecha de inasistencia 
+-- (mensaje de error porque hay 2 campos con igual nombre)
+
+select a.nombre, i.deporte, i.fecha
+from inscriptos a
+natural join inasistencias i;
+
+-- Realice una combinación entre ambas tablas mostrando toda la información y empleando la cláusula "using" (6 filas)
  
- 
+ select nombre, documento, deporte, matricula
+from inscriptos a
+join inasistencias i
+using(documento,deporte);
