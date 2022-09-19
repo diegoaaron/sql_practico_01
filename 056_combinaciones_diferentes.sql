@@ -194,3 +194,86 @@ on l.codigoeditorial(+) = e.codigoeditorial(+);
 
 -- Ejercicio 1
 
+ drop table clientes;
+ drop table provincias;
+
+ create table clientes (
+  codigo number(5),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  ciudad varchar2(20),
+  codigoprovincia number(2)
+ );
+
+create table provincias(
+  codigoprovincia number(2),
+  nombre varchar2(20)
+);
+ 
+  insert into provincias values(1,'Cordoba');
+ insert into provincias values(2,'Santa Fe');
+ insert into provincias values(3,'Corrientes');
+ insert into provincias values(null,'Salta');
+
+ insert into clientes values (100,'Lopez Marcos','Colon 111','Córdoba',1);
+ insert into clientes values (101,'Perez Ana','San Martin 222','Cruz del Eje',1);
+ insert into clientes values (102,'Garcia Juan','Rivadavia 333','Villa Maria',1);
+ insert into clientes values (103,'Perez Luis','Sarmiento 444','Rosario',2);
+ insert into clientes values (104,'Gomez Ines','San Martin 666','Santa Fe',2);
+ insert into clientes values (105,'Torres Fabiola','Alem 777','La Plata',4);
+ insert into clientes values (106,'Garcia Luis','Sucre 475','Santa Rosa',null);
+ 
+ -- Muestre todos los datos de los clientes, incluido el nombre de la provincia empleando un "left join" (7 filas)
+ 
+  select c.nombre,domicilio,ciudad, p.nombre as provincia
+  from clientes c
+  left join provincias p
+  on c.codigoprovincia = p.codigoprovincia;
+ 
+-- Obtenga la misma salida que la consulta anterior pero empleando un "join" con el modificador (+)
+-- Note que en los puntos 3 y 4, los registros "Garcia Luis" y "Torres Fabiola" aparecen aunque no encuentran 
+-- coincidencia en "provincias", mostrando "null" en la columna "provincia".
+
+ select c.nombre,domicilio,ciudad, p.nombre as provincia
+  from clientes c
+  join provincias p
+  on c.codigoprovincia = p.codigoprovincia(+);
+
+-- Muestre todos los datos de los clientes, incluido el nombre de la provincia empleando un "right join" para que 
+-- las provincias de las cuales no hay clientes también aparezcan en la consulta (7 filas)
+
+  select c.nombre,domicilio,ciudad, p.nombre as provincia
+  from provincias p
+  right join clientes c
+  on c.codigoprovincia = p.codigoprovincia;
+
+-- Obtenga la misma salida que la consulta anterior pero empleando un "join" con el modificador (+)
+-- Note que en los puntos 5 y 6, las provincias "Salta" y "Corrientes" aparecen aunque no encuentran coincidencia en 
+-- "clientes", mostrando "null" en todos los campos de tal tabla.
+
+  select c.nombre,domicilio,ciudad, p.nombre as provincia
+  from provincias p
+  join clientes c
+  on c.codigoprovincia(+) = p.codigoprovincia;
+
+-- Intente realizar un natural join entre ambas tablas mostrando el nombre del cliente, la ciudad y nombre de la provincia 
+-- (las tablas tienen 2 campos con igual nombre "codigoprovincia" y "nombre"; mensaje de error)
+
+ select c.nombre,ciudad,p.nombre as provincia
+  from clientes c
+  natural join
+  provincias p;
+
+-- Realice una combinación entre ambas tablas empleando la cláusula "using" (5 filas)
+ 
+ select c.nombre,ciudad,p.nombre as provincia
+  from clientes c
+join provincias p
+using(codigoprovincia);
+
+ -- Ejercicio 2
+ 
+ 
+ 
+ 
+ 
