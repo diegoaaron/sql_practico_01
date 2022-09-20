@@ -249,13 +249,26 @@ delete from provincias where codigo = 4;
 -- Intente modificar el registro con código 1, de "provincias"
 -- No se puede porque hay registros en "clientes" al cual hace referencia.
 
-
+update provincias set nombre='Loreto' where codigo = 1;
 
 -- Vea las restricciones de "clientes" consultando "user_constraints"
 
+select constraint_name, constraint_type
+from user_constraints
+where table_name='CLIENTES';
+
 -- Vea las restricciones de "provincias"
+
+select constraint_name, constraint_type
+from user_constraints
+where table_name='PROVINCIAS';
 
 -- Intente eliminar la tabla "provincias" (mensaje de error)
 
+drop table provincias;
+
 -- Elimine la restricción "foreign key" de "clientes" y luego elimine la tabla "provincias"
+ 
+ alter table clientes
+ drop constraint FK_CLIENTES_CODIGOPROVINCIA;
  
