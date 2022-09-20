@@ -78,3 +78,50 @@ Las restricciones "foreign key" se eliminan automáticamente al eliminar la tabla
 
 Para ver información acerca de esta restricción podemos consultar los diccionarios "user_constraints" y "user_cons_columns".
 */
+
+drop table libros;
+drop table editoriales;
+
+create table libros(
+codigo number(5),
+titulo varchar2(40),
+autor varchar2(30),
+codigoeditorial number(3)
+);
+
+create table editoriales(
+codigo number(3),
+nombre varchar2(20)
+);
+
+
+insert into editoriales values(1,'Emece');
+insert into editoriales values(2,'Planeta');
+insert into editoriales values(3,'Siglo XXI');
+
+insert into libros values(100,'El aleph','Borges',1);
+insert into libros values(101,'Martin Fierro','Jose Hernandez',2);
+insert into libros values(102,'Aprenda PHP','Mario Molina',5);
+
+-- Intentamos establecer una restricción "foreign key" sobre "codigoeditorial":
+-- Mensaje de error; pues el campo "codigo" de la tabla "editoriales" no fue definida clave primaria ni única.
+
+alter table libros
+add constraint FK_LIBROS_CODIGOEDITORIAL
+foreign key (codigoeditorial)
+references editoriales(codigo);
+
+-- Agregamos una restricción "primary key" sobre "codigo" de "editoriales":
+
+alter table editoriales
+add constraint PK_EDITORIALES
+primary key(codigo);
+
+-- Intentamos nuevamente establecer una restricción "foreign key" sobre "codigoeditorial":
+-- Mensaje de error. Oracle controla que los datos existentes no violen la restricción que intentamos establecer, como existe 
+-- un valor de "codigoeditorial" inexistente en "editoriales", la restricción no puede establecerse.
+
+
+
+
+
