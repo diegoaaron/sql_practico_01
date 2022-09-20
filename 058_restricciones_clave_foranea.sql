@@ -121,7 +121,104 @@ primary key(codigo);
 -- Mensaje de error. Oracle controla que los datos existentes no violen la restricción que intentamos establecer, como existe 
 -- un valor de "codigoeditorial" inexistente en "editoriales", la restricción no puede establecerse.
 
+-- Eliminamos el registro que infringe la regla:
 
+delete from libros where codigoeditorial = 5;
 
+-- Ahora si podemos establecer una restricción "foreign key" sobre "codigoeditorial" (utilizando el primer enunciado)
 
+-- Veamos las restricciones de "libros" consultando "user_constraints":
+-- aparece la restricción "FK_libros_codigoeditorial" indicando que es una "foreign key" con el caracter "R" en el tipo de 
+-- restricción.
 
+select constraint_name, constraint_type
+from user_constraints
+where table_name = 'LIBROS';
+
+-- Consultamos "user_cons_columns":
+
+select constraint_name, column_name
+from user_cons_columns
+where table_name = 'LIBROS';
+
+-- Veamos las restricciones de "editoriales"
+
+select constraint_name, constraint_type
+from user_constraints
+where table_name='EDITORIALES';
+
+-- Ingresamos un libro sin especificar un valor para el código de editorial:
+
+ insert into libros values(103,'El experto en laberintos','Gaskin',default);
+
+-- Veamos todos los registros de "libros":
+-- Note que en "codigoeditorial" almacenó "null", porque esta restricción permite valores nulos (a menos que se haya 
+-- especificado lo contrario al definir el campo).
+ 
+ select *from libros;
+ 
+ -- Intentamos agregar un libro con un código de editorial inexistente en "editoriales":
+-- Nos muestra un mensaje indicando que la restricción FK_LIBROS_EDITORIAL está siendo violada, que no encuentra el 
+-- valor de clave primaria en "editoriales".
+
+ insert into libros values(104,'El anillo del hechicero','Gaskin',8);
+
+-- Intentamos eliminar una editorial cuyo código esté presente en "libros":
+-- Un mensaje nos informa que la restricción de clave externa está siendo violada, existen registros que hacen referencia 
+-- al que queremos eliminar.
+
+delete from editoriales where codigo=2;
+
+-- Intente eliminar la tabla "editoriales":
+-- Un mensaje de error indica que la acción no puede realizarse porque la tabla es referenciada por una "foreign key".
+
+drop table editoriales;
+
+ -- Ejercicio 1
+ 
+drop table clientes;
+drop table provincias;
+
+create table clientes (
+  codigo number(5),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  ciudad varchar2(20),
+  codigoprovincia number(2)
+);
+
+create table provincias(
+  codigo number(2),
+  nombre varchar2(20)
+ );
+
+-- En este ejemplo, el campo "codigoprovincia" de "clientes" es una clave foránea, se emplea para enlazar la tabla 
+-- "clientes" con "provincias".
+-- Intente agregar una restricción "foreign key" a la tabla "clientes" que haga referencia al campo "codigo" de "provincias"
+-- No se puede porque "provincias" no tiene restricción "primary key" ni "unique".
+
+alter table clientes
+add constraint FK_CLIENTES_CODIGOPROVINCIA
+foreign key (codigoprovincia)
+references provincias(codigo);
+
+-- Establezca una restricción "unique" al campo "codigo" de "provincias"
+
+alter table provincias
+add constraint UQ_PROVINCIAS_CODIGO
+unique(codigo);
+
+-- Ingrese algunos registros para ambas tablas:
+
+ insert into provincias values(1,'Cordoba');
+ insert into provincias values(2,'Santa Fe');
+ insert into provincias values(3,'Misiones');
+ insert into provincias values(4,'Rio Negro');
+
+ insert into clientes values(100,'Perez Juan','San Martin 123','Carlos Paz',1);
+ insert into clientes values(101,'Moreno Marcos','Colon 234','Rosario',2);
+ insert into clientes values(102,'Acosta Ana','Avellaneda 333','Posadas',3);
+ insert into clientes values(103,'Luisa Lopez','Juarez 555','La Plata',6);
+ 
+ -- 
+ 
