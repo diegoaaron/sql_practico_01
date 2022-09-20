@@ -220,5 +220,42 @@ unique(codigo);
  insert into clientes values(102,'Acosta Ana','Avellaneda 333','Posadas',3);
  insert into clientes values(103,'Luisa Lopez','Juarez 555','La Plata',6);
  
- -- 
+-- Intente agregar la restricción "foreign key" del punto 2 a la tabla "clientes"
+-- No se puede porque hay un registro en "clientes" cuyo valor de "codigoprovincia" no existe en "provincias".
+
+alter table clientes
+add constraint FK_CLIENTES_CODIGOPROVINCIA
+foreign key (codigoprovincia)
+references provincias(codigo);
+
+-- Elimine el registro de "clientes" que no cumple con la restricción y establezca la restricción nuevamente.
+
+delete from clientes where codigo='103';
+
+-- Intente agregar un cliente con un código de provincia inexistente en "provincias"
+
+ insert into clientes values(106,'Acosta Ana','Avellaneda 333','Posadas',null);
+
+-- Intente eliminar el registro con código 3, de "provincias".
+-- No se puede porque hay registros en "clientes" al cual hace referencia.
+
+delete from provincias where codigo = 3;
+
+-- Elimine el registro con código "4" de "provincias"
+-- Se permite porque en "clientes" ningún registro hace referencia a él.
+
+delete from provincias where codigo = 4;
+
+-- Intente modificar el registro con código 1, de "provincias"
+-- No se puede porque hay registros en "clientes" al cual hace referencia.
+
+
+
+-- Vea las restricciones de "clientes" consultando "user_constraints"
+
+-- Vea las restricciones de "provincias"
+
+-- Intente eliminar la tabla "provincias" (mensaje de error)
+
+-- Elimine la restricción "foreign key" de "clientes" y luego elimine la tabla "provincias"
  
