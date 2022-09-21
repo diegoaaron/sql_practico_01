@@ -100,3 +100,38 @@ insert into afiliados values(7,'33333333','Lopez Juana',3);
 -- Igresamos un nuevo registro con el valor "null" para "afiliadotitular":
 
  insert into afiliados values(8,'34555666','Marconi Julio',null);
+
+-- Ejercicio 1 
+
+1- Elimine la tabla y créela:
+
+ drop table clientes;
+ 
+ create table clientes(
+  codigo number(5),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  ciudad varchar2(20),
+  referenciadopor number(5),
+  primary key(codigo)
+ );
+
+ insert into clientes values (50,'Juan Perez','Sucre 123','Cordoba',null);
+ insert into clientes values(90,'Marta Juarez','Colon 345','Carlos Paz',null);
+ insert into clientes values(110,'Fabian Torres','San Martin 987','Cordoba',50);
+ insert into clientes values(125,'Susana Garcia','Colon 122','Carlos Paz',90);
+ insert into clientes values(140,'Ana Herrero','Colon 890','Carlos Paz',9);
+
+-- Intente agregar una restricción "foreign key" para evitar que en el campo "referenciadopor" se ingrese un valor de código de 
+-- cliente que no exista. No se permite porque existe un registro que no cumple con la restricción que se intenta establecer.
+
+alter table clientes
+add constraint FK_CLIENTES_REFERENCIADOPOR
+foreign key (referenciadopor)
+references clientes(codigo);
+
+-- Cambie el valor inválido de "referenciadopor" del registro que viola la restricción por uno válido:
+
+update clientes set referenciadopor = 90 where referenciadopor = 9;
+
+-- 
