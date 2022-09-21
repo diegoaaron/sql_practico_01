@@ -134,4 +134,30 @@ references clientes(codigo);
 
 update clientes set referenciadopor = 90 where referenciadopor = 9;
 
--- 
+-- Agregue la restricción "foreign key" que intentó agregar en el punto 3
+
+-- Vea la información referente a las restricciones de la tabla "clientes". La tabla tiene 2 restricciones.
+
+select constraint_name, constraint_type, search_condition 
+from user_constraints
+where table_name='CLIENTES';
+
+-- Intente agregar un registro que infrinja la restricción.
+
+insert into clientes values(199,'An Herre','Colona 1890','Carlos Paz',1119);
+
+-- Intente modificar el código de un cliente que está referenciado en "referenciadopor"
+
+update clientes set codigo = 290 where codigo = 90;
+
+-- Intente eliminar un cliente que sea referenciado por otro en "referenciadopor"
+
+delete from clientes where codigo = 90;
+
+-- Cambie el valor de código de un cliente que no referenció a nadie.
+
+update clientes set codigo = 150 where codigo = 140;
+
+-- Elimine un cliente que no haya referenciado a otros.
+
+delete from clientes where codigo = 150;
