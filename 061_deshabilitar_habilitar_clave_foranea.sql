@@ -75,13 +75,68 @@ La sintaxis para modificar una restricción es:
  insert into libros values(2,'El aleph',2);
  insert into libros values(3,'Aprenda PHP',5);
 
+-- Agregamos una restricción "foreign key" a la tabla "libros" para evitar que se ingresen códigos de editoriales 
+-- inexistentes en "editoriales". Incluimos la opción "novalidate" para evitar la comprobación de la restricción en los 
+-- datos existentes (note que hay un libro que tiene un código de editorial inválido):
 
+alter table libros
+add constraint FK_libros_codigoeditorial
+foreign key (codigoeditorial)
+references editoriales(codigo) novalidate;
 
+-- La deshabilitación de la comprobación de la restricción no afecta a los siguientes ingresos, modificaciones y 
+-- actualizaciones. Para poder ingresar, modificar o eliminar datos a una tabla sin que Oracle compruebe la restricción 
+-- debemos deshabilitarla:
 
+alter table libros
+disable novalidate
+constraint FK_LIBROS_CODIGOEDITORIAL;
 
+-- Veamos si la restricción está habilitada o no
 
+select constraint_name, constraint_type, status, validated
+from user_constraints
+where table_name='LIBROS';
 
+-- En la columna "status" de la restricción "foreign key" aparece "Disabled" y en "Validated" muestra "not validated".
+-- Ahora podemos ingresar un registro en "libros" con código de editorial inválido:
 
+insert into libros values(4,'Ilusiones',6);
 
+-- Habilitamos la restricción:
+
+alter table libros
+enable novalidate constraint FK_LIBROS_CODIGOEDITORIAL;
+
+-- Veamos si la restricción está habilitada o no y si valida los datos existentes:
+
+select constraint_name, constraint_type, status, validated
+from user_constraints
+where table_name='LIBROS';
+
+-- En la columna "status" aparece "Enabled" y en "Validated" "not validate".
+
+-- Intentamos alterar la restricción para que se validen los datos existentes:
+
+alter table libros
+enable validate constraint FK_LIBROS_CODIGOEDITORIAL;
+
+-- Oracle mostrará un mensaje indicando que no se pueden validar los datos existentes porque existen valores inválidos.
+
+-- Truncamos la tabla y alteramos la restricción:
+
+truncate table libros;
+
+alter table libros
+enable validate constraint FK_LIBROS_CODIGOEDITORIAL;
+
+-- Solicitamos información sobre la restricción:
+
+select constraint_name, constraint_type, status, validated
+from user_constraints where table_name='LIBROS';
+
+-- En la columna "status" aparece "Enabled" y en "Validated" "Validate".
+
+-- Ejercicio 1
 
 
