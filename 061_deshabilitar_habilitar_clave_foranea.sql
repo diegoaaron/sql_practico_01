@@ -139,4 +139,105 @@ from user_constraints where table_name='LIBROS';
 
 -- Ejercicio 1
 
+ drop table clientes;
+ drop table provincias;
+
+ create table clientes (
+  codigo number(5),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  ciudad varchar2(20),
+  codigoprovincia number(2),
+  primary key(codigo)
+ );
+
+ create table provincias(
+  codigo number(2),
+  nombre varchar2(20),
+  primary key (codigo)
+ );
+
+ insert into provincias values(1,'Cordoba');
+ insert into provincias values(2,'Santa Fe');
+ insert into provincias values(3,'Misiones');
+ insert into provincias values(4,'Rio Negro');
+
+ insert into clientes values(100,'Perez Juan','San Martin 123','Carlos Paz',1);
+ insert into clientes values(101,'Moreno Marcos','Colon 234','Rosario',2);
+ insert into clientes values(102,'Garcia Juan','Sucre 345','Cordoba',1);
+ insert into clientes values(103,'Lopez Susana','Caseros 998','Posadas',3);
+ insert into clientes values(104,'Marcelo Moreno','Peru 876','Viedma',4);
+ insert into clientes values(105,'Lopez Sergio','Avellaneda 333','La Plata',5);
+
+-- Intente agregar una restricción "foreign key" para que los códigos de provincia de "clientes" existan en "provincias" sin 
+-- especificar la opción de comprobación de datos
+-- No se puede porque al no especificar opción para la comprobación de datos, por defecto es "validate" y hay un registro 
+-- que no cumple con la restricción.
+
+alter table clientes
+add constraint FK_CLIENTES_CODIGOPROVINCIA
+foreign key (codigoprovincia)
+references provincias(codigo);
+
+-- Agregue la restricción anterior pero deshabilitando la comprobación de datos existentes
+
+alter table clientes
+add constraint FK_CLIENTES_CODIGOPROVINCIA
+foreign key (codigoprovincia)
+references provincias(codigo) novalidate;
+
+-- Vea las restricciones de "clientes"
+
+select constraint_name, constraint_type, status, validated
+from user_constraints
+where table_name='CLIENTES';
+
+-- Deshabilite la restricción "foreign key" de "clientes"
+
+alter table clientes
+disable constraint FK_CLIENTES_CODIGOPROVINCIA;
+
+-- Vea las restricciones de "clientes"
+
+select constraint_name, constraint_type, status, validated
+from user_constraints
+where table_name='CLIENTES';
+
+-- Agregue un registro que no cumpla la restricción "foreign key"
+-- Se permite porque la restricción está deshabilitada.
+
+ insert into clientes values(111,'Lopez Susana','Caseros 998','Posadas',5);
+
+-- Modifique el código de provincia del cliente código 104 por 9
+-- Oracle lo permite porque la restricción está deshabilitada.
+
+update clientes set codigo=9 where codigo=104;
+
+-- Habilite la restricción "foreign key"
+
+alter table clientes
+enable novalidate constraint FK_CLIENTES_CODIGOPROVINCIA;
+
+-- Intente modificar un código de provincia existente por uno inexistente.
+
+update provincias set codigo = 10 where codigo = 1;
+
+-- Intente alterar la restricción "foreign key" para que valide los datos existentes
+
+alter table clientes
+enable validate constraint FK_CLIENTES_CODIGOPROVINCIA;
+
+-- Elimine los registros que no cumplen la restricción y modifique la restricción a "enable" y "validate"
+
+delete from clientes where codigo = 105;
+delete from clientes where codigo = 111;
+
+alter table clientes
+enable validate constraint FK_CLIENTES_CODIGOPROVINCIA;
+
+-- Obtenga información sobre la restricción "foreign key" de "clientes"
+
+select constraint_name, constraint_type, status, validated
+from user_constraints where table_name='CLIENTES';
+
 
