@@ -269,13 +269,31 @@ drop constraint FK_CLIENTES_CODIGOPROVINCIA;
 
 -- Establezca una restricción "foreign key" sin especificar acción para eliminaciones
 
+alter table clientes
+add constraint FK_CLIENTES_CODIGOPROVINCIA
+foreign key (codigoprovincia)
+references provincias(codigo);
+
 -- Intente eliminar un registro de la tabla "provincias" cuyo código exista en "clientes"
+
+delete from provincias where codigo = 1;
 
 -- Consulte el diccionario "user_constraints" para ver qué acción se ha establecido para las eliminaciones sobre la 
 -- restricción "FK_CLIENTES_CODIGOPROVINCIA"
 
+select constraint_name, constraint_type, delete_rule
+from user_constraints
+where table_name = 'CLIENTES';
+
 -- Intente elimimar la tabla "provincias"
+
+drop table provincias;
 
 -- Elimine la restricción "foreign key"
 
+alter table clientes
+drop constraint FK_CLIENTES_CODIGOPROVINCIA;
+
 -- Elimine la tabla "provincias"
+
+drop table provincias;
