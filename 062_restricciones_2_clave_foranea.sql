@@ -146,7 +146,34 @@ where table_name = 'LIBROS';
 
 -- Si eliminamos una editorial cuyo código está presente en "libros", se borra tal editorial de "editoriales" y todos los registros 
 -- de "libros" de dicha editorial se setean con el valor "null":
+-- Ahora, los libros "Martin Fierro" y "Aprenda PHP" tiene valor nulo en "codigoeditorial".
 
+delete from editoriales where codigo = 2;
 
+select * from libros;
+
+-- Eliminamos la restricción "foreign key" de "libros":
+
+alter table libros
+drop constraint FK_LIBROS_CODIGOEDITORIAL;
+
+-- Establecemos una restricción "foreign key" sobre "codigoeditorial" de "libros" sin especificar opción para eliminaciones:
+
+alter table libros
+add constraint FK_LIBROS_CODIGOEDITORIAL
+foreign key(codigoeditorial)
+references editoriales(codigo);
+
+-- Consultamos "user_constraints":
+-- En la columna "delete_rule" de la restricción "foreign key" mostrará "no action".
+
+select constraint_name, constraint_type, delete_rule
+from user_constraints
+where table_name = 'LIBROS';
+
+-- Intentamos eliminar una editorial cuyo código esté presente en "libros":
+-- Un mensaje de error indica que la acción no se ha realizado porque existen registros coincidentes.
+
+delete from editoriales where codigo = 3;
 
 
