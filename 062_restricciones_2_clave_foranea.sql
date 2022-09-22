@@ -247,22 +247,35 @@ on delete cascade;
 -- Consulte el diccionario "user_constraints" para ver qué acción se ha establecido para las eliminaciones sobre las 
 -- restricciones "foreign key" de la tabla "clientes"
 
+select constraint_name, constraint_type, delete_rule
+from user_constraints
+where table_name = 'CLIENTES';
 
+-- Elimine el registro con código 2, de "provincias"
 
-11- Elimine el registro con código 2, de "provincias"
+delete from provincias where codigo = 2;
 
-12- Verifique que el cambio se realizó en cascada, es decir, que se eliminó en la tabla "provincias" y todos los clientes de la provincia eliminada
+-- Verifique que el cambio se realizó en cascada, es decir, que se eliminó en la tabla "provincias" y todos los clientes de 
+-- la provincia eliminada
 
-13- Elimine la restricción "foreign key"
+select * from provincias;
 
-14- Establezca una restricción "foreign key" sin especificar acción para eliminaciones
+select * from clientes;
 
-15- Intente eliminar un registro de la tabla "provincias" cuyo código exista en "clientes"
+-- Elimine la restricción "foreign key"
 
-16- Consulte el diccionario "user_constraints" para ver qué acción se ha establecido para las eliminaciones sobre la restricción "FK_CLIENTES_CODIGOPROVINCIA"
+alter table clientes
+drop constraint FK_CLIENTES_CODIGOPROVINCIA;
 
-17- Intente elimimar la tabla "provincias"
+-- Establezca una restricción "foreign key" sin especificar acción para eliminaciones
 
-18- Elimine la restricción "foreign key"
+-- Intente eliminar un registro de la tabla "provincias" cuyo código exista en "clientes"
 
-19- Elimine la tabla "provincias"
+-- Consulte el diccionario "user_constraints" para ver qué acción se ha establecido para las eliminaciones sobre la 
+-- restricción "FK_CLIENTES_CODIGOPROVINCIA"
+
+-- Intente elimimar la tabla "provincias"
+
+-- Elimine la restricción "foreign key"
+
+-- Elimine la tabla "provincias"
