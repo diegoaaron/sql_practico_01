@@ -176,4 +176,93 @@ where table_name = 'LIBROS';
 
 delete from editoriales where codigo = 3;
 
+-- Ejercicio 1
 
+ drop table clientes;
+ drop table provincias;
+
+ create table clientes (
+  codigo number(5),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  ciudad varchar2(20),
+  codigoprovincia number(2),
+  primary key(codigo)
+ );
+
+ create table provincias(
+  codigo number(2),
+  nombre varchar2(20),
+  primary key (codigo)
+ );
+
+ insert into provincias values(1,'Cordoba');
+ insert into provincias values(2,'Santa Fe');
+ insert into provincias values(3,'Misiones');
+ insert into provincias values(4,'Rio Negro');
+
+ insert into clientes values(100,'Perez Juan','San Martin 123','Carlos Paz',1);
+ insert into clientes values(101,'Moreno Marcos','Colon 234','Rosario',2);
+ insert into clientes values(102,'Acosta Ana','Avellaneda 333','Posadas',3);
+ 
+ -- Establezca una restricción "foreign key" especificando la acción "set null" para eliminaciones.
+
+alter table clientes
+add constraint FK_CLIENTES_CODIGOPROVINCIA
+foreign key (codigoprovincia)
+references provincias(codigo)
+on delete set null;
+
+-- Elimine el registro con código 3, de "provincias" y consulte "clientes" para ver qué cambios ha realizado Oracle en los 
+-- registros coincidentes. Todos los registros con "codigoprovincia" 3 han sido seteados a null.
+
+delete from provincias where codigo = 3;
+
+select * from clientes;
+
+-- Consulte el diccionario "user_constraints" para ver qué acción se ha establecido para las eliminaciones
+
+select constraint_name, constraint_type, delete_rule
+from user_constraints
+where table_name = 'CLIENTES';
+
+-- Intente modificar el registro con código 2, de "provincias"
+
+update provincias set codigo = 99 where codigo = 2;
+
+-- Elimine la restricción "foreign key" establecida sobre "clientes"
+
+alter table clientes
+drop constraint FK_CLIENTES_CODIGOPROVINCIA;
+
+-- Establezca una restricción "foreign key" sobre "codigoprovincia" de "clientes" especificando la acción "cascade" para 
+-- eliminaciones
+
+alter table clientes
+add constraint FK_CLIENTES_CODIGOPROVINCIA
+foreign key (codigoprovincia)
+references provincias(codigo)
+on delete cascade;
+
+-- Consulte el diccionario "user_constraints" para ver qué acción se ha establecido para las eliminaciones sobre las 
+-- restricciones "foreign key" de la tabla "clientes"
+
+
+
+11- Elimine el registro con código 2, de "provincias"
+
+12- Verifique que el cambio se realizó en cascada, es decir, que se eliminó en la tabla "provincias" y todos los clientes de la provincia eliminada
+
+13- Elimine la restricción "foreign key"
+
+14- Establezca una restricción "foreign key" sin especificar acción para eliminaciones
+
+15- Intente eliminar un registro de la tabla "provincias" cuyo código exista en "clientes"
+
+16- Consulte el diccionario "user_constraints" para ver qué acción se ha establecido para las eliminaciones sobre la restricción "FK_CLIENTES_CODIGOPROVINCIA"
+
+17- Intente elimimar la tabla "provincias"
+
+18- Elimine la restricción "foreign key"
+
+19- Elimine la tabla "provincias"
