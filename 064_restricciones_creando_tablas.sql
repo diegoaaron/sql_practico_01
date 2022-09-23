@@ -385,27 +385,45 @@ delete from profesores where documento = '22222222';
 -- Vea qué sucedió con los registros de "deportes" cuyo "documentoprofesor" existía en "profesores"
 -- Fue seteado a null porque la restricción "foreign key" sobre "documentoprofesor" de "deportes" fue definida "on delete set null".
 
+ select *from deportes;
+
 -- Elimine un socio que esté inscripto
+
+delete from socios where numero = 200;
 
 -- Vea qué sucedió con los registros de "inscriptos" cuyo "numerosocio" existía en "socios"
 -- Fue eliminado porque la restricción "foreign key" sobre "numerosocio" de "inscriptos" fue definida "on delete cascade".
 
+select *from inscriptos;
+
 -- Intente eliminar un deporte para el cual haya inscriptos
 -- Mensaje de error porque la restricción "foreign key sobre "codigodeporte" de "inscriptos" fue establecida "no action".
+
+ delete from deportes where codigo=4;
 
 -- Intente eliminar la tabla "socios"
 -- No puede eliminarse, mensaje de error, una "foreign key" sobre "inscriptos" hace referencia a esta tabla.
 
+drop table socios;
+
 -- Elimine la tabla "inscriptos"
 
+drop table inscriptos;
+
 -- Elimine la tabla "socios"
+
+drop table socios;
 
 -- Intente eliminar la tabla "profesores"
 -- No puede eliminarse, mensaje de error, una "foreign key" sobre "deportes" hace referencia a esta tabla.
 
+drop table profesores;
+
 -- Elimine la tabla "deportes"
+
+drop table deportes;
 
 -- Elimine la tabla "profesores"
 
-
+drop table profesores;
 
