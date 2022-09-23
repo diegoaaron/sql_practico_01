@@ -308,7 +308,104 @@ primary key (documento)
 -- Realice un "join" (del tipo que sea necesario) para mostrar todos los datos del socio junto con el nombre de los deportes 
 -- en los cuales está inscripto, el día que tiene que asistir y el nombre del profesor que lo instruirá (5 registros)
 
+select so.numero, so.documento, so.nombre, so.domicilio, de.nombre, de.dia, pr.nombre
+from inscriptos ins
+join socios so
+on ins.numerosocio = so.numero
+join deportes de
+on ins.codigodeporte = de.codigo
+left join profesores pr
+on de.documentoprofesor = pr.documento;
 
+-- Realice la misma consulta anterior pero incluya los socios que no están inscriptos en ningún deporte (6 registros)
+
+  select s.*,d.nombre as deporte,d.dia,p.nombre as profesor
+  from socios s
+  full join inscriptos i
+  on numero=i.numerosocio
+ left join deportes d
+  on d.codigo=i.codigodeporte
+  left join profesores p
+  on d.documentoprofesor=p.documento;
+
+-- Muestre todos los datos de los profesores, incluido el deporte que dicta y el día, incluyendo los profesores que no tienen 
+-- asignado ningún deporte, ordenados por documento (4 registros)
+
+select pro.*, de.nombre as deporte, de.dia
+from profesores pro
+left join deportes de
+on pro.documento = de.documentoprofesor
+order by pro.documento;
+
+-- Muestre todos los deportes y la cantidad de inscriptos en cada uno de ellos, incluyendo aquellos deportes para los cuales 
+-- no hay inscriptos, ordenados por nombre de deporte (5 registros)
+
+select de.nombre, count(ins.codigodeporte) as "num inscritos" 
+from deportes de
+left join inscriptos ins
+on de.codigo = ins.codigodeporte
+group by de.nombre
+order by de.nombre;
+
+-- Muestre las restricciones de "socios"
+
+ select constraint_name, constraint_type, status, validated
+  from user_constraints where table_name='SOCIOS';
+
+-- Muestre las restricciones de "deportes"
+
+select constraint_name, constraint_type, status, validated, search_condition
+  from user_constraints where table_name='DEPORTES';
+
+-- Obtenga información sobre la restricción "foreign key" de "deportes"
+
+select *from user_cons_columns
+  where constraint_name='FK_DEPORTES_PROFESOR';
+
+-- Muestre las restricciones de "profesores"
+
+ select constraint_name, constraint_type, status, validated, search_condition
+from user_constraints where table_name='PROFESORES';
+
+-- Muestre las restricciones de "inscriptos"
+
+ select constraint_name, constraint_type, status, validated, search_condition
+  from user_constraints
+  where table_name='INSCRIPTOS';
+
+-- Consulte "user_cons_columns" y analice la información retornada sobre las restricciones de "inscriptos"
+
+ select *from user_cons_columns
+  where table_name='INSCRIPTOS';
+
+-- Elimine un profesor al cual haga referencia algún registro de "deportes"
+
+delete from profesores where documento = '22222222';
+
+-- Vea qué sucedió con los registros de "deportes" cuyo "documentoprofesor" existía en "profesores"
+-- Fue seteado a null porque la restricción "foreign key" sobre "documentoprofesor" de "deportes" fue definida "on delete set null".
+
+-- Elimine un socio que esté inscripto
+
+-- Vea qué sucedió con los registros de "inscriptos" cuyo "numerosocio" existía en "socios"
+-- Fue eliminado porque la restricción "foreign key" sobre "numerosocio" de "inscriptos" fue definida "on delete cascade".
+
+-- Intente eliminar un deporte para el cual haya inscriptos
+-- Mensaje de error porque la restricción "foreign key sobre "codigodeporte" de "inscriptos" fue establecida "no action".
+
+-- Intente eliminar la tabla "socios"
+-- No puede eliminarse, mensaje de error, una "foreign key" sobre "inscriptos" hace referencia a esta tabla.
+
+-- Elimine la tabla "inscriptos"
+
+-- Elimine la tabla "socios"
+
+-- Intente eliminar la tabla "profesores"
+-- No puede eliminarse, mensaje de error, una "foreign key" sobre "deportes" hace referencia a esta tabla.
+
+-- Elimine la tabla "deportes"
+
+-- Elimine la tabla "profesores"
 
 
 
