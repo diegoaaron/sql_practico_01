@@ -188,5 +188,127 @@ delete editoriales where codigo = 1;
 
 select * from libros;
 
+-- Ejercicio 1
+
+/*
+Un club de barrio tiene en su sistema 4 tablas:
+
+- "socios": en la cual almacena documento, número, nombre y domicilio de cada socio;
+
+- "deportes": que guarda un código, nombre del deporte, día de la semana que se dicta y documento del profesor instructor;
+
+- "profesores": donde se guarda el documento, nombre y domicilio de los profesores e
+
+- "inscriptos": que almacena el número de socio, el código de deporte y si la matricula está paga o no.
+
+Considere que:
+
+- un socio puede inscribirse en varios deportes, pero no dos veces en el mismo.
+- un socio tiene un documento único y un número de socio único.
+- un deporte debe tener asignado un profesor que exista en "profesores" o "null" si aún no tiene un instructor definido.
+- el campo "dia" de "deportes" puede ser: lunes, martes, miercoles, jueves, viernes o sabado.
+- el campo "dia" de "deportes" por defecto debe almacenar 'sabado'.
+- un profesor puede ser instructor de varios deportes o puede no dictar ningún deporte.
+- un profesor no puede estar repetido en "profesores".
+- un inscripto debe ser socio, un socio puede no estar inscripto en ningún deporte.
+- una inscripción debe tener un valor en socio existente en "socios" y un deporte que exista en "deportes".
+- el campo "matricula" de "inscriptos" debe aceptar solamente los caracteres 's' o'n'.
+- si se elimina un profesor de "profesores", el "documentoprofesor" coincidente en "deportes" debe quedar seteado a null.
+- no se puede eliminar un deporte de "deportes" si existen inscriptos para tal deporte en "inscriptos".
+- si se elimina un socio de "socios", el registro con "numerosocio" coincidente en "inscriptos" debe eliminarse.
+
+*/
+
+ drop table inscriptos;
+ drop table socios;
+ drop table deportes;
+ drop table profesores;
+ 
+ create table profesores(
+ documento char(8) not null,
+ nombre varchar2(30),
+ domicilio varchar2(30),
+ constraint PK_profesores_documento
+primary key (documento)
+);
+ 
+ create table deportes(
+ codigo number(2),
+ nombre varchar2(20) not null,
+ dia varchar2(9) default 'sabado',
+ documentoprofesor char(8),
+ constraint CK_deportes_dia_lista
+ check (dia in ('lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado')),
+ constraint PK_deportes_codigo
+ primary key(codigo),
+ constraint FK_deportes_profesor
+ foreign key (documentoprofesor)
+ references profesores(documento)
+ on delete set null
+ );
+ 
+ create table socios(
+ numero number(4),
+ documento char(8),
+ nombre varchar2(30),
+ domicilio varchar2(30),
+ constraint PK_socios_numero
+ primary key(numero),
+ constraint UQ_socios_documento
+ unique (documento)
+ );
+ 
+ create table inscriptos(
+  numerosocio number(4),
+  codigodeporte number(2),
+  matricula char(1),
+  constraint PK_inscriptos_numerodeporte
+   primary key (numerosocio,codigodeporte),
+  constraint FK_inscriptos_deporte
+   foreign key (codigodeporte)
+   references deportes(codigo),
+  constraint FK_inscriptos_socios
+   foreign key (numerosocio)
+   references socios(numero)
+   on delete cascade,
+  constraint CK_matricula_valores
+   check (matricula in ('s','n'))
+);
+
+-- Ingrese registros en "profesores":
+
+ insert into profesores values('21111111','Andres Acosta','Avellaneda 111');
+ insert into profesores values('22222222','Betina Bustos','Bulnes 222');
+ insert into profesores values('23333333','Carlos Caseros','Colon 333');
+
+-- Ingrese registros en "deportes". Ingrese el mismo día para distintos deportes, un deporte sin día confirmado, un deporte 
+-- sin profesor definido:
+
+ insert into deportes values(1,'basquet','lunes',null);
+ insert into deportes values(2,'futbol','lunes','23333333');
+ insert into deportes values(3,'natacion',null,'22222222');
+ insert into deportes values(4,'padle',default,'23333333');
+ insert into deportes values(5,'tenis','jueves',null);
+
+-- Ingrese registros en "socios":
+
+ insert into socios values(100,'30111111','Martina Moreno','America 111');
+ insert into socios values(200,'30222222','Natalia Norte','Bolivia 222');
+ insert into socios values(300,'30333333','Oscar Oviedo','Caseros 333');
+ insert into socios values(400,'30444444','Pedro Perez','Dinamarca 444');
+
+-- Ingrese registros en "inscriptos". Inscriba a un socio en distintos deportes, inscriba varios socios en el mismo deporte.
+
+ insert into inscriptos values(100,3,'s');
+ insert into inscriptos values(100,5,'s');
+ insert into inscriptos values(200,1,'s');
+ insert into inscriptos values(400,1,'n');
+ insert into inscriptos values(400,4,'s');
+
+-- Realice un "join" (del tipo que sea necesario) para mostrar todos los datos del socio junto con el nombre de los deportes 
+-- en los cuales está inscripto, el día que tiene que asistir y el nombre del profesor que lo instruirá (5 registros)
+
+
+
 
 
