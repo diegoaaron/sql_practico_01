@@ -159,3 +159,34 @@ on codigoautor = a.codigo
 join editoriales e
 on codigoeditorial = e.codigo;
 
+-- Habilitamos la restricción de control deshabilitada sin controlar los datos ya cargados:
+
+alter table libros
+enable novalidate
+constraint CK_libros_preciononulo;
+
+-- Intentamos ingresar un libro con precio nulo:
+-- Oracle no lo permite, la restricción está habilitada.
+
+ insert into libros values(600,'El anillo del hechicero',103,3,null);
+
+-- Eliminamos un autor:
+
+delete autores where codigo = 100;
+
+-- Veamos si se setearon a "null" los libros de tal autor (la restricción "FK_LIBROS_AUTORES" así lo especifica):
+-- El libro con código 200 tiene el valor "null" en "autor".
+
+select * from libros;
+
+-- Eliminamos una editorial:
+
+delete editoriales where codigo = 1;
+
+-- Veamos si se eliminaron los libros de tal editorial (la restricción "FK_LIBROS_EDITORIALES" fue establecida "cascade"):
+-- Ya no está el libro "200".
+
+select * from libros;
+
+
+
