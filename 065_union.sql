@@ -175,4 +175,8 @@ order by nombre;
 -- Agregue una columna extra a la consulta con el encabezado "condicion" en la que aparezca el literal
 -- "médico" o "paciente" según si la persona es uno u otro (9 registros)
 
+select nombre, domicilio, 'medico' as condicion from medicos
+union all
+select nombre, domicilio, 'paciente' from pacientes
+order by nombre;
 
