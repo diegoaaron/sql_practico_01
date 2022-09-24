@@ -161,8 +161,18 @@ order by nombre;
 
 -- Realice la misma consulta anterior pero esta vez, incluya los registros duplicados. Emplee "union all" (9 registros)
 
-6- Realice la misma consulta anterior y esta vez ordene el resultado por nombre (9 registros)
+select nombre, domicilio from medicos
+union all
+select nombre, domicilio from pacientes;
 
-7- Agregue una columna extra a la consulta con el encabezado "condicion" en la que aparezca el literal "médico" o "paciente" según si la persona es uno u otro (9 registros)
+-- Realice la misma consulta anterior y esta vez ordene el resultado por nombre (9 registros)
+
+select nombre, domicilio from medicos
+union all
+select nombre, domicilio from pacientes
+order by nombre;
+
+-- Agregue una columna extra a la consulta con el encabezado "condicion" en la que aparezca el literal
+-- "médico" o "paciente" según si la persona es uno u otro (9 registros)
 
 
