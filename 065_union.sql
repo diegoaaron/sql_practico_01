@@ -149,6 +149,20 @@ drop table medicos;
  insert into pacientes values('30111222','Fabiana Fuentes','Famatina 666','PAMI');
  insert into pacientes values('31222333','Gaston Gonzalez','Guemes 777','PAMI');
 
+-- La clínica necesita el nombre y domicilio de médicos y pacientes para enviarles una tarjeta de invitación a la inauguración 
+-- de un nuevo establecimiento. Emplee el operador "union" para obtener dicha información de ambas tablas (7 registros)
+-- Note que existen dos médicos que también están presentes en la tabla "pacientes"; tales registros aparecen una sola 
+-- vez en el resultado de "union".
 
+select nombre, domicilio from medicos
+union
+select nombre, domicilio from pacientes
+order by nombre;
+
+-- Realice la misma consulta anterior pero esta vez, incluya los registros duplicados. Emplee "union all" (9 registros)
+
+6- Realice la misma consulta anterior y esta vez ordene el resultado por nombre (9 registros)
+
+7- Agregue una columna extra a la consulta con el encabezado "condicion" en la que aparezca el literal "médico" o "paciente" según si la persona es uno u otro (9 registros)
 
 
