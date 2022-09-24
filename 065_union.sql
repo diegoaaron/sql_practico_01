@@ -101,5 +101,19 @@ order by nombre;
 -- Podemos agregar una columna extra a la consulta con el encabezado "curso" en la que aparezca el literal "inglés" o 
 -- "francés" según si la persona cursa uno u otro idioma:
 
+select nombre, domicilio, 'ingles' as curso from ingles
+union
+select nombre, domicilio, 'frances' from frances
+order by curso;
+
+-- Recuerde que los encabezados de los campos son los que se especifican en el primer "select". Si queremos que el 
+-- nombre tenga un encabezado "alumno" debemos especificar un alias en la primer consulta. Si ordenamos por un campo 
+-- que tiene un alias, debemos especificar el alias no el nombre del campo. En la siguiente consulta realizamos una unión, 
+-- colocamos un alias al campo "nombre" y ordenamos el resultado por tal alias:
+
+select nombre as alumno, domicilio from ingles
+union
+select nombre, domicilio from frances
+order by alumno;
 
 
