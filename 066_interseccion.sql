@@ -215,15 +215,9 @@ select nombre || ' ' || apellido, domicilio from empleados;
 -- Se necesitan los nombres de aquellos proveedores que son clientes y también empleados del supermercado (presentes en las tres tablas). Realice 
 -- las operaciones necesarias (2 registros)
 
+select nombre, domicilio from proveedores
+intersect
 select nombre, domicilio from clientes
 intersect
-select nombre || ' ' || apellido, domicilio from empleados
-union
-(select nombre, domicilio from clientes
-intersect
-select nombre || ' ' || apellido, domicilio from proveedores)
-union
-(select nombre, domicilio from clientes
-intersect
-select nombre || ' ' || apellido, domicilio from empleados);
+select nombre || ' ' || apellido, domicilio from empleados;
 
