@@ -95,6 +95,12 @@ select nombre, domicilio from portugues;
 -- Si queremos los registros que están presentes en más de dos tablas podemos realizar una consulta combinando los operadores de intersección 
 -- y de unión:
 
+-- En la consulta, la primera intersección (inglés con francés) retorna 2 registros (Esper y Duarte); la segunda intersección (inglés y portugues) 
+-- retorna 2 registros (Caseros y Duarte); unimos estos dos resultados con "union" y obtenemos 3 registros (Caseros, Duarte y Esper); la tercera 
+-- intersección (francés y portugués) retorna 2 registros (Duarte y Gozalez) que al "unirlos" al resultado de la primera unión (Caseros, Duarte y Esper) 
+-- nos devuelve 4 registros. Note que algunas consultas se encierran entre paréntesis para especificar que la operación solo se realiza entre las tablas 
+-- incluidas en ellos.
+
 select nombre, domicilio from ingles
 intersect 
 select nombre, domicilio from frances
@@ -106,4 +112,6 @@ union
 (select nombre, domicilio from frances
 intersect 
 select nombre, domicilio from portugues);
+
+-- Ejercicio 1
 
