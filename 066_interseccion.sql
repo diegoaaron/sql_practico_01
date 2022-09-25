@@ -80,6 +80,30 @@ tres consultas "select".
  insert into portugues values('31222333','Hector Huerta','Homero 888');
  insert into portugues values('32333444','Ines Ilara','Inglaterra 999');
 
+-- La academia necesita el nombre y domicilio de todos los alumnos que cursan los tres idiomas para enviarles una tarjeta de descuento.
+-- Obtenemos los datos necesarios de las tres tablas en una sola consulta realizando una intersección entre ellas:
 
+-- Aparece solamente un registro, correspondiente a "Daniel Duarte", que está en las tres tablas. Note que los alumnos que solamente asisten a 
+-- una clase o solamente a dos, no aparecen en el resultado.
 
+select nombre, domicilio from ingles
+intersect
+select nombre, domicilio from frances
+intersect
+select nombre, domicilio from portugues;
+
+-- Si queremos los registros que están presentes en más de dos tablas podemos realizar una consulta combinando los operadores de intersección 
+-- y de unión:
+
+select nombre, domicilio from ingles
+intersect 
+select nombre, domicilio from frances
+union
+(select nombre, domicilio from ingles
+intersect
+select nombre, domicilio from portugues)
+union
+(select nombre, domicilio from frances
+intersect 
+select nombre, domicilio from portugues);
 
