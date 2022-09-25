@@ -146,5 +146,18 @@ select nombre, domicilio from portugues);
  insert into pacientes values('30111222','Fabiana Fuentes','Famatina 666','PAMI');
  insert into pacientes values('30111333','Gaston Gonzalez','Guemes 777','PAMI');
  
- 
- 
+-- La clínica necesita el nombre y domicilio de médicos y pacientes para enviarles una tarjeta de invitación a la inauguración de un nuevo establecimiento. 
+-- Emplee el operador "union" para obtener dicha información de ambas tablas (7 registros)
+-- Note que existen dos médicos que también están presentes en la tabla "pacientes"; tales registros aparecen una sola vez en el resultado de "union".
+
+select nombre, domicilio from medicos
+union
+select nombre, domicilio from pacientes;
+
+-- La clínica necesita el nombre y domicilio de los pacientes que también son médicos para enviarles una tarjeta de descuento para ciertas prácticas. 
+-- Emplee el operador "intersect" para obtener dicha información de ambas tablas 
+
+select nombre, domicilio from medicos
+intersect
+select nombre, domicilio from pacientes;
+
