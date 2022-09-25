@@ -161,3 +161,69 @@ select nombre, domicilio from medicos
 intersect
 select nombre, domicilio from pacientes;
 
+-- Ejercicio 2
+
+ drop table clientes;
+ drop table proveedores;
+ drop table empleados;
+
+ create table proveedores(
+  codigo number(3) not null,
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  primary key(codigo)
+ );
+ create table clientes(
+  codigo number(4),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  primary key(codigo)
+ );
+ create table empleados(
+  documento char(8) not null,
+  nombre varchar2(20),
+  apellido varchar2(20),
+  domicilio varchar2(30),
+  primary key(documento)
+ );
+
+ insert into proveedores values(1,'Valeria Vazquez','Colon 123');
+ insert into proveedores values(2,'Carnes Unica','Caseros 222');
+ insert into proveedores values(3,'Blanca Bustos','San Martin 987');
+ insert into proveedores values(4,'Luis Luque','San Martin 1234');
+ insert into clientes values(100,'Supermercado Lopez','Avellaneda 34');
+ insert into clientes values(101,'Almacen Anita','Colon 987');
+ insert into clientes values(102,'Juan Garcia','Sucre 345');
+ insert into clientes values(103,'Luis Luque','San Martin 1234');
+ insert into clientes values(104,'Valeria Vazquez','Colon 123');
+ insert into clientes values(105,'Federico Ferreyra','Colon 987');
+ insert into empleados values('23333333','Federico','Ferreyra','Colon 987');
+ insert into empleados values('28888888','Ana','Marquez','Sucre 333');
+ insert into empleados values('30111111','Pedro','Perez','Caseros 956');
+ insert into empleados values('31222333','Juan','Garcia','Sucre 345');
+ insert into empleados values('32333444','Luis','Luque','San Martin 1234');
+ insert into empleados values('33444555','Valeria','Vazquez','Colon 123');
+ insert into empleados values('34555666','Blanca','Bustos','San Martin 987');
+
+-- El supermercado quiere enviar un bono de descuento a todos los empleados que son clientes. Realice una combinación de intersección entre 
+-- las tablas "clientes" y "empleados" (4 registros)
+
+select nombre, domicilio from clientes
+intersect
+select nombre || ' ' || apellido, domicilio from empleados;
+
+-- Se necesitan los nombres de aquellos proveedores que son clientes y también empleados del supermercado (presentes en las tres tablas). Realice 
+-- las operaciones necesarias (2 registros)
+
+select nombre, domicilio from clientes
+intersect
+select nombre || ' ' || apellido, domicilio from empleados
+union
+(select nombre, domicilio from clientes
+intersect
+select nombre || ' ' || apellido, domicilio from proveedores)
+union
+(select nombre, domicilio from clientes
+intersect
+select nombre || ' ' || apellido, domicilio from empleados);
+
