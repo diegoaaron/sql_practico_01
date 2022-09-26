@@ -167,3 +167,98 @@ select nombre, domicilio from medicos);
 
 -- Ejercicio 2
 
+ drop table primero;
+ drop table segundo;
+ drop table inscriptos2;
+
+ create table primero(
+  documento char(8) not null,
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  primary key(documento)
+ );
+
+ create table segundo(
+  documento char(8) not null,
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  primary key(documento)
+ );
+
+ create table inscriptos2(
+  documento char(8) not null,
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  primary key(documento)
+ );
+ 
+ insert into primero values('40111222','Alicia Acosta','Avellaneda 111');
+ insert into primero values('41222333','Bernardo Bustos','Bulnes 222');
+ insert into primero values('41555666','Carlos Caseres','Colon 333');
+ insert into primero values('41888999','Diana Duarte','Dinamarca 444');
+ insert into primero values('42333444','Eduardo Esper','San Martin 555');
+
+ insert into segundo values('43444555','Federico Fuentes','Francia 666');
+ insert into segundo values('43666777','Gabriela Gomez','Garzon 777');
+ insert into segundo values('44555666','Hector Huerta','Colon 888');
+ insert into segundo values('44999000','Ines Irala','Inglaterra 999');
+ insert into segundo values('45111444','Juan Juarez','Jamaica 111');
+
+ insert into inscriptos2 values('41555666','Carlos Caseres','Colon 333');
+ insert into inscriptos2 values('41888999','Diana Duarte','Dinamarca 444');
+ insert into inscriptos2 values('42333444','Eduardo Esper','San Martin 555');
+ insert into inscriptos2 values('43444555','Federico Fuentes','Francia 666');
+ insert into inscriptos2 values('46777888','Luis Lopez','Lules 222');
+ insert into inscriptos2 values('47888999','Marina Moreno','Martin Garcia 333');
+ insert into inscriptos2 values('48999000','Nora Nores','Natividad 333');
+ 
+ /*
+ Tenga en cuenta algunas consideraciones:
+- algunos alumnos de primero, se han inscripto en el mismo colegio para cursar segundo año;
+- algunos alumnos de primero no están inscriptos en segundo porque repetirán el próximo año o se cambiarán de colegio;
+- algunos alumnos que están cursando segundo están inscriptos nuevamente en segundo porque repetirán el curso;
+- algunos inscriptos para el año próximo en segundo, no están cursando primero en este colegio.
+ */
+ 
+ -- El colegio quiere saber los nombres de los inscriptos a segundo del año próximo que repiten segundo (presentes en 
+ -- "segundo" y en "inscriptos2") (1 registro):
+
+select nombre from segundo
+intersect
+select nombre from  inscriptos2;
+
+-- El colegio quiere saber los nombres de los alumnos que están cursando primero y están inscriptos para segundo el 
+-- próximo año (presentes en "inscriptos2" y en "primero") (3 registros)
+
+select nombre from primero
+intersect
+select nombre from  inscriptos2;
+
+-- El colegio quiere saber los nombres y domicilios de los alumnos inscriptos para segundo que no están cursando este 
+-- año en este colegio (presentes en "inscriptos2" y ausentes en "primero" y "segundo") para enviarles una nota con la 
+-- fecha para una reunión informativa (3 registros)
+
+select nombre, domicilio from inscriptos2
+minus
+(select nombre, domicilio from primero
+union
+select nombre, domicilio from  segundo);
+
+-- El colegios quiere saber los nombres de los alumnos inscriptos para segundo el próximo año, que están cursando 
+-- primero o segundo este año (presentes en "inscriptos2" y en "primero" o "segundo). Realice las operaciones 
+-- necesarias. (4 registros)
+
+select nombre, domicilio from  inscriptos2
+intersect
+select nombre, domicilio from  primero
+union
+(select nombre, domicilio from  inscriptos2
+intersect
+select nombre, domicilio from  segundo);
+
+-- El colegio necesita los nombres de los alumnos que están cursando primero y no están inscriptos el próximo año en 
+-- segundo para enviarles un mail preguntando la razón por la cual no se han anotado aún (2 registros)
+
+select nombre from primero
+minus
+select nombre from inscriptos2;
