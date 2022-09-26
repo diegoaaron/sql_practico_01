@@ -186,6 +186,90 @@ select * from libros;
 
 -- Ejercicio 1
 
+ drop table empleados;
+ drop table secciones;
 
+ create table secciones(
+  codigo number(2),
+  nombre varchar(20),
+  primary key (codigo)
+ );
 
+ create table empleados(
+  apellido varchar2(20) not null,
+  nombre varchar2(20),
+  domicilio varchar2(30),
+  seccion number(2),
+  fechaingreso date,
+  telefono number(7),
+  constraint FK_empleados_seccion
+   foreign key (seccion)
+   references secciones(codigo)
+   on delete set null
+ );
 
+-- Modifique el tipo de dato del campo "telefono" a varchar(11) Oracle lo permite porque la tabla está vacía; si no lo 
+-- estuviese, no lo permitiría.
+
+alter table empleados
+modify telefono varchar(11);
+
+ insert into secciones values(8,'Secretaria');
+ insert into secciones values(9,'Contaduria');
+ insert into secciones values(10,'Sistemas');
+
+ insert into empleados values('Lopez','Luciano','Colon 123',8,'10/10/1980','4819977');
+ insert into empleados values('Gonzalez',null,'Avellaneda 222',9,'01/05/1990','4515566');
+ 
+ -- Modifique el campo "nombre" de "empleados" para que permita cadenas variables de 10 caracteres (menor longitud) y 
+ -- luego verifique el cambio. Oracle lo permite, porque los valores en tal campo son menores a 10.
+ 
+alter table empleados
+modify nombre varchar2(10);
+
+describe empleados;
+
+-- Intente modificar el campo "nombre" de "empleados" para que permita cadenas variables de 6 caracteres (menor longitud)
+-- Oracle no lo permite, porque un valor en tal campo consta de 7 caracteres.
+
+alter table empleados
+modify nombre varchar2(6);
+
+-- Elimine el registro correspondiente a "Lopez Luciano"
+
+delete from empleados where apellido = 'Lopez';
+
+-- Modifique el campo "nombre" de "empleados" para que permita cadenas variables de 6 caracteres
+-- Oracle lo permite, la tabla no está vacía pero los registros contienen valor nulo en el campo "nombre".
+
+alter table empleados
+modify nombre varchar2(6);
+
+-- Intente cambiar el tipo de dato del campo "codigo" de "secciones" a char(2)
+-- Oracle no lo permite porque tal campo es referenciado por una clave externa.
+
+alter table secciones
+modify codigo char(2);
+
+-- Cambie la longitud del campo "codigo" de "secciones" a 3.
+-- Oracle lo permite porque el cambio no afecta la restricción "foreign key" que referencia el campo "codigo".
+
+alter table secciones
+modify codigo number(3);
+
+-- Intente modificar el campo "nombre" de "empleados" para que no admita valores nulos.
+-- Mensaje de error, la tabla contiene valores nulos en tal campo.
+
+alter table empleados
+modify nombre not null;
+
+-- Modifique el valor nulo por uno válido del campo "nombre" de "empleados" y luego realice la modificación del punto anterior.
+
+update empleados set nombre = 'Luis' where apellido = 'Gonzalez';
+
+alter table empleados
+modify nombre not null;
+
+-- Verifique que "nombre" ya no admite valores nulos.
+
+describe empleados;
