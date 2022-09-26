@@ -81,9 +81,111 @@ insert into editoriales values(1, 'Emece');
  insert into libros values('Uno',1,'Richard Bach',24.6);
 
 -- Intentamos modificar el campo "precio" a "varchar(8)":
+-- No lo permite, porque existe un registro con un valor numérico en tal campo.
 
 alter table libros modify precio varchar(8);
 
--- No lo permite, porque existe un registro con un valor numérico en tal campo.
+-- Actualizamos el registro de "libros" con precio no nulo a nulo:
+
+update libros set precio = null;
+
+-- Ahora si podemos cambiar el tipo de dato de "precio", los registros existentes contienen "null" en tal campo:
+
+alter table libros
+modify precio varchar2(8);
+
+-- Verificamos el cambio:
+
+describe libros;
+
+-- Intentamos modificar el campo "codigo" de "editoriales" a "char(3)":
+-- No lo permite porque tal campo es referenciado por una clave externa.
+
+alter table editoriales
+modify codigo char(3);
+
+-- Modificamos un atributo del campo "codigo" de "editoriales":
+-- Oracle permite el cambio pues no afecta a la restricción.
+
+alter table editoriales
+modify codigo number(4);
+
+-- Intentamos redefinir "precio" para que no acepte valores nulos:
+-- No lo permite porque existe un registro con valor nulo en "precio".
+
+alter table libros
+modify precio not null;
+
+-- Eliminamos el registro y modificamos el campo "precio" a "no nulo":
+
+delete from libros;
+
+alter table libros
+modify precio not null;
+
+-- Intentamos redefinir como no nulo el campo "codigo" de "editoriales":
+
+alter table editoriales
+modify codigo not null;
+
+-- No aparece mensaje de error, pero si verificamos la estructura de la tabla veremos que continua siendo "not null", ya que 
+-- es clave primaria:
+
+describe editoriales;
+
+-- Redefinimos el campo "precio" como number(6,2), con un valor por defecto 0:
+
+alter table libros
+modify precio number(6,2) default 0;
+
+-- Oracle permite modificar el campo "precio" a "char(8)". Si luego ingresamos un registro sin valor para "precio", guardará 
+-- el valor por defecto (0) convertido a cadena ('0'):
+
+alter table libros
+modify precio char(8) default 0;
+
+ insert into libros values('El aleph',1,'Borges',default);
+
+ select *from libros;
+
+-- Redefinimos el valor por defecto del campo "precio" (que ahora es de tipo char) a "cero":
+
+alter table libros
+modify precio default 'cero';
+
+-- Oracle no permite modificar el campo "precio" a "number(8,2)" porque si luego ingresamos un registro sin valor para tal 
+-- campo, el valor por defecto ('cero') no podrá convertirse a número:
+
+alter table libros
+modify precio number(8,2);
+
+-- Modificamos el valor por defecto para que luego pueda ser  convertido
+
+alter table libros
+modify precio default '0';
+
+-- vaciamos la tabla
+
+truncate table libros;
+
+-- Oracle permite modificar el campo "precio" a "number(8,2)" porque si luego ingresamos un registro sin valor para tal 
+-- campo, el valor por defecto ('0') podrá convertirse a número (0):
+
+alter table libros
+modify precio number(8,2);
+
+-- Oracle permite modificar el campo "precio" a "char(8)". Si luego ingresamos un registro sin valor para "precio", guardará 
+-- el valor por defecto (0) convertido a cadena ('0'):
+
+alter table libros
+modify precio char(8) default 0;
+
+insert into libros values('El aleph', 1, 'Borges', default);
+
+select * from libros;
+
+-- Ejercicio 1
+
+
 
 
