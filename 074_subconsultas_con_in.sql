@@ -54,11 +54,60 @@ editoriales que no han publicado libros de un autor específico:
      where autor='Richard Bach');
 */
 
+ drop table libros;
+ drop table editoriales;
 
+ create table editoriales(
+  codigo number(3),
+  nombre varchar2(30),
+  primary key (codigo)
+ );
+ 
+ create table libros (
+  codigo number(5),
+  titulo varchar2(40),
+  autor varchar2(30),
+  codigoeditorial number(3),
+  primary key(codigo),
+ constraint FK_libros_editorial
+   foreign key (codigoeditorial)
+   references editoriales(codigo)
+ );
 
+ insert into editoriales values(1,'Planeta');
+ insert into editoriales values(2,'Emece');
+ insert into editoriales values(3,'Paidos');
+ insert into editoriales values(4,'Siglo XXI');
 
+ insert into libros values(100,'Uno','Richard Bach',1);
+ insert into libros values(101,'Ilusiones','Richard Bach',1);
+ insert into libros values(102,'Aprenda PHP','Mario Molina',4);
+ insert into libros values(103,'El aleph','Borges',2);
+ insert into libros values(104,'Puente al infinito','Richard Bach',2);
 
+-- Queremos conocer el nombre de las editoriales que han publicado libros del autor "Richard Bach":
 
+select nombre from editoriales
+where codigo in (select codigoeditorial from libros where autor = 'Richard Bach');
 
+-- Probamos la subconsulta separada de la consulta exterior para verificar que retorna una lista de valores de un solo campo:
 
+select codigoeditorial from libros
+where autor = 'Richard Bach'; 
+
+-- Podemos reemplazar por un "join" la primera consulta:
+
+select distinct nombre
+from editoriales e
+join libros
+on codigoeditorial = e.codigo
+where autor = 'Richard Bach';
+
+-- También podemos buscar las editoriales que no han publicado libros de "Richard Bach":
+
+select nombre
+from editoriales
+where codigo not in (select codigoeditorial from libros where autor = 'Richard Bach');
+
+-- 
 
