@@ -114,7 +114,7 @@ describe empleados;
 
 -- Vea las restricciones
 
-
+select * from user_constraints where table_name='EMPLEADOS';
 
 
 
