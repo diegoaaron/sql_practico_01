@@ -93,15 +93,24 @@ constraint CK_EMPLEADOS_HIJOS check (hijos <= 30);
 -- para dicho campo. No lo permite porque no damos un valor por defecto para dicho campo no nulo y los registros existentes 
 -- necesitan cargar un valor.
 
+alter table empleados
+add sueldo number(6,2) not null
+constraint CK_EMPLEADOS_SUELDO check(sueldo >= 0);
 
+-- Agregue el campo "sueldo" de tipo number(6,2) no nulo, con el valor por defecto 0 y una restricción "check" que no 
+-- permita valores negativos para dicho campo
 
--- Agregue el campo "sueldo" de tipo number(6,2) no nulo, con el valor por defecto 0 y una restricción "check" que no permita valores negativos para dicho campo
+alter table empleados
+add sueldo number(6,2) default 0 not null
+constraint CK_EMPLEADOS_SUELDO check(sueldo >= 0);
 
 -- Recupere los registros
 
-select *from empleados;
+select * from empleados;
 
 -- Vea la nueva estructura de la tabla
+
+describe empleados;
 
 -- Vea las restricciones
 
