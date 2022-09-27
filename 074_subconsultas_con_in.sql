@@ -109,5 +109,66 @@ select nombre
 from editoriales
 where codigo not in (select codigoeditorial from libros where autor = 'Richard Bach');
 
--- 
+-- Ejercicio 1
+
+  drop table clientes;
+  drop table ciudades;
+
+
+ create table ciudades(
+  codigo number(2),
+  nombre varchar2(20),
+  primary key (codigo)
+ );
+
+ create table clientes (
+  codigo number(4),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  codigociudad number(2) not null,
+  primary key(codigo),
+  constraint FK_clientes_ciudad
+   foreign key (codigociudad)
+   references ciudades(codigo)
+   on delete cascade
+ );
+
+ insert into ciudades values(1,'Cordoba');
+ insert into ciudades values(2,'Cruz del Eje');
+ insert into ciudades values(3,'Carlos Paz');
+ insert into ciudades values(4,'La Falda');
+ insert into ciudades values(5,'Villa Maria');
+
+ insert into clientes values (100,'Lopez Marcos','Colon 111',1);
+ insert into clientes values (101,'Lopez Hector','San Martin 222',1);
+ insert into clientes values (105,'Perez Ana','San Martin 333',2);
+ insert into clientes values (106,'Garcia Juan','Rivadavia 444',3);
+ insert into clientes values (107,'Perez Luis','Sarmiento 555',3);
+ insert into clientes values (110,'Gomez Ines','San Martin 666',4);
+ insert into clientes values (111,'Torres Fabiola','Alem 777',5);
+ insert into clientes values (112,'Garcia Luis','Sucre 888',5);
+
+-- Necesitamos conocer los nombres de las ciudades de aquellos clientes cuyo domicilio es en calle "San Martin", 
+-- empleando subconsulta.
+
+select nombre from ciudades
+where codigo in (select codigociudad from clientes where  domicilio like 'San Martin%');
+
+-- Obtenga la misma salida anterior pero empleando join.
+
+select ciu.nombre from ciudades ciu
+join clientes cli
+on ciu.codigo = cli.codigociudad
+where cli.domicilio like 'San Martin%';
+
+-- Obtenga los nombre de las ciudades de los clientes cuyo apellido no comienza con una letra específica (letra "G"), 
+-- empleando subconsulta.
+
+select nombre from ciudades
+where codigo not in (select codigociudad from clientes where nombre like 'G%');
+
+-- Pruebe la subconsulta del punto 6 separada de la consulta exterior para verificar que retorna una lista de 
+-- valores de un solo campo.
+
+select codigociudad from clientes where nombre like 'G%';
 
