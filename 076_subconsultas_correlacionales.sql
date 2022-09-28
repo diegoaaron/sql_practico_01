@@ -27,7 +27,52 @@ ese valor y determina si existe en "detalles", si existe, la consulta interna de
 registro de la consulta externa, la consulta externa pasa otro "numero" a la consulta interna y Oracle repite la evaluación.
 */
 
+ drop table detalles;
+ drop table facturas;
 
+ create table facturas(
+  numero number(5) not null,
+  fecha date,
+  cliente varchar2(30),
+  primary key(numero)
+ );
 
+ create table detalles(
+  numerofactura number(5) not null,
+  numeroitem number(3) not null, 
+  articulo varchar2(30),
+  precio number(5,2),
+  cantidad number(4),
+  primary key(numerofactura,numeroitem),
+   constraint FK_detalles_numerofactura
+   foreign key (numerofactura)
+   references facturas(numero)
+   on delete cascade
+ );
 
+ insert into facturas values(1200,'15/01/2017','Juan Lopez');
+ insert into facturas values(1201,'15/01/2017','Luis Torres');
+ insert into facturas values(1202,'15/01/2017','Ana Garcia');
+ insert into facturas values(1300,'20/01/2017','Juan Lopez');
+
+ insert into detalles values(1200,1,'lapiz',1,100);
+ insert into detalles values(1200,2,'goma',0.5,150);
+ insert into detalles values(1201,1,'regla',1.5,80);
+ insert into detalles values(1201,2,'goma',0.5,200);
+ insert into detalles values(1201,3,'cuaderno',4,90);
+ insert into detalles values(1202,1,'lapiz',1,200);
+ insert into detalles values(1202,2,'escuadra',2,100);
+ insert into detalles values(1300,1,'lapiz',1,300);
+
+-- Se necesita una lista de todas las facturas que incluya el número, la fecha, el cliente, la cantidad de artículos 
+-- comprados y el total en dinero:
+
+select f.*,
+(select count(d.numeroitem) from detalles d
+where f.numero = d.numerofactura) as cantidad,
+(select sum(d.precio*cantidad) from detalles d
+where f.numero = d.numerofactura) as total
+from facturas f;
+
+-- Ejercicio 1
 
