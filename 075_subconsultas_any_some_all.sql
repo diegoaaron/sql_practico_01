@@ -167,3 +167,102 @@ precio > all
 (select precio from libros 
 where autor like '%Bach%');
 
+-- Ejercicio 1
+
+ drop table inscriptos;
+ drop table socios;
+
+ create table socios(
+  numero number(5),
+  documento char(8),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  primary key (numero)
+ );
+ 
+ create table inscriptos (
+  numerosocio number(5),
+  deporte varchar2(20) not null,
+  cuotas number(2) default 0,
+  constraint CK_inscriptos_cuotas
+   check (cuotas>=0 and cuotas<=10),
+  primary key(numerosocio,deporte),
+  constraint FK_inscriptos_socio
+   foreign key (numerosocio)
+   references socios(numero)
+   on delete cascade
+ );
+
+ insert into socios values(1,'23333333','Alberto Paredes','Colon 111');
+ insert into socios values(2,'24444444','Carlos Conte','Sarmiento 755');
+ insert into socios values(3,'25555555','Fabian Fuentes','Caseros 987');
+ insert into socios values(4,'26666666','Hector Lopez','Sucre 344');
+
+ insert into inscriptos values(1,'tenis',1);
+ insert into inscriptos values(1,'basquet',2);
+ insert into inscriptos values(1,'natacion',1);
+ insert into inscriptos values(2,'tenis',9);
+ insert into inscriptos values(2,'natacion',1);
+ insert into inscriptos values(2,'basquet',default);
+ insert into inscriptos values(2,'futbol',2);
+ insert into inscriptos values(3,'tenis',8);
+ insert into inscriptos values(3,'basquet',9);
+ insert into inscriptos values(3,'natacion',0);
+ insert into inscriptos values(4,'basquet',10);
+ 
+ -- Muestre el número de socio, el nombre del socio y el deporte en que está inscripto con un join de ambas tablas
+
+select s.numero, s.nombre, i.deporte from socios s
+join inscriptos i
+on s.numero = i.numerosocio;
+
+-- Muestre los socios que se serán compañeros en tenis y también en natación (empleando subconsulta)
+
+select nombre from socios
+where numero in (select numerosocio from inscriptos where deporte = 'natacion');
+
+-- Vea si el socio 1 se ha inscripto en algún deporte en el cual se haya inscripto el socio 2
+
+select deporte from inscriptos
+where numerosocio = 1 and 
+deporte = any (select deporte from inscriptos where numerosocio = 2);
+
+-- Realice la misma consulta anterior pero empleando "in" en lugar de "=any"
+
+select deporte from inscriptos
+where numerosocio = 1 and 
+deporte in (select deporte from inscriptos where numerosocio = 2);
+
+-- Obtenga el mismo resultado anterior pero empleando join
+
+ select i1.deporte
+  from inscriptos i1
+  join inscriptos i2
+  on i1.deporte=i2.deporte
+  where i1.numerosocio=1 and
+  i2.numerosocio=2;
+
+-- Muestre los deportes en los cuales el socio 2 pagó más cuotas que ALGUN deporte en los que se inscribió el socio 1
+
+select deporte from inscriptos i 
+where numerosocio=2 and 
+cuotas > any (select cuotas from inscriptos where numerosocio=1);
+
+-- Realice la misma consulta anterior pero empleando "some" en lugar de "any"
+
+select deporte from inscriptos i 
+where numerosocio=2 and 
+cuotas > some (select cuotas from inscriptos where numerosocio=1);
+
+-- Muestre los deportes en los cuales el socio 2 pagó más cuotas que TODOS los deportes en que se inscribió el socio 1
+
+select deporte from inscriptos i 
+where numerosocio=2 and 
+cuotas > all (select cuotas from inscriptos where numerosocio=1);
+
+-- Cuando un socio no ha pagado la matrícula de alguno de los deportes en que se ha inscripto, se lo borra de la inscripción 
+-- de todos los deportes. Elimine todos los socios que no pagaron ninguna cuota en algún deporte (cuota=0)
+ 
+delete from inscriptos
+where numerosocio in (select numerosocio from inscriptos where cuotas = 0);
+ 
