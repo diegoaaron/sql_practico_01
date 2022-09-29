@@ -137,5 +137,24 @@ and d.articulo='lapiz');
  insert into inscriptos values(3,'natacion',0);
  insert into inscriptos values(4,'basquet',10);
 
+-- Emplee una subconsulta con el operador "exists" para devolver la lista de socios que se inscribieron en un determinado 
+-- deporte.
 
+select nombre from socios s
+where exists 
+(select deporte from inscriptos i
+where s.numero = i.numerosocio
+and i.deporte='natacion');
+
+-- Busque los socios que NO se han inscripto en un deporte determinado empleando "not exists".
+
+select nombre from socios s
+where not exists 
+(select deporte from inscriptos i
+where s.numero = i.numerosocio
+and i.deporte='natacion');
+
+-- Muestre todos los datos de los socios que han pagado todas las cuotas.
+
+-- Obtenga el mismo resultado de la consulta anterior pero esta vez emplee una combinación.
 
