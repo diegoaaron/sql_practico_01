@@ -157,4 +157,7 @@ where nombre = 'natacion');
 
 select d1.nombre from deportes d1
 join deportes d2
-on 
+on d1.dia = d2.dia
+where d2.nombre = 'natacion' and
+d1.nombre <> d2.nombre;
+
