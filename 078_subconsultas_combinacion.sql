@@ -107,3 +107,14 @@ where l1.editorial = l2.editorial);
 
 -- Obtenemos la misma salida pero empleando un "join" con "having":
 
+select l1.titulo, l1.editorial, l1.precio from libros l1
+join libros l2
+on l1.editorial = l2.editorial
+group by l1.editorial, l1.titulo, l1.precio 
+having l1.precio > avg(l2.precio);
+
+
+
+
+
+
