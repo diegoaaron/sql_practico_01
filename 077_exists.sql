@@ -156,5 +156,16 @@ and i.deporte='natacion');
 
 -- Muestre todos los datos de los socios que han pagado todas las cuotas.
 
+select nombre from socios s
+where exists 
+(select deporte from inscriptos i
+where s.numero = i.numerosocio
+and i.cuotas=10);
+
+
 -- Obtenga el mismo resultado de la consulta anterior pero esta vez emplee una combinación.
 
+select s.nombre from socios s
+inner join inscriptos i
+on s.numero = i.numerosocio
+where i.cuotas = 10;
