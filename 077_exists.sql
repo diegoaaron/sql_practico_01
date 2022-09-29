@@ -86,3 +86,6 @@ join detalles d
 on f.numero = d.numerofactura
 where d.articulo = 'lapiz';
 
+-- Buscamos los clientes que NO han comprado el artículo "lapiz":
+
+
