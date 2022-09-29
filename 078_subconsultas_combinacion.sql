@@ -49,7 +49,61 @@ Por cada valor de l1, se evalúa la subconsulta, si el precio es mayor que el pro
 Se puede conseguir el mismo resultado empleando un "join" con "having".
 */
 
+ drop table libros;
 
+ create table libros(
+  codigo number(5),
+  titulo varchar2(40),
+  autor varchar2(30),
+  editorial varchar2(20),
+  precio number(5,2)
+ );
 
+ insert into libros values(1,'Alicia en el pais de las maravillas','Lewis Carroll','Emece',20.00);
+ insert into libros values(2,'Alicia en el pais de las maravillas','Lewis Carroll','Plaza',35.00);
+ insert into libros values(3,'Aprenda PHP','Mario Molina','Siglo XXI',40.00);
+ insert into libros values(4,'El aleph','Borges','Emece',10.00);
+ insert into libros values(5,'Ilusiones','Richard Bach','Planeta',15.00);
+ insert into libros values(6,'Java en 10 minutos','Mario Molina','Siglo XXI',50.00);
+ insert into libros values(7,'Martin Fierro','Jose Hernandez','Planeta',20.00);
+ insert into libros values(8,'Martin Fierro','Jose Hernandez','Emece',30.00);
+ insert into libros values(9,'Uno','Richard Bach','Planeta',10.00);
 
+-- Obtenemos la lista de los libros que han sido publicados por distintas editoriales empleando una consulta correlacionada:
+
+select distinct l1.titulo from libros l1
+where l1.titulo in
+(select l2.titulo from libros l2
+where l1.editorial <> l2.editorial);
+
+-- El siguiente "join" retorna el mismo resultado:
+
+select distinct l1.titulo from libros l1
+join libros l2
+on l1.titulo = l2.titulo
+where l1.editorial <> l2.editorial;
+
+-- Buscamos todos los libros que tienen el mismo precio que "El aleph" empleando subconsulta:
+
+select titulo from libros
+where titulo <> 'El aleph' and 
+precio = 
+(select precio from libros
+where titulo = 'El aleph');
+
+-- Obtenemos la misma salida empleando "join":
+
+select l1.titulo from libros l1
+join libros l2
+on l1.precio = l2.precio
+where l2.titulo = 'El aleph' and l1.titulo <> l2.titulo;
+
+-- Buscamos los libros cuyo precio supera el precio promedio de los libros por editorial:
+
+select l1.titulo, l1.editorial, l1.precio from libros l1
+where l1.precio > 
+(select avg(l2.precio) from libros l2
+where l1.editorial = l2.editorial);
+
+-- Obtenemos la misma salida pero empleando un "join" con "having":
 
