@@ -88,4 +88,8 @@ where d.articulo = 'lapiz';
 
 -- Buscamos los clientes que NO han comprado el artículo "lapiz":
 
-
+select cliente, numero from facturas f
+where not exists
+(select * from detalles d
+where f.numero =d.numerofactura
+and d.articulo='lapiz');
