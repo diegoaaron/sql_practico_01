@@ -113,8 +113,48 @@ on l1.editorial = l2.editorial
 group by l1.editorial, l1.titulo, l1.precio 
 having l1.precio > avg(l2.precio);
 
+-- Ejercicio 1
 
+ drop table deportes;
 
+ create table deportes(
+  nombre varchar2(15),
+  profesor varchar2(30),
+  dia varchar2(10),
+  cuota number(5,2)
+ );
+ 
+ insert into deportes values('tenis','Ana Lopez','lunes',20);
+ insert into deportes values('natacion','Ana Lopez','martes',15);
+ insert into deportes values('futbol','Carlos Fuentes','miercoles',10);
+ insert into deportes values('basquet','Gaston Garcia','jueves',15);
+ insert into deportes values('padle','Juan Huerta','lunes',15);
+ insert into deportes values('handball','Juan Huerta','martes',10);
 
+-- Muestre los nombres de los profesores que dictan más de un deporte empleando subconsulta (2 registros)
 
+select distinct d1.profesor from deportes d1
+where d1.profesor in
+(select d2.profesor from deportes d2
+where d1.nombre <> d2.nombre);
 
+-- Obtenga el mismo resultado empleando join
+
+select distinct d1.profesor from deportes d1
+join deportes d2
+on d1.profesor = d2.profesor
+where d1.nombre <> d2.nombre;
+
+-- Buscamos todos los deportes que se dictan el mismo día que un determinado deporte (natacion) empleando 
+-- subconsulta (1 registro)
+
+select nombre from deportes
+where nombre <> 'natacion' and  dia = 
+(select dia from deportes 
+where nombre = 'natacion');
+
+-- Obtenga la misma salida empleando "join"
+
+select d1.nombre from deportes d1
+join deportes d2
+on 
