@@ -70,8 +70,19 @@ Podemos buscar los clientes que no han adquirido el artículo "lapiz" empleando "
  insert into detalles values(1202,2,'escuadra',2,100);
  insert into detalles values(1300,1,'lapiz',1,300);
 
+-- Empleamos una subconsulta correlacionada con un operador "exists" en la cláusula "where" para devolver la lista de 
+-- clientes que compraron el artículo "lapiz":
 
+select cliente, numero from facturas f
+where exists
+(select * from detalles d
+where f.numero = d.numerofactura
+and d.articulo='lapiz');
 
+-- Obtenemos el mismo resultado empleando una combinación:
 
-
+select * from facturas f
+join detalles d
+on f.numero = d.numerofactura
+where d.articulo = 'lapiz';
 
