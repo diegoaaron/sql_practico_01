@@ -167,4 +167,72 @@ where nombre = 'Carlos Caseros';
 -- El supermercado cerrará todas las sucursales de la provincia de "Cordoba". Elimine los empleados que pertenezcan 
 -- a sucursales de tal provincia empleando subconsulta.
 
+delete from empleados 
+where codigosucursal in 
+(select codigo from sucursales
+where provincia = 'Cordoba');
 
+-- Ejercicio 2 
+
+ drop table inscriptos;
+ drop table socios;
+
+ create table socios(
+  numero number(5),
+  documento char(8),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  primary key (numero)
+ );
+ 
+ create table inscriptos (
+  numerosocio number(5) not null,
+  deporte varchar2(20) not null,
+  matricula char(1),-- 'n' o 's'
+  primary key(numerosocio,deporte),
+  constraint FK_inscriptos_socio
+   foreign key (numerosocio)
+   references socios(numero)
+ );
+
+ insert into socios values(1,'23333333','Alberto Paredes','Colon 111');
+ insert into socios values(2,'24444444','Carlos Conte','Sarmiento 755');
+ insert into socios values(3,'25555555','Fabian Fuentes','Caseros 987');
+ insert into socios values(4,'26666666','Hector Lopez','Sucre 344');
+ insert into socios values(5,'27777777','Ines Irala','Colon 888');
+
+ insert into inscriptos values(1,'tenis','s');
+ insert into inscriptos values(1,'basquet','s');
+ insert into inscriptos values(1,'natacion','s');
+ insert into inscriptos values(2,'tenis','s');
+ insert into inscriptos values(2,'natacion','s');
+ insert into inscriptos values(2,'basquet','n');
+ insert into inscriptos values(2,'futbol','n');
+ insert into inscriptos values(3,'tenis','s');
+ insert into inscriptos values(3,'basquet','s');
+ insert into inscriptos values(3,'natacion','n');
+ insert into inscriptos values(4,'basquet','n');
+ 
+ -- Realice una combinación mostrando todos los datos de "socios", el deporte y la matrícula de todos los socios 
+ -- (se encuentren o no en "inscriptos")
+
+select numero, documento, nombre, domicilio, deporte, matricula from socios s
+full join inscriptos i
+on numerosocio = numero;
+
+-- Actualizamos la cuota ('s') de todas las inscripciones de un socio determinado (por documento) empleando 
+-- subconsulta (3 registros)
+
+update inscriptos set matricula = 's' 
+where numerosocio =
+(select numero from socios
+where documento = '25555555');
+
+-- Elimine todas las inscripciones de los socios que deben alguna matrícula empleando subconsulta
+ 
+delete from inscriptos 
+where numerosocio in 
+(select numero from socios s
+join inscriptos 
+on numerosocio = numero 
+where matricula = 'n');
