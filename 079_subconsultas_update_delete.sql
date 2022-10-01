@@ -86,3 +86,77 @@ on codigoeditorial = e.codigo
 where autor = 'Juan Perez');
 
 -- Ejercicio 1 
+
+ drop table empleados;
+ drop table sucursales;
+
+ create table sucursales( 
+  codigo number(2),
+  ciudad varchar2(30) not null,
+  provincia varchar2(30),
+  primary key(codigo)
+ ); 
+
+ create table empleados( 
+  documento char(8) not null,
+  nombre varchar2(30) not null,
+  codigosucursal number(2),
+  sueldo number(6,2),
+  primary key(documento),
+  constraint FK_empleados_sucursal
+   foreign key (codigosucursal)
+   references sucursales(codigo)
+ ); 
+
+ insert into sucursales values(1,'Cordoba','Cordoba');
+ insert into sucursales values(2,'Tucuman','Tucuman');
+ insert into sucursales values(3,'Carlos Paz','Cordoba');
+ insert into sucursales values(4,'Cruz del Eje','Cordoba');
+ insert into sucursales values(5,'La Plata','Buenos Aires');
+
+ insert into empleados values('22222222','Ana Acosta',1,500);
+ insert into empleados values('23333333','Carlos Caseros',1,610);
+ insert into empleados values('24444444','Diana Dominguez',2,600);
+ insert into empleados values('25555555','Fabiola Fuentes',5,700);
+ insert into empleados values('26666666','Gabriela Gonzalez',3,800);
+ insert into empleados values('27777777','Juan Juarez',4,850);
+ insert into empleados values('28888888','Luis Lopez',4,500);
+ insert into empleados values('29999999','Maria Morales',5,800);
+ 
+ -- Realice un join para mostrar el documento, nombre, sueldo, ciudad y provincia de todos los empleados
+
+select e.documento, e.nombre, e.sueldo, s.provincia from empleados e
+inner join sucursales s 
+on e.codigosucursal = s.codigo;
+
+-- El supermercado necesita incrementar en un 10% el sueldo de los empleados de la sucursal de "Cruz del Eje". 
+-- Actualice el campo "sueldo" de la tabla "empleados" de todos los empleados de dicha sucursal empleando subconsulta.
+
+update empleados e set e.sueldo = e.sueldo + (e.sueldo * 0.1)
+where e.codigosucursal = (
+select codigo from sucursales
+where ciudad = 'Cruz del Eje');
+
+-- El supermercado quiere incrementar en un 20% el sueldo de los empleados de las sucursales de la provincia de 
+-- Córdoba. Actualice el campo "sueldo" de la tabla "empleados" de todos los empleados de tales sucursales empleando 
+-- subconsulta.
+
+update empleados e set e.sueldo = e.sueldo + (e.sueldo * 0.2)
+where e.codigosucursal in (
+select codigo from sucursales
+where provincia = 'Cordoba');
+
+-- La empleada "Ana Acosta" es trasladada a la sucursal de Carlos Paz. Se necesita actualizar el sueldo y la sucursal de tal 
+-- empleada empleando subconsultas, debe tener el mismo sueldo que la empleada "Maria Morales".
+
+
+
+-- El empleado "Carlos Caseros" se traslada a la sucursal de "La Plata". Se necesita actualizar el sueldo y sucursal de 
+-- tal empleado con los mismos valores que la empleada "Maria Morales" (emplee subconsulta).
+
+
+
+-- El supermercado cerrará todas las sucursales de la provincia de "Cordoba". Elimine los empleados que pertenezcan 
+-- a sucursales de tal provincia empleando subconsulta.
+
+
