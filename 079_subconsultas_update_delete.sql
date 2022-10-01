@@ -71,3 +71,18 @@ registros para la eliminación.
 
 -- Actualizamos el precio de todos los libros de editorial "Emece" incrementándolos en un 10%:
 
+update libros set precio = precio + (precio * 0.1)
+where codigoeditorial = 
+(select codigo from editoriales
+where nombre = 'Emece');
+
+-- Eliminamos todos los libros de las editoriales que tiene publicados libros de "Juan Perez":
+
+delete from libros 
+where codigoeditorial in 
+(select e.codigo from editoriales e
+join libros 
+on codigoeditorial = e.codigo
+where autor = 'Juan Perez');
+
+-- Ejercicio 1 
