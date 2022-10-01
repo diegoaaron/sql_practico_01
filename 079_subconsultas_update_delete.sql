@@ -149,12 +149,20 @@ where provincia = 'Cordoba');
 -- La empleada "Ana Acosta" es trasladada a la sucursal de Carlos Paz. Se necesita actualizar el sueldo y la sucursal de tal 
 -- empleada empleando subconsultas, debe tener el mismo sueldo que la empleada "Maria Morales".
 
-
+update empleados set sueldo = 
+(select sueldo from empleados where nombre = 'Maria Morales'),
+codigosucursal =
+(select codigo from sucursales
+where ciudad = 'Carlos Paz') 
+where nombre = 'Ana Acosta';
 
 -- El empleado "Carlos Caseros" se traslada a la sucursal de "La Plata". Se necesita actualizar el sueldo y sucursal de 
 -- tal empleado con los mismos valores que la empleada "Maria Morales" (emplee subconsulta).
 
-
+update empleados set (sueldo, codigosucursal) = 
+(select sueldo, codigosucursal from empleados 
+where nombre = 'Maria Morales') 
+where nombre = 'Carlos Caseros';
 
 -- El supermercado cerrará todas las sucursales de la provincia de "Cordoba". Elimine los empleados que pertenezcan 
 -- a sucursales de tal provincia empleando subconsulta.
