@@ -65,3 +65,48 @@ select * from aprobados;
 
 -- Ejercicio 1
 
+ drop table facturas cascade constraints;
+ drop table clientes;
+
+ create table clientes(
+  codigo number(5),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  primary key(codigo)
+ );
+
+ create table facturas(
+  numero number(6) not null,
+  fecha date,
+  codigocliente number(5) not null,
+  total number(6,2),
+  primary key(numero),
+  constraint FK_facturas_cliente
+   foreign key (codigocliente)
+   references clientes(codigo)
+ );
+
+ insert into clientes values(1,'Juan Lopez','Colon 123');
+ insert into clientes values(2,'Luis Torres','Sucre 987');
+ insert into clientes values(3,'Ana Garcia','Sarmiento 576');
+ insert into clientes values(4,'Susana Molina','San Martin 555');
+
+ insert into facturas values(1200,'15/04/2017',1,300);
+ insert into facturas values(1201,'15/04/2017',2,550);
+ insert into facturas values(1202,'15/04/2017',3,150);
+ insert into facturas values(1300,'20/04/2017',1,350);
+ insert into facturas values(1310,'22/04/2017',3,100);
+
+-- El comercio necesita una tabla llamada "clientespref" en la cual quiere almacenar el nombre y domicilio de aquellos 
+-- clientes que han comprado hasta el momento más de 500 pesos en mercaderías. Elimine la tabla y créela con 
+-- esos 2 campos:
+
+ drop table clientespref;
+ create table clientespref(
+  nombre varchar2(30),
+  domicilio varchar2(30)
+ );
+
+-- Ingrese los registros en la tabla "clientespref" seleccionando registros de la tabla "clientes" y "facturas"
+
+6- Vea los registros de "clientespref" (2 registros)
