@@ -51,3 +51,17 @@ Se pueden insertar valores en una tabla con el resultado de una consulta que inc
  insert into alumnos values('30333333','Daniel Duarte',7.7);
  insert into alumnos values('30444444','Estela Esper',3.4);
 
+-- Ingresamos registros en la tabla "aprobados" seleccionando registros de la tabla "alumnos":
+-- Note que no se listan los campos en los cuales se cargan los datos porque tienen el mismo 
+-- nombre que los de la tabla de la cual extraemos la información.
+
+insert into aprobados 
+select documento, nota from alumnos
+where nota >=4;
+
+-- Veamos si los registros se han cargado:
+
+select * from aprobados;
+
+-- Ejercicio 1
+
