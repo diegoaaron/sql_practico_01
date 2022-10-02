@@ -109,4 +109,28 @@ select * from aprobados;
 
 -- Ingrese los registros en la tabla "clientespref" seleccionando registros de la tabla "clientes" y "facturas"
 
-6- Vea los registros de "clientespref" (2 registros)
+select * from clientes;
+
+select * from facturas;
+
+insert into clientespref 
+select distinct c.nombre, c.domicilio from clientes c
+join facturas f
+on c.codigo = f.codigocliente
+where f.codigocliente in (select codigocliente from facturas group by codigocliente having sum(total) > 500);
+
+ insert into clientespref
+  select nombre,domicilio
+   from clientes 
+   where codigo in 
+    (select codigocliente
+     from clientes c
+     join facturas f
+     on codigocliente=codigo
+     group by codigocliente
+     having sum(total)>500);
+
+-- Vea los registros de "clientespref" (2 registros)
+
+select * from clientespref;
+
