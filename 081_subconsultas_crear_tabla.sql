@@ -69,3 +69,57 @@ group by editorial);
  
  -- Veamos los registros de la nueva tabla:
 
+-- La tabla "cantidadporeditorial" se ha creado con el campo llamado "nombre" seleccionado del campo "editorial" de 
+-- "libros" y con el campo "cantidad" con el valor calculado con count(*) de la tabla "libros".
+
+ select *from cantidadporeditorial;
+
+-- Queremos una tabla llamada "ofertas20" que contenga los mismos campos que "libros" y guarde los libros con un precio 
+-- menor o igual a 20. Primero eliminamos la tabla "ofertas20":
+
+drop table ofertas20;
+
+-- Creamos "ofertas20" e insertamos la consulta de "libros":
+
+-- La consulta retorna los libros de la tabla "libros" cuyo precio es menor o igual a 20 y los almacena en la nueva tabla 
+-- ("ofertas20") ordenados en forma descendente por precio. Note que no se listan los campos a extraer, se coloca un 
+-- asterisco para indicar que se incluyen todos los campos.
+
+create table ofertas20 as
+(select * from libros
+where precio <= 20)
+order by precio desc;
+
+-- Veamos los registros de la nueva tabla:
+
+select * from ofertas20;
+
+-- Agregamos una columna a la tabla "editoriales" que contiene la ciudad en la cual está la casa central de cada editorial:
+
+ alter table editoriales add ciudad varchar2(30);
+
+-- Actualizamos dicho campo:
+
+update editoriales set ciudad='Cordoba' where nombre='Planeta';
+ update editoriales set ciudad='Cordoba' where nombre='Emece';
+ update editoriales set ciudad='Buenos Aires' where nombre='Nuevo siglo';
+ 
+ -- Queremos una nueva tabla llamada "librosdecordoba" que contenga los títulos y autores de los libros de editoriales 
+ -- de Cordoba. En primer lugar, la eliminamos:
+
+ drop table librosdecordoba;
+
+ -- Consultamos las 2 tablas y guardamos el resultado en la nueva tabla que estamos creando:
+
+ create table librosdecordoba as
+  (select titulo,autor from libros
+  join editoriales
+  on editorial=nombre 
+  where ciudad='Cordoba');
+  
+-- Consultamos la nueva tabla:
+
+ select *from librosdecordoba;
+ 
+ 
+ 
