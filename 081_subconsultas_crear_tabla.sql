@@ -197,6 +197,13 @@ select * from sueldosxseccion;
 
 drop table sucursalCordoba;
 
+create table sucursalCordoba as 
+(select nombre, seccion from empleados e
+inner join sucursales s
+on e.codigosucursal = s.codigo
+where s.ciudad = 'Cordoba');
+
 -- Consulte la nueva tabla
 
+select * from sucursalCordoba;
  
