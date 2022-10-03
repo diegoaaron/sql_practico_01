@@ -175,7 +175,10 @@ on e.codigosucursal = s.codigo;
    
 -- Recupere la información de "secciones"
 
-8- Se necesita una nueva tabla llamada "sueldosxseccion" que contenga la suma de los sueldos de los empleados por sección (de todas las sucursales). Primero elimine la tabla
+select * from secciones;
+
+-- Se necesita una nueva tabla llamada "sueldosxseccion" que contenga la suma de los sueldos de los empleados por 
+-- sección (de todas las sucursales). Primero elimine la tabla
 
  drop table sueldosxseccion;
 
@@ -183,9 +186,17 @@ on e.codigosucursal = s.codigo;
   (select seccion, sum(sueldo) as total
   from empleados
   group by seccion);
-9- Recupere los registros de la nueva tabla
 
-10- Se necesita una nueva tabla llamada "sucursalCordoba" que contenga los nombres y sección de los empleados de la ciudad de Córdoba. En primer lugar, eliminamos la tabla. Luego, consulte las tablas "empleados" y "sucursales" y guarde el resultado en la nueva tabla
+-- Recupere los registros de la nueva tabla
 
-11- Consulte la nueva tabla
+select * from sueldosxseccion;
+
+-- Se necesita una nueva tabla llamada "sucursalCordoba" que contenga los nombres y sección de los empleados de la 
+-- ciudad de Córdoba. En primer lugar, eliminamos la tabla. Luego, consulte las tablas "empleados" y "sucursales" 
+-- y guarde el resultado en la nueva tabla
+
+drop table sucursalCordoba;
+
+-- Consulte la nueva tabla
+
  
