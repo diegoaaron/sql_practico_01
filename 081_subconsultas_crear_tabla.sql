@@ -159,5 +159,33 @@ update editoriales set ciudad='Cordoba' where nombre='Planeta';
  insert into empleados values('28888888','Luis Lopez','Lules 888','Sistemas',780,4);
  insert into empleados values('29999999','Maria Morales','Marina 999','Contaduria',670,4);
  
+-- Realice un join para mostrar todos los datos de "empleados" incluyendo la ciudad de la sucursal
 
+select e.*, s.* from empleados e
+full join sucursales s
+on e.codigosucursal = s.codigo;
+
+-- Cree una tabla llamada "secciones" que contenga las secciones de la empresa (primero elimínela)
+
+  drop table secciones;
+
+ create table secciones as
+  (select distinct seccion as nombre
+   from empleados);
+   
+-- Recupere la información de "secciones"
+
+8- Se necesita una nueva tabla llamada "sueldosxseccion" que contenga la suma de los sueldos de los empleados por sección (de todas las sucursales). Primero elimine la tabla
+
+ drop table sueldosxseccion;
+
+ create table sueldosxseccion as
+  (select seccion, sum(sueldo) as total
+  from empleados
+  group by seccion);
+9- Recupere los registros de la nueva tabla
+
+10- Se necesita una nueva tabla llamada "sucursalCordoba" que contenga los nombres y sección de los empleados de la ciudad de Córdoba. En primer lugar, eliminamos la tabla. Luego, consulte las tablas "empleados" y "sucursales" y guarde el resultado en la nueva tabla
+
+11- Consulte la nueva tabla
  
