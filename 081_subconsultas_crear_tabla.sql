@@ -125,14 +125,12 @@ update editoriales set ciudad='Cordoba' where nombre='Planeta';
  
   drop table empleados;
  drop table sucursales;
-2- Cree la tabla "sucursales":
 
  create table sucursales( 
   codigo number(4),
   ciudad varchar2(30) not null,
   primary key(codigo)
  ); 
-3- Cree la tabla "empleados":
 
  create table empleados( 
   documento char(8) not null,
@@ -146,7 +144,6 @@ update editoriales set ciudad='Cordoba' where nombre='Planeta';
    foreign key (codigosucursal)
    references sucursales(codigo)
  ); 
-4- Ingrese algunos registros para ambas tablas:
 
  insert into sucursales values(1,'Cordoba');
  insert into sucursales values(2,'Villa Maria');
@@ -161,4 +158,6 @@ update editoriales set ciudad='Cordoba' where nombre='Planeta';
  insert into empleados values('27777777','Juan Juarez','Jujuy 777','Secretaria',500,4);
  insert into empleados values('28888888','Luis Lopez','Lules 888','Sistemas',780,4);
  insert into empleados values('29999999','Maria Morales','Marina 999','Contaduria',670,4);
+ 
+
  
