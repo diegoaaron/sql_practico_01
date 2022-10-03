@@ -121,5 +121,44 @@ update editoriales set ciudad='Cordoba' where nombre='Planeta';
 
  select *from librosdecordoba;
  
+ -- Ejercicio 1
  
+  drop table empleados;
+ drop table sucursales;
+2- Cree la tabla "sucursales":
+
+ create table sucursales( 
+  codigo number(4),
+  ciudad varchar2(30) not null,
+  primary key(codigo)
+ ); 
+3- Cree la tabla "empleados":
+
+ create table empleados( 
+  documento char(8) not null,
+  nombre varchar2(30) not null,
+  domicilio varchar2(30),
+  seccion varchar2(20),
+  sueldo number(6,2),
+  codigosucursal number(4),
+  primary key(documento),
+  constraint FK_empleados_sucursal
+   foreign key (codigosucursal)
+   references sucursales(codigo)
+ ); 
+4- Ingrese algunos registros para ambas tablas:
+
+ insert into sucursales values(1,'Cordoba');
+ insert into sucursales values(2,'Villa Maria');
+ insert into sucursales values(3,'Carlos Paz');
+ insert into sucursales values(4,'Cruz del Eje');
+
+ insert into empleados values('22222222','Ana Acosta','Avellaneda 111','Secretaria',500,1);
+ insert into empleados values('23333333','Carlos Caseros','Colon 222','Sistemas',800,1);
+ insert into empleados values('24444444','Diana Dominguez','Dinamarca 333','Secretaria',550,2);
+ insert into empleados values('25555555','Fabiola Fuentes','Francia 444','Sistemas',750,2);
+ insert into empleados values('26666666','Gabriela Gonzalez','Guemes 555','Secretaria',580,3);
+ insert into empleados values('27777777','Juan Juarez','Jujuy 777','Secretaria',500,4);
+ insert into empleados values('28888888','Luis Lopez','Lules 888','Sistemas',780,4);
+ insert into empleados values('29999999','Maria Morales','Marina 999','Contaduria',670,4);
  
