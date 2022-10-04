@@ -260,6 +260,25 @@ select * from vista_empleados_ingreso;
 
  drop view vista_club;
  
+-- Cree una vista en la que aparezca el nombre del socio, el deporte, el día, el nombre del profesor y el estado de la 
+-- matrícula (deben incluirse los socios que no están inscriptos en ningún deporte, los cursos para los cuales no hay 
+-- inscriptos y los profesores que no tienen designado deporte también)
  
+ create view vista_club as
+ select s.nombre as socio, c.deporte, dia, p.nombre as profesor, matricula from socios s
+ full join inscriptos i
+ on s.documento = i.documentosocio
+ full join cursos c
+ on i.numero = c.numero
+ full join profesores p
+ on c.documentoprofesor = p.documento;
  
+ -- Muestre la información contenida en la vista (11 registros)
+
+ select * from vista_club;
+
+-- Realice una consulta a la vista donde muestre la cantidad de socios inscriptos en cada deporte (agrupe por deporte y 
+-- día) ordenados por cantidad
+
+
  
