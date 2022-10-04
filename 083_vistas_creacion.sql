@@ -280,5 +280,65 @@ select * from vista_empleados_ingreso;
 -- Realice una consulta a la vista donde muestre la cantidad de socios inscriptos en cada deporte (agrupe por deporte y 
 -- día) ordenados por cantidad
 
+ select deporte,dia,count(socio) as cantidad
+  from vista_club
+  where deporte is not null
+  group by deporte,dia
+  order by cantidad;
 
- 
+-- Muestre (consultando la vista) los cursos (deporte y día) para los cuales no hay inscriptos (3 registros)
+
+select deporte, dia from vista_club
+where socio is null and deporte is not null;
+
+-- Muestre los nombres de los socios que no se han inscripto en ningún curso (consultando la vista) (1 registro)
+
+select socio from vista_club
+where deporte is null and socio is not null;
+
+-- Muestre (consultando la vista) los profesores que no tienen asignado ningún deporte aún (1 registro)
+
+select profesor from vista_club
+where deporte is null and profesor is not null;
+
+-- Muestre (consultando la vista) el nombre de los socios que deben matrículas (1 registro)
+
+select socio from vista_club 
+where deporte is not null and matricula <> 's';
+
+-- Consulte la vista y muestre los nombres de los profesores y los días en que asisten al club para dictar sus clases (9 registros)
+
+select distinct profesor, dia from vista_club
+where profesor is not null;
+
+-- Muestre la misma información anterior pero ordenada por día
+
+select distinct profesor, dia from vista_club
+where profesor is not null
+order by dia;
+
+-- Muestre todos los socios que son compañeros en tenis los lunes (2 registros)
+
+select socio from vista_club
+where deporte = 'tenis' and dia = 'lunes';
+
+-- Intente crear una vista denominada "vista_inscriptos" que muestre la cantidad de inscriptos por curso, incluyendo el 
+-- número del curso, el nombre del deporte y el día
+
+create view vista_inscriptos as
+select deporte, dia, (select count(*) from inscriptos i where i.numero = c.numero) as cantidad 
+from cursos c;
+
+-- Elimine la vista "vista_inscriptos" y créela para que muestre la cantidad de inscriptos por curso, incluyendo el 
+-- número del curso, el nombre del deporte y el día
+
+drop view vista_inscriptos;
+
+create view vista_inscriptos as
+select deporte, dia, (select count(*) from inscriptos i where i.numero = c.numero) as cantidad
+from cursos c;
+
+-- Consulte la vista (9 registros)
+
+select * from vista_inscriptos;
+
