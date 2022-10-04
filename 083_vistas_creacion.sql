@@ -184,5 +184,82 @@ select * from vista_empleados_ingreso;
 
 -- Ejercicio 1
 
+ drop table inscriptos;
+ drop table cursos;
+ drop table socios;
+ drop table profesores; 
 
+ create table socios(
+  documento char(8) not null,
+  nombre varchar2(40),
+  domicilio varchar2(30),
+  primary key (documento)
+ );
 
+ create table profesores(
+  documento char(8) not null,
+  nombre varchar2(40),
+  domicilio varchar2(30),
+  primary key (documento)
+ );
+
+ create table cursos(
+  numero number(2),
+  deporte varchar2(20),
+  dia varchar2(15),
+  documentoprofesor char(8),
+  constraint CK_inscriptos_dia
+    check (dia in('lunes','martes','miercoles','jueves','viernes','sabado')),
+  constraint FK_documentoprofesor 
+   foreign key (documentoprofesor)
+   references profesores(documento),
+   primary key (numero)
+ );
+
+ create table inscriptos(
+  documentosocio char(8) not null,
+  numero number(2) not null,
+  matricula char(1),
+  constraint CK_inscriptos_matricula check (matricula in('s','n')),
+  constraint FK_documentosocio 
+   foreign key (documentosocio)
+   references socios(documento),
+  constraint FK_numerocurso 
+   foreign key (numero)
+   references cursos(numero),
+  primary key (documentosocio,numero)
+ );
+
+ insert into socios values('30000000','Fabian Fuentes','Caseros 987');
+ insert into socios values('31111111','Gaston Garcia','Guemes 65');
+ insert into socios values('32222222','Hector Huerta','Sucre 534');
+ insert into socios values('33333333','Ines Irala','Bulnes 345');
+
+ insert into profesores values('22222222','Ana Acosta','Avellaneda 231');
+ insert into profesores values('23333333','Carlos Caseres','Colon 245');
+ insert into profesores values('24444444','Daniel Duarte','Sarmiento 987');
+ insert into profesores values('25555555','Esteban Lopez','Sucre 1204');
+
+ insert into cursos values(1,'tenis','lunes','22222222');
+ insert into cursos values(2,'tenis','martes','22222222');
+ insert into cursos values(3,'natacion','miercoles','22222222');
+ insert into cursos values(4,'natacion','jueves','23333333');
+ insert into cursos values(5,'natacion','viernes','23333333');
+ insert into cursos values(6,'futbol','sabado','24444444');
+ insert into cursos values(7,'futbol','lunes','24444444');
+ insert into cursos values(8,'basquet','martes','24444444');
+
+ insert into inscriptos values('30000000',1,'s');
+ insert into inscriptos values('30000000',3,'n');
+ insert into inscriptos values('30000000',6,null);
+ insert into inscriptos values('31111111',1,'s');
+ insert into inscriptos values('31111111',4,'s');
+ insert into inscriptos values('32222222',8,'s');
+
+-- Elimine la vista "vista_club":
+
+ drop view vista_club;
+ 
+ 
+ 
+ 
