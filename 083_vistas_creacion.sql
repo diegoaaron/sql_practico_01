@@ -159,5 +159,30 @@ select * from vista_empleados;
 select seccion, count(*) as cantidad from vista_empleados
 group by seccion;
 
--- 
+-- Eliminamos la vista "vista_empleados_ingreso":
+
+drop view vista_empleados_ingreso;
+
+-- Creamos otra vista de "empleados" denominada "vista_empleados_ingreso" que almacena la cantidad de empleados por año:
+
+create view vista_empleados_ingreso 
+(fecha, cantidad) as select extract(year from fechaingreso), count(*) from empleados
+group by extract(year from fechaingreso);
+
+-- Vemos la información:
+
+select * from vista_empleados_ingreso;
+
+-- Hemos aprendido que los registros resultantes de una vista no se almacena en la base de datos, sino la definición de 
+-- la vista, por lo tanto, al modificar las tablas referenciadas por la vista, el resultado de la vista cambia.
+
+-- Modificamos una fecha en la tabla "empleados" y luego consultamos la vista para verificar que está actualizada:
+
+update empleados set fechaingreso = '10/09/2000' where fechaingreso = '10/09/1998';
+
+select * from vista_empleados_ingreso;
+
+-- Ejercicio 1
+
+
 
