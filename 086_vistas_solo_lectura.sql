@@ -124,20 +124,44 @@ delete from vista_empleados2 where apellido = 'Lopez';
 
 -- Cree o reemplace la vista "vista_clientes" para que recupere el nombre y ciudad de todos los clientes
 
+create or replace view vista_clientes as
+select nombre, ciudad from clientes;
+
 -- Cree o reemplace la vista "vista_clientes2" para que recupere el nombre y ciudad de todos los clientes no permita 
 -- modificaciones.
 
+create or replace view vista_clientes2 as
+select nombre, ciudad from clientes 
+with read only;
+
 -- Consulte ambas vistas
+
+select * from vista_clientes;
+
+select * from vista_clientes2;
 
 -- Intente ingresar el siguiente registro mediante la vista que permite sólo lectura
 -- Oracle no lo permite.
 
+insert into vista_clientes2 values ('Ana Acosta', 'Salta');
+
 -- Ingrese el registro anterior en la vista "vista_clientes"
+
+insert into vista_clientes values ('Ana Acosta', 'Salta');
 
 -- Intente modificar un registro mediante la vista que permite sólo lectura
 
+update vista_clientes2 set ciudad='Salta' where nombre = 'Juan Perez';
+
 -- Actualice el registro anterior en la vista "vista_clientes"
+
+update vista_clientes set ciudad='Salta' where nombre = 'Juan Perez';
 
 -- Intente eliminar un registro mediante la vista "vista_clientes2"
 
+delete from vista_clientes2 where ciudad = 'Buenos Aires';
+
 -- Elimine todos los clientes de "Buenos Aires" a través de la vista "vista_clientes"
+
+delete from vista_clientes where ciudad = 'Buenos Aires';
+
