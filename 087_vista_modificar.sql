@@ -66,5 +66,12 @@ create or replace view vista_empleados as
 select documento, nombre, seccion, domicilio from empleados
 where seccion = 1;
 
--- 
+-- Consultamos la vista para ver si se modificó:
+
+select * from vista_empleados;
+
+-- Veamos el texto de la vista consultando "user_views":
+
+ select view_name, text from user_views 
+ where view_name='VISTA_EMPLEADOS';
 
