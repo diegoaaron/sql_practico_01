@@ -50,3 +50,21 @@ create view vista_empleados as
 select documento, nombre, seccion from empleados
 where seccion = 1;
 
+-- Consultamos la vista:
+
+select * from vista_empleados;
+
+-- Veamos el texto de la vista consultando "user_views":
+-- "text" muestra el select con el que se creo la vista 
+
+ select view_name,text from user_views 
+ where view_name = 'VISTA_EMPLEADOS';
+
+-- Modificamos la vista para que muestre el domicilio:
+
+create or replace view vista_empleados as
+select documento, nombre, seccion, domicilio from empleados
+where seccion = 1;
+
+-- 
+
