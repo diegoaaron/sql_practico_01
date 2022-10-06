@@ -59,4 +59,28 @@ with check option;
 
 select * from vista_empleados;
 
--- 
+-- Actualizarmos el nombre de un empleado a través de la vista:
+-- Oracle aceptó la actualización porque el campo "nombre" no está restringido.
+
+update vista_empleados set nombre = 'Beatriz' 
+where nombre = 'Ana';
+
+-- Veamos si la modificación se realizó en la tabla:
+
+ select *from empleados;
+
+-- Intentamos actualizar la sección de un empleado a través de la vista:
+-- Oracle no aceptó la actualización porque el campo "nombre" está restringido.
+
+update vista_empleados set seccion = 'Sistemas' 
+where nombre = 'Beatriz';
+
+-- Ingresamos un registro mediante la vista:
+-- Oracle acepta la inserción porque ingresamos un valor para "seccion" que incluirá el registro en la vista.
+
+insert into vista_empleados values ('Gomez', 'Gabriela', 'f', 'Administracion');
+
+-- Intentamos ingresar un empleado de otra sección:
+
+ insert into vista_empleados values('Torres','Tatiana','f','Sistemas');
+Oracle no acepta la inserción porque ingresamos un valor para "seccion" que excluirá el nuevo registro de la vista.
