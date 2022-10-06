@@ -81,6 +81,9 @@ where nombre = 'Beatriz';
 insert into vista_empleados values ('Gomez', 'Gabriela', 'f', 'Administracion');
 
 -- Intentamos ingresar un empleado de otra sección:
+-- Oracle no acepta la inserción porque ingresamos un valor para "seccion" que excluirá el nuevo registro de la vista.
 
- insert into vista_empleados values('Torres','Tatiana','f','Sistemas');
-Oracle no acepta la inserción porque ingresamos un valor para "seccion" que excluirá el nuevo registro de la vista.
+insert into vista_empleados values ('Torres', 'Tatiana', 'f', 'Sistemas');
+
+-- Ejercicio 1 
+
