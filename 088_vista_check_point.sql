@@ -144,20 +144,17 @@ select * from vista_clientes2;
 
 -- Intente ingresar un empleado de "Cordoba" en la vista restringida
 
-
- insert into vista_clientes2 values('Viviana Valdez','Cordoba');
-
- insert into vista_clientes values('Viviana Valdez','Cordoba');
-
- insert into vista_clientes2 values('Viviana Valdez','Salta');
-
- select *from vista_clientes2;
-
+insert into vista_clientes2 values ('Viviana Valdez', 'Cordoba');
 
 -- Ingrese el empleado anterior a través de la vista no restringida
 
+insert into vista_clientes values ('Luis Perez', 'Lima');
+
 -- Ingrese un empleado de "Salta" en la vista restringida
+
+insert into vista_clientes2 values ('Viviana Valdez', 'Salta');
 
 -- Verifique que el nuevo registro está incluido en la vista
  
+ select * from vista_clientes2;
  
