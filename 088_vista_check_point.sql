@@ -107,30 +107,43 @@ insert into vista_empleados values ('Torres', 'Tatiana', 'f', 'Sistemas');
  
  -- Cree o reemplace la vista "vista_clientes" para que recupere el nombre y ciudad de todos los clientes que no sean de "Cordoba" sin emplear 
  -- "with check option"
+ 
+ create or replace view vista_clientes as
+ select nombre, ciudad from clientes 
+ where ciudad <> 'Cordoba';
 
- create or replace view vista_clientes
- as
-  select nombre, ciudad
-  from clientes
-  where ciudad <>'Cordoba';
+-- Cree o reemplace la vista "vista_clientes2" para que recupere el nombre y ciudad de todos los clientes que no sean de "Cordoba" empleando 
+-- "with check option"
 
- create or replace view vista_clientes2
- as
-  select nombre, ciudad
-  from clientes
-  where ciudad <>'Cordoba'
-  with check option;
+create or replace view vista_clientes2 as 
+select nombre, ciudad from clientes 
+where ciudad <> 'Cordoba'
+with check option;
 
- select *from vista_clientes;
- select *from vista_clientes2;
+-- Consulte ambas vistas
 
- update vista_clientes2 set ciudad='Cordoba' where nombre='Pedro Perez';
+select * from vista_clientes;
 
- update vista_clientes set ciudad='Cordoba' where nombre='Pedro Perez';
+select * from vista_clientes2;
 
- update vista_clientes2 set ciudad='Buenos Aires' where nombre='Oscar Luque';
+-- Intente modificar la ciudad del cliente "Pedro Perez" a "Cordoba" través de la vista que está restringida.
 
- select *from vista_clientes2;
+update vista_clientes2 set ciudad = 'Cordoba' where nombre = 'Pedro Perez';
+
+-- Realice la misma modificación que intentó en el punto anterior a través de la vista que no está restringida
+
+update vista_clientes set ciudad = 'Cordoba' where nombre = 'Pedro Perez';
+
+-- Actualice la ciudad del cliente "Oscar Luque" a "Buenos Aires" mediante la vista restringida
+
+update vista_clientes2 set ciudad = 'Buenos Aires' where nombre = 'Oscar Luque';
+
+-- Verifique que "Oscar Luque" aún se incluye en la vista
+
+select * from vista_clientes2;
+
+-- Intente ingresar un empleado de "Cordoba" en la vista restringida
+
 
  insert into vista_clientes2 values('Viviana Valdez','Cordoba');
 
@@ -140,20 +153,6 @@ insert into vista_empleados values ('Torres', 'Tatiana', 'f', 'Sistemas');
 
  select *from vista_clientes2;
 
--- Cree o reemplace la vista "vista_clientes2" para que recupere el nombre y ciudad de todos los clientes que no sean de "Cordoba" empleando 
--- "with check option"
-
--- Consulte ambas vistas
-
--- Intente modificar la ciudad del cliente "Pedro Perez" a "Cordoba" través de la vista que está restringida.
-
--- Realice la misma modificación que intentó en el punto anterior a través de la vista que no está restringida
-
--- Actualice la ciudad del cliente "Oscar Luque" a "Buenos Aires" mediante la vista restringida
-
--- Verifique que "Oscar Luque" aún se incluye en la vista
-
--- Intente ingresar un empleado de "Cordoba" en la vista restringida
 
 -- Ingrese el empleado anterior a través de la vista no restringida
 
