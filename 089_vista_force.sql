@@ -37,5 +37,45 @@ debe volver a crear la vista (con "create view" o "create or replace view").
  insert into empleados values('25555555','Gomez Pablo','Bulnes 321','Contaduria');
  insert into empleados values('26666666','Perez Laura','Peru 1254','Secretaria');
  
+ -- Consultamos la vista:
+
+select * from vista_empleados;
+ 
+ -- Veamos el texto de la vista consultando "user_views":
+
+select view_name, text from user_views 
+where view_name = 'VISTA_EMPLEADOS';
+ 
+ -- Creamos o reemplazamos (si existe) la vista "vista_empleados" que muestre todos los campos de la tabla "empleados":
+
+create or replace view vista_empleados as 
+select * from empleados;
+ 
+ -- Consultamos la vista:
+
+select * from vista_empleados;
+
+-- Agregamos un campo a la tabla "empleados":
+
+alter table empleados 
+add sueldo number(6,2);
+ 
+ -- Consultamos la vista
+ -- Note que el nuevo campo agregado a "empleados" no aparece, a pesar que la vista indica que muestre todos los 
+ -- campos de dicha tabla; esto sucede porque los campos se seleccionan al ejecutar "create view", para que aparezcan 
+ -- debemos volver a crear la vista:
+
+ select * from vista_empleados;
+ 
+ -- recreando la vista para mostrar los nuevos campos
+ 
+ create or replace view vista_empleados as 
+ select * from empleados;
+ 
+ -- Consultemos la vista:
+-- Ahora si aparece el campo sueldo.
+
+select * from vista_empleados;
+ 
  
  
