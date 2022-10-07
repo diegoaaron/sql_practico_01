@@ -16,3 +16,26 @@ Otra cuestión a considerar es la siguiente: si crea una vista con "select *" y l
 involucradas, los nuevos campos no aparecerán en la vista; esto es porque los campos se seleccionan al ejecutar "create view"; 
 debe volver a crear la vista (con "create view" o "create or replace view").
 */
+
+ drop table empleados;
+ drop view vista_empleados;
+
+ create force view vista_empleados  as
+  select documento,nombre,seccion
+  from empleados;
+
+ create table empleados(
+  documento char(8),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  seccion varchar2(30)
+);
+
+ insert into empleados values('22222222','Lopez Ana','Colon 123','Sistemas');
+ insert into empleados values('23333333','Lopez Luis','Sucre 235','Sistemas');
+ insert into empleados values('24444444','Garcia Marcos','Sarmiento 1234','Contaduria');
+ insert into empleados values('25555555','Gomez Pablo','Bulnes 321','Contaduria');
+ insert into empleados values('26666666','Perez Laura','Peru 1254','Secretaria');
+ 
+ 
+ 
