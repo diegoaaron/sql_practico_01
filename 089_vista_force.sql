@@ -77,5 +77,70 @@ add sueldo number(6,2);
 
 select * from vista_empleados;
  
+ -- Ejercicio 1 
  
+  drop table clientes;
+
+ drop view vista_clientes;
+ 
+-- Intente crear o reemplazar la vista "vista_clientes" para que muestre el nombre, domicilio y ciudad de todos los clientes 
+-- de "Cordoba" (sin emplear "force"). Mensaje de error porque la tabla referenciada no existe.
+
+create or replace view vista_clientes as 
+select nombre, ciudad from clientes 
+where ciudad = 'Cordoba';
+
+-- Cree o reemplace la vista "vista_clientes" para que recupere el nombre, apellido y ciudad de todos los clientes de 
+-- "Cordoba" empleando "force"
+
+create or replace force view vista_clientes as 
+select nombre, ciudad from clientes 
+where ciudad = 'Cordoba';
+
+-- Cree la tabla:
+
+ create table clientes(
+  nombre varchar2(40),
+  documento char(8),
+  domicilio varchar2(30),
+  ciudad varchar2(30)
+ );
+
+ insert into clientes values('Juan Perez','22222222','Colon 1123','Cordoba');
+ insert into clientes values('Karina Lopez','23333333','San Martin 254','Cordoba');
+ insert into clientes values('Luis Garcia','24444444','Caseros 345','Cordoba');
+ insert into clientes values('Marcos Gonzalez','25555555','Sucre 458','Santa Fe');
+ insert into clientes values('Nora Torres','26666666','Bulnes 567','Santa Fe');
+ insert into clientes values('Oscar Luque','27777777','San Martin 786','Santa Fe');
+ insert into clientes values('Pedro Perez','28888888','Colon 234','Buenos Aires');
+ insert into clientes values('Rosa Rodriguez','29999999','Avellaneda 23','Buenos Aires');
+ 
+ -- Cree o reemplace la vista "vista_clientes" para que muestre todos los campos de la tabla "clientes"
+
+create or replace view vista_clientes as
+select * from clientes;
+
+-- Consulte la vista
+
+select * from clientes;
+
+-- Agregue un campo a la tabla "clientes"
+
+alter table clientes 
+add telefono char(11);
+
+-- Consulte la vista "vista_clientes"
+-- El nuevo campo agregado a "clientes" no aparece, pese a que la vista indica que muestre todos los campos de dicha tabla.
+
+select * from vista_clientes;
+
+-- Modifique la vista para que aparezcan todos los campos
+
+create or replace view vista_clientes as
+select * from clientes;
+
+-- Consulte la vista:
+-- Ahora si aparece el campo.
+
+select * from vista_clientes;
  
