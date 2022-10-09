@@ -51,7 +51,7 @@ No se permite realizar "insert", "update" ni "delete" en las vistas materializad
   fecha date,
   nota number(4,2),
   constraints FK_notas_documento
-   foreign key (documento)
+foreign key (documento)
    references alumnos(documento)
  );
 
@@ -105,4 +105,14 @@ select * from vm_promedios;
  insert into notas values('25555555','12/10/2017',3);
  insert into notas values('26666666','12/10/2017',4);
  
- 
+ -- Consultamos ambas vistas y comparamos los promedios:
+
+select * from vista_promedios;
+
+select * from vm_promedios;
+
+-- Los promedios de la vista actualizable han cambiado porque al ejecutar el primer "select" se consultaron las tablas 
+-- "notas" y "alumnos"; los promedios de la vista materializada no han cambiado, porque almacenaron el resultado de la 
+-- consulta, al ejecutar el segundo "select" no se consultaron las tablas "alumnos" y "notas".
+
+
