@@ -51,13 +51,48 @@ Para ejecutar el procedimiento almacenado creado anteriormente tipeamos:
 Entonces, para ejecutar un procedimiento almacenado colocamos "execute" seguido del nombre del procedimiento.
 */
 
+ drop table libros;
+ 
+ create table libros(
+  titulo varchar2(40),
+  autor varchar2(30),
+  editorial varchar2(20),
+  precio number(5,2)
+ );
 
+insert into libros values('Uno','Richard Bach','Planeta',15);
+insert into libros values('Ilusiones','Richard Bach','Planeta',18);
+insert into libros values('El aleph','Borges','Emece',25);
+insert into libros values('Aprenda PHP','Mario Molina','Nuevo siglo',45);
+insert into libros values('Matematica estas ahi','Paenza','Nuevo siglo',12);
+insert into libros values('Java en 10 minutos','Mario Molina','Paidos',35);
 
+-- La librería, frecuentemente, aumenta los precios de los libros en un 10%. Necesitamos un procedimiento almacenado 
+-- que actualice los precios de los libros aumentándolos en un 10%:
 
+create or replace procedure pa_libros_aumentar10 as
+begin
+update libros set precio = precio + (precio * 0.1);
+end;
+/
 
+-- Ejecutamos
 
+execute pa_libros_aumentar10;
 
+-- verificamos precio
 
+select * from libros;
+
+-- Volvemos a ejecutar el procedimiento
+
+execute pa_libros_aumentar10;
+
+-- Verificamos el aumento del precio
+
+select * from libros;
+
+-- Ejercicio 1 
 
 
 
