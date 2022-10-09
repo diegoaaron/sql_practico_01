@@ -94,7 +94,76 @@ select * from libros;
 
 -- Ejercicio 1 
 
+drop table empleados;
 
+ create table empleados(
+  documento char(8),
+  nombre varchar2(20),
+  apellido varchar2(20),
+  sueldo number(6,2),
+  cantidadhijos number(2,0),
+  fechaingreso date,
+  primary key(documento)
+ );
 
+ insert into empleados values('22222222','Juan','Perez',200,2,'10/10/1980');
+ insert into empleados values('22333333','Luis','Lopez',250,0,'01/02/1990');
+ insert into empleados values('22444444','Marta','Perez',350,1,'02/05/1995');
+ insert into empleados values('22555555','Susana','Garcia',400,2,'15/12/2018');
+ insert into empleados values('22666666','Jose Maria','Morales',500,3,'25/08/2015');
 
+--  Cree (o reemplace) el procedimiento almacenado llamado "pa_aumentarsueldo" que aumente los sueldos inferiores al 
+-- promedio en un 20%
 
+create or replace procedure pa_aumentarsueldo as 
+begin 
+update empleados set sueldo = sueldo + (sueldo * 0.2)
+where sueldo < (select max(sueldo) from empleados);
+end;
+/
+
+-- Ejecute el procedimiento creado anteriormente
+
+execute pa_aumentarsueldo;
+
+-- Verifique que los sueldos han aumentado
+
+select * from empleados;
+
+-- Ejecute el procedimiento nuevamente
+
+execute pa_aumentarsueldo;
+
+-- Verifique que los sueldos han aumentado
+
+select * from empleados;
+
+-- Elimine la tabla "empleados_antiguos"
+
+drop table empleados_antiguos;
+
+-- Cree la tabla "empleados_antiguos"
+
+ create table empleados_antiguos(
+  documento char(8),
+  nombre varchar2(40)
+);
+
+-- Cree (o reemplace) un procedimiento almacenado que ingrese en la tabla "empleados_antiguos" el documento, nombre 
+-- y apellido (concatenados) de todos los empleados de la tabla "empleados" que ingresaron a la empresa hace más de 10 años
+
+create or replace procedure pa_empleados_antiguos as 
+begin
+insert into empleados_antiguos 
+select documento, nombre || ' ' || apellido from empleados 
+where (extract(year from current_date) - extract(year from fechaingreso)) > 10;
+end;
+/
+
+-- Ejecute el procedimiento creado anteriormente
+
+execute pa_empleados_antiguos;
+
+-- Verifique que la tabla "empleados_antiguos" ahora tiene registros (3 registros)
+
+select * from empleados_antiguos;
