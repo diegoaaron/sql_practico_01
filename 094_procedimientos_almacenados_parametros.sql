@@ -91,3 +91,79 @@ Oracle asume que los argumentos son el primero y segundo, el registro que se alm
  insert into libros values ('Java en 10 minutos','Mario Molina','Siglo XXI',45);
  insert into libros values ('Cervantes y el quijote','Borges- Casares','Planeta',34);
 
+-- Creamos un procedimiento que recibe el nombre de una editorial y luego aumenta en un 10% los precios de los libros 
+-- de tal editorial:
+
+create or replace procedure pa_libros_aumentar10(aeditorial in varchar2) as 
+begin 
+update libros set precio = precio + (precio * 0.1)
+where editorial = aeditorial;
+end;
+/
+
+-- Ejecutamos el procedimiento:
+
+execute pa_libros_aumentar10('Planeta');
+
+-- Verificamos que los precios de los libros de la editorial "Planeta" han aumentado un 10%:
+
+ select *from libros;
+ 
+-- Creamos otro procedimiento que recibe 2 parámetros, el nombre de una editorial y el valor de incremento (que tiene por 
+-- defecto el valor 10):
+
+create or replace procedure pa_libros_aumentar(aeditorial in varchar2, aporcentaje in number default 10) as 
+begin 
+update libros set precio = precio + (precio * aporcentaje/100) 
+where editorial =aeditorial;
+end;
+/
+
+-- Ejecutamos el procedimiento enviando valores para ambos argumentos:
+
+execute pa_libros_aumentar('Planeta', 30);
+
+-- Consultamos la tabla "libros" para verificar que los precios de los libros de la editorial "Planeta" han sido aumentados 
+-- en un 30%:
+
+select * from libros;
+
+-- Ejecutamos el procedimiento "pa_libros_aumentar" omitiendo el segundo parámetro porque tiene establecido un valor 
+-- por defecto:
+
+execute pa_libros_aumentar('Paidos');
+
+-- Consultamos la tabla "libros" para verificar que los precios de los libros de la editorial "Paidos" han sido aumentados en 
+-- un 10% (valor por defecto):
+
+select * from libros;
+
+-- Definimos un procedimiento almacenado que ingrese un nuevo libro en la tabla "libros":
+
+create or replace procedure pa_libros_insertar 
+( atitulo in varchar2 default null, aautor in varchar2 default 'desconocido', aeditorial in varchar2 default 'sin especificar', 
+aprecio in number default 0) as
+begin 
+insert into libros values (atitulo, aautor, aeditorial, aprecio);
+end;
+/
+
+-- Llamamos al procedimiento sin enviarle valores para los parámetros:
+
+execute pa_libros_insertar;
+
+-- Veamos cómo se almacenó el registro:
+
+select * from libros;
+
+-- Llamamos al procedimiento enviándole valores solamente para el primer y cuarto parámetros correspondientes al título y 
+-- precio:
+
+execute pa_libros_insertar('Uno', 100);
+
+-- Oracle asume que los argumentos son el primero y segundo, vea cómo se almacenó el nuevo registro:
+
+select * from libros;
+
+-- Ejercicio 1 
+
