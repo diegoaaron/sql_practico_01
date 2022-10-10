@@ -167,3 +167,108 @@ select * from libros;
 
 -- Ejercicio 1 
 
+ drop table empleados;
+
+ create table empleados(
+  documento char(8),
+  nombre varchar2(20),
+  apellido varchar2(20),
+  sueldo number(6,2),
+  fechaingreso date
+ );
+
+ insert into empleados values('22222222','Juan','Perez',300,'10/10/1980');
+ insert into empleados values('22333333','Luis','Lopez',300,'12/05/1998');
+ insert into empleados values('22444444','Marta','Perez',500,'25/08/1990');
+ insert into empleados values('22555555','Susana','Garcia',400,'05/05/2000');
+ insert into empleados values('22666666','Jose Maria','Morales',400,'24/10/2005');
+ 
+-- Cree un procedimiento almacenado llamado "pa_empleados_aumentarsueldo". Debe incrementar el sueldo de los 
+-- empleados con cierta cantidad de años en la empresa (parámetro "ayear" de tipo numérico) en un porcentaje (parámetro 
+-- "aporcentaje" de tipo numerico); es decir, recibe 2 parámetros.
+
+create or replace procedure pa_empleados_aumentarsueldo (ayear in number, aporcentaje in number) as 
+begin 
+update empleados set sueldo = sueldo + (sueldo * aporcentaje/100) 
+where (extract(year from current_date) - extract(year from fechaingreso)) > ayear;
+end;
+/
+
+-- Ejecute el procedimiento creado anteriormente.
+
+execute pa_empleados_aumentarsueldo(10, 20);
+
+-- Verifique que los sueldos de los empleados con más de 10 años en la empresa han aumentado un 20%
+
+select * from empleados;
+
+-- Ejecute el procedimiento creado anteriormente enviando otros valores como parámetros (por ejemplo, 8 y 10)
+
+execute pa_empleados_aumentarsueldo(8, 10);
+
+-- Verifique que los sueldos de los empleados con más de 8 años en la empresa han aumentado un 10%
+
+select * from empleados;
+
+-- Ejecute el procedimiento almacenado "pa_empleados_aumentarsueldo" sin parámetros
+
+ execute pa_empleados_aumentarsueldo;
+
+-- Cree un procedimiento almacenado llamado "pa_empleados_ingresar" que ingrese un empleado en la tabla 
+-- "empleados", debe recibir valor para el documento, el nombre, apellido y almacenar valores nulos en los campos "sueldo" 
+-- y "fechaingreso"
+
+create or replace procedure pa_empleados_ingresar 
+(adocumento in char, anombre in varchar2, aapellido in varchar2) as 
+begin 
+insert into empleados values(adocumento, anombre, aapellido, null, null);
+end;
+/
+
+-- Ejecute el procedimiento creado anteriormente y verifique si se ha ingresado en "empleados" un nuevo registro
+
+execute pa_empleados_ingresar('30000000', 'Ana', 'Acosta');
+
+select * from empleados;
+
+-- Reemplace el procedimiento almacenado llamado "pa_empleados_ingresar" para que ingrese un empleado en la 
+-- tabla "empleados", debe recibir valor para el documento (con valor por defecto nulo) y fechaingreso (con la fecha actual 
+-- como valor por defecto), los demás campos se llenan con valor nulo
+
+create or replace procedure pa_empleados_ingresar 
+(adocumento in char default null, afecha in date default current_date) as 
+begin 
+insert into empleados values(adocumento, null, null, null, afecha);
+end;
+/
+
+-- Ejecute el procedimiento creado anteriormente enviándole valores para los 2 parámetros y verifique si se ha ingresado 
+-- en "empleados" un nuevo registro
+
+ execute pa_empleados_ingresar('32222222','10/10/2007');
+ 
+ select *from empleados;
+
+-- Ejecute el procedimiento creado anteriormente enviando solamente la fecha de ingreso y vea el resultado
+-- Oracle toma el valor enviado como primer argumento e intenta ingresarlo en el campo "documento", muestra un mensaje 
+-- de error indicando que el valor es muy grande, ya que tal campo admite 8 caracteres.
+
+ execute pa_empleados_ingresar ('15/12/2000');
+
+-- Cree (o reemplace) un procedimiento almacenado que reciba un documento y elimine de la tabla "empleados" el empleado 
+-- que coincida con dicho documento
+
+create or replace procedure pa_empleado_eliminar (adocumento in varchar2) as
+begin 
+delete from empleados where documento = adocumento;
+end;
+/
+
+-- Elimine un empleado empleando el procedimiento del punto anterior
+
+execute pa_empleado_eliminar('30000000');
+
+-- Verifique la eliminación
+ 
+ select * from empleados;
+ 
