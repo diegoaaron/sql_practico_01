@@ -1,5 +1,6 @@
 /*
-Los procedimientos almacenados pueden contener en su definición, variables locales, que existen durante el procedimiento.
+Los procedimientos almacenados pueden contener en su definición, variables locales, que existen durante la ejecucion del 
+procedimiento.
 
 La sintaxis para declarar variables dentro de un procedimiento almacenado es la siguiente:
 
@@ -59,7 +60,6 @@ La tabla1 debe existir cuando llamamos al procedimiento almacenado. La creamos c
    precio number(6,2)
   );
 
-
  insert into libros values ('Uno','Richard Bach','Planeta',15);
  insert into libros values ('Ilusiones','Richard Bach','Planeta',12);
  insert into libros values ('El aleph','Borges','Emece',25);
@@ -70,4 +70,15 @@ La tabla1 debe existir cuando llamamos al procedimiento almacenado. La creamos c
  insert into libros values ('Java en 10 minutos','Mario Molina','Siglo XXI',45);
  insert into libros values ('Cervantes y el quijote','Borges- Casares','Planeta',34);
 
+create or replace procedure pa_autor_libros (atitulo in varchar2) as 
+vautor varchar2(20);
+begin
+select autor into vautor from libros where titulo = atitulo;
+insert into tabla1 select titulo, precio from libros 
+where autor =vautor;
+end;
+/
 
+exec pa_autor_libros('Uno');
+
+select * from tabla1;
