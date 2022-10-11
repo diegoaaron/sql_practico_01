@@ -120,9 +120,78 @@ end;
  insert into empleados values('Gomez Gaston',740); 
  insert into empleados values('Huerta Hernan',1050); 
  
+ -- Muestre la suma total de todos los sueldos realizando un "select" (5400)
+
+select sum(sueldo) from empleados;
+
+-- Se necesita incrementar los sueldos en forma proporcional, en un 10% cada vez y controlar que la suma total de sueldos no sea menor a $7000, si lo es, el bucle debe continuar y 
+-- volver a incrementar los sueldos, en caso de superarlo, se saldrá del ciclo repetitivo; es decir, este bucle continuará el incremento de sueldos hasta que la suma de los mismos llegue o 
+-- supere los 7000.
+
+declare
+total number;
+begin
+loop
+    update empleados set sueldo = sueldo + (sueldo*0.1);
+    select sum(sueldo) into total from empleados;
+    dbms_output.put_line('sueldo total: ' || total);
+    exit when total > 7000;
+end loop;
+end;
+/
+
+-- Verifique que los sueldos han sido incrementados y la suma de todos los sueldos es superior a 7000
+
+select sum(sueldo) from empleados;
+
+-- Muestre el sueldo máximo realizando un "select"
+
+select max(sueldo) from empleados;
+
+-- Se necesita incrementar los sueldos en forma proporcional, en un 5% cada vez y controlar que el sueldo máximo alcance o supere los $1600, al llegar o superarlo, el bucle debe finalizar. 
+-- Incluya una variable contador que cuente cuántas veces se repite el bucle
+
+declare
+maximo number;
+contador number;
+begin
+contador := 0;
+loop
+    contador := contador + 1;
+    update empleados set sueldo = sueldo + (sueldo*0.05);
+    select max(sueldo) into maximo from empleados;
+    dbms_output.put_line('sueldo total: ' || maximo || 'contador: ' || contador);
+    exit when maximo > 1600;
+end loop;
+end;
+/
+
+-- Verifique que los sueldos han sido incrementados y el sueldo máximo es igual o superior a 1600
+
+select * from empleados;
+
+-- Muestre el sueldo mínimo realizando un "select"
+
+select max(sueldo) from empleados;
+
+-- Se necesita incrementar los sueldos en forma proporcional, en un 10% cada vez y controlar que el sueldo mínimo no supere los $900. Emplee la sintaxis "if CONDICION then exit"
+
+ declare
+  minimo number;
+ begin
+  loop
+    select min(sueldo) into minimo from empleados;
+    if (minimo+minimo*0.1>900) then exit;
+    else
+      update empleados set sueldo=sueldo+(sueldo*0.1);
+    end if;
+  end loop;
+ end;
+ /
+
+-- Muestre el sueldo mínimo realizando un "select"
  
- 
- 
+  select min(sueldo) from empleados;
  
  
  
