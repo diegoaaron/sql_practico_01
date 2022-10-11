@@ -85,5 +85,44 @@ loop
 end loop;
 end;
 
--- 
+-- En el siguiente ejemplo se muestra la tabla del 4. Se almacena en una variable "resultado" el resultado de la multiplicación, se chequea la condición, se imprime el resultado y se va 
+-- incrementando la variable "multiplicador"; el ciclo se repite hasta que la variable "resultado" llega o supera el valor 50:
 
+declare
+  resultado number;
+  multiplicador number:=0;
+begin
+  loop
+    resultado:=4*multiplicador;
+    exit when resultado>=50;
+    dbms_output.put_line('4x'||to_char(multiplicador)||'='||to_char(resultado));
+    multiplicador:=multiplicador+1;
+  end loop;
+end;
+
+-- Note que, cuando "resultado" cumple la condición del "exit when" (supera el valor 50), no se ejecutan las líneas de salida y de incremento de "multiplicador", se salta a "end loop" 
+-- finalizando el bucle.
+
+-- Ejercicio 1
+
+ drop table empleados;
+ 
+ create table empleados(
+  nombre varchar2(40),
+  sueldo number(6,2)
+ );
+
+ insert into empleados values('Acosta Ana',550); 
+ insert into empleados values('Bustos Bernardo',850); 
+ insert into empleados values('Caseros Carolina',900); 
+ insert into empleados values('Dominguez Daniel',490); 
+ insert into empleados values('Fuentes Fabiola',820); 
+ insert into empleados values('Gomez Gaston',740); 
+ insert into empleados values('Huerta Hernan',1050); 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
