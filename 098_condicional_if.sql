@@ -37,4 +37,22 @@ Sintaxis:
 -- Creamos o reemplazamos la función "f_condicion" que recibe una nota y retorna una cadena de caracteres indicando 
 -- si aprueba o no:
 
+create or replace function f_condicion (anota number) 
+return varchar2 is
+condicion varchar2(20);
+begin 
+condicion := '';
+if anota <4 then
+condicion := 'desaprobado';
+else condicion := 'aprobado';
+end if;
+return condicion;
+end;
+/
 
+-- Realizamos un "select" sobre "notas" mostrando el nombre y nota del alumno y en una columna su condición (empleando 
+-- la función creada anteriormente):
+
+select nombre, nota, f_condicion(nota) from notas;
+
+-- 
