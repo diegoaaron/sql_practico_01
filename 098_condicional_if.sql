@@ -55,4 +55,72 @@ end;
 
 select nombre, nota, f_condicion(nota) from notas;
 
--- 
+-- En el siguiente ejemplo omitimos la cláusula "else" porque sólo indicaremos acciones en caso que el "if" sea verdadero:
+
+create or replace function f_condicion (anota number) 
+return varchar2 is
+condicion varchar2(20);
+begin
+condicion := 'aprobado';
+if anota < 4 then
+condicion := 'desaprobado';
+end if;
+return condicion;
+end;
+/
+
+-- Realizamos el "select" sobre "notas" mostrando la misma información que antes:
+
+select nombre, nota, f_condicion(nota) from notas;
+
+-- En el siguiente ejemplo colocamos un "if" dentro de otro "if". En el cuerpo de la función controlamos si la nota es menor a 
+-- 4 (retorna "desaprobado"), luego, dentro del "else", controlamos si la nota es menor a 8 (retorna "regular") y si no lo es 
+-- ("else"), retorna "promocionado":
+
+create or replace function f_condicion(anota number) 
+return varchar2 is
+condicion varchar2(20);
+begin
+condicion := '';
+if anota < 4 then
+condicion := 'desaprobado';
+else 
+if anota < 8 then
+condicion := 'regular';
+else 
+condicion := 'promocionado';
+end if;
+end if;
+return condicion;
+end;
+/
+
+-- Realizamos el "select" sobre "notas" mostrando la misma información que antes:
+
+select nombre, nota, f_condicion(nota) from notas;
+
+-- Simplificamos la función anteriormente creada empleando la sintaxis "if...elsif":
+
+create or replace function f_condicion (anota number)
+return varchar2 is
+condicion varchar2(20);
+begin
+condicion := '';
+if anota <4 then 
+condicion := 'desaprobado';
+elsif anota < 8 then
+condicion := 'regular';
+else
+condicion := 'promocionado';
+end if;
+return condicion;
+end;
+/
+
+-- Realizamos el "select sobre "notas" mostrando la misma información de antes:
+
+select nombre, nota, f_condicion(nota) from notas;
+
+-- Ejercicio 1 
+
+
