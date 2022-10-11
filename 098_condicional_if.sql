@@ -146,23 +146,67 @@ select nombre, nota, f_condicion(nota) from notas;
  -- menor al stock mínimo: "reponer",
  -- igual o superior al stock mínimo: "normal".
 
+create or replace function f_estado(aactual number, aminimo number) 
+return varchar2 is 
+estado varchar2(20);
+begin
+estado := 'normal';
+if aactual >= aminimo then 
+estado := 'normal';
+else 
+if aactual = 0 then 
+estado := 'faltante';
+else 
+estado := 'repoter';
+end if;
+end if;
+return estado;
+end;
+/
 
 -- Realice un "select" mostrando el código del producto, ambos stocks y, empleando la función creada anteriormente, una 
 -- columna que muestre el estado del producto
 
+ select codigo, stockactual, stockminimo, f_estado(stockactual,stockminimo) as estado from productos;
 
 -- Realice la misma función que en el punto 4, pero esta vez empleando en la estructura condicional la sintaxis "if... elsif...end if"
 
+create or replace function f_estado(aactual number, aminimo number) 
+return varchar2 is
+estado varchar2(20);
+begin
+estado := 'normal';
+if aactual > aminimo then estado := 'normal';
+elsif aactual = 0 then estado := 'faltante';
+else estado := 'reponer';
+end if;
+return estado;
+end;
+/
 
 -- Realice un "select" mostrando el código del producto, ambos stocks y, empleando la función creada anteriormente, una 
 -- columna que muestre el estado del producto
+
+select codigo, stockactual, stockminimo, f_estado(stockactual,stockminimo) as estado from productos;
 
 
 -- Realice una función similar a las anteriores, pero esta vez, si el estado es "reponer" o "faltante", debe especificar la 
 -- cantidad necesaria (valor necesario para llegar al stock mínimo)
 
+create or replace function f_estado(aactual number, aminimo number)
+return varchar2 is
+estado varchar2(20);
+begin
+estado := 'normal';
+if aactual >= aminimo then estado := 'normal'; 
+elsif aactual = 0 then estado := 'faltante' || to_char(aminimo);
+else estado := 'reponer' || to_char(aminimo - aactual);
+end if;
+return estado;
+end;
+/
 
 -- Realice un "select" mostrando el código del producto, ambos stocks y, empleando la función creada anteriormente, una 
 -- columna que muestre el estado del producto
 
-
+select codigo, stockactual, stockminimo, f_estado(stockactual,stockminimo) as estado from productos;
