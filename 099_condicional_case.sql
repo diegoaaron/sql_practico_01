@@ -264,4 +264,150 @@ where extract(month from fechanacimiento)='08';
  where extract(month from fechanacimiento)='08'
  order by 2;
 
--- 
+-- Ejercicio 2
+
+  drop table alumnos;
+
+ create table alumnos(
+  legajo char(5) not null,
+  nombre varchar2(30),
+  promedio number(4,2)
+);
+
+ insert into alumnos values(3456,'Perez Luis',8.5);
+ insert into alumnos values(3556,'Garcia Ana',7.0);
+ insert into alumnos values(3656,'Ludueña Juan',9.6);
+ insert into alumnos values(2756,'Moreno Gabriela',4.8);
+ insert into alumnos values(4856,'Morales Hugo',3.2);
+ insert into alumnos values(7856,'Gomez Susana',6.4);
+ 
+-- Si el alumno tiene un promedio menor a 4, muestre un mensaje "reprobado", si el promedio es mayor o igual a 4 y menor a 7, muestre 
+-- "regular", si el promedio es mayor o igual a 7, muestre "promocionado", usando "case" (recuerde que "case" toma valores puntuales, emplee "trunc")
+
+create or replace function f_notas2(apromedio number) 
+return varchar2 is
+tipopromedio varchar2(50);
+promedio number;
+begin
+promedio := apromedio;
+tipopromedio := 'reprobado';
+case trunc(promedio) 
+    when 1 then tipopromedio:= 'reprobado'; 
+    when 2 then tipopromedio:= 'reprobado'; 
+    when 3 then tipopromedio:= 'reprobado'; 
+    when 4 then tipopromedio:= 'reprobado'; 
+    when 5 then tipopromedio:= 'regular';
+    when 6 then tipopromedio:= 'regular';
+    when 7 then tipopromedio:= 'regular';
+    when 8 then tipopromedio:= 'promocionado';
+    when 9 then tipopromedio:= 'promocionado';
+    when 10 then tipopromedio:= 'promocionado';
+end case;
+return tipopromedio;
+end;
+/
+
+-- Elimine la tabla "alumnos"
+
+drop table alumnos;
+
+-- La nueva tabla contendrá varias notas por alumno. Cree la tabla:
+
+ create table alumnos(
+  legajo char(5) not null,
+  nombre varchar2(30),
+  nota number(4,2)
+);
+
+ insert into alumnos values(3456,'Perez Luis',8.5);
+ insert into alumnos values(3456,'Perez Luis',9.9);
+ insert into alumnos values(3456,'Perez Luis',7.8);
+ insert into alumnos values(3556,'Garcia Ana',7.0);
+ insert into alumnos values(3556,'Garcia Ana',6.0);
+ insert into alumnos values(3656,'Ludueña Juan',9.6);
+ insert into alumnos values(3656,'Ludueña Juan',10);
+ insert into alumnos values(2756,'Moreno Gabriela',4.2);
+ insert into alumnos values(2756,'Moreno Gabriela',2.6);
+ insert into alumnos values(2756,'Moreno Gabriela',2);
+ insert into alumnos values(4856,'Morales Hugo',3.2);
+ insert into alumnos values(4856,'Morales Hugo',4.7);
+ insert into alumnos values(7856,'Gomez Susana',6.4);
+ insert into alumnos values(7856,'Gomez Susana',8.6);
+
+-- Si el alumno tiene un promedio menor a 4, muestre un mensaje "reprobado", si el promedio es mayor o igual a 4 y menor a 7, muestre "regular", 
+-- si el promedio es mayor o igual a 7, muestre "promocionado", usando "case" (recuerde que "case" toma valores puntuales, emplee "trunc"). 
+-- Para obtener el promedio agrupe por legajo y emplee la función "avg"
+
+select legajo, trunc(avg(nota)) , f_notas2(trunc(avg(nota))) from alumnos group by legajo;
+
+ select legajo,trunc(avg(nota),2),
+  case trunc(avg(nota))
+   when 0 then 'reprobado'
+   when 1 then 'reprobado'
+   when 2 then 'reprobado'
+   when 3 then 'reprobado'
+   when 4 then 'regular'
+   when 5 then 'regular'
+   when 6 then 'regular'
+   when 7 then 'promocionado'
+   when 8 then 'promocionado'
+   when 9 then 'promocionado'
+   else 'promocionado'
+  end as Condicion
+ from alumnos
+ group by legajo;
+
+-- Cree una tabla denominada "alumnosCondicion" con los campos "legajo", "notafinal" y "condicion":
+
+  drop table alumnosCondicion;
+  
+  create table alumnosCondicion(
+   legajo char(5),
+   notafinal number(4,2),
+   condicion varchar2(15)
+  );
+
+-- Cree o reemplace un procedimiento almacenado llamado "pa_CargarCondicion" que guarde en la tabla "alumnosCondicion" el legajo de cada 
+-- alumno, el promedio de sus notas y la condición (libre, regular o promocionado)
+
+create or replace procedure pa_cargarCondicion as 
+begin
+insert into alumnosCondicion 
+(select legajo, avg(nota), f_notas2(trunc(avg(nota))) from alumnos group by legajo);
+end;
+/
+
+ create or replace procedure pa_cargarCondicion2
+ as
+ begin
+  insert into alumnoscondicion
+  select legajo,avg(nota),
+  case trunc(avg(nota))
+   when 0 then 'libre'
+   when 1 then 'libre'
+   when 2 then 'libre'
+   when 3 then 'libre'
+   when 4 then 'regular'
+   when 5 then 'regular'
+   when 6 then 'regular'
+   when 7 then 'promocionado'
+   when 8 then 'promocionado'
+   when 9 then 'promocionado'
+   else 'promocionado'
+  end
+  from alumnos
+  group by legajo;
+ end;
+ /
+
+-- Ejecute el procedimiento "pa_cargarCondicion" y recupere todos los datos de la tabla "alumnoscondicion"
+
+execute pa_cargarCondicion;
+
+select * from alumnosCondicion;
+
+execute pa_cargarCondicion2;
+
+select * from alumnosCondicion;
+
+
