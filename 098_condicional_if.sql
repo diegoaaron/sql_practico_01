@@ -123,4 +123,46 @@ select nombre, nota, f_condicion(nota) from notas;
 
 -- Ejercicio 1 
 
+ drop table productos;
+
+ create table productos(
+  codigo number(5),
+  precio number(6,2),
+  stockminimo number(4),
+  stockactual number(4)
+ );
+
+ insert into productos values(100,10,100,200);
+ insert into productos values(102,15,200,500);
+ insert into productos values(130,8,100,0);
+ insert into productos values(240,23,100,20);
+ insert into productos values(356,12,100,250);
+ insert into productos values(360,7,100,100);
+ insert into productos values(400,18,150,100);
+ 
+ -- Cree una función que reciba dos valores numéricos correspondientes a ambos stosks. Debe comparar ambos 
+ -- stocks y retornar una cadena de caracteres indicando el estado de cada producto, si stock actual es:
+ -- cero: "faltante",
+ -- menor al stock mínimo: "reponer",
+ -- igual o superior al stock mínimo: "normal".
+
+
+-- Realice un "select" mostrando el código del producto, ambos stocks y, empleando la función creada anteriormente, una 
+-- columna que muestre el estado del producto
+
+
+-- Realice la misma función que en el punto 4, pero esta vez empleando en la estructura condicional la sintaxis "if... elsif...end if"
+
+
+-- Realice un "select" mostrando el código del producto, ambos stocks y, empleando la función creada anteriormente, una 
+-- columna que muestre el estado del producto
+
+
+-- Realice una función similar a las anteriores, pero esta vez, si el estado es "reponer" o "faltante", debe especificar la 
+-- cantidad necesaria (valor necesario para llegar al stock mínimo)
+
+
+-- Realice un "select" mostrando el código del producto, ambos stocks y, empleando la función creada anteriormente, una 
+-- columna que muestre el estado del producto
+
 
