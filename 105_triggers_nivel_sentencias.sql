@@ -51,3 +51,62 @@ de sentencia, se activa una vez por cada instrucción "insert" sobre "libros". El
 ocurrir el evento de inserción, en este caso, ingresar en la tabla "control" el nombre del usuario que alteró la tabla "libros" (obtenida mediante la función "user") y la fecha en que lo hizo 
 (mediante la función "sysdate").
 */
+
+ drop table libros;
+ 
+ create table libros(
+  codigo number(6),
+  titulo varchar2(40),
+  autor varchar2(30),
+  precio number(6,2)
+ );
+
+ drop table control;
+ 
+ create table control(
+  usuario varchar2(30),
+  fecha date
+ );
+
+ create or replace trigger tr_ingresar_libros
+  before insert
+  on libros
+ begin
+  insert into Control values(user,sysdate);
+ end tr_ingresar_libros;
+ /
+
+-- Establecemos el formato de fecha para que muestre "DD/MM/YYYY HH24:MI":
+
+alter session set NLS_DATE_FORMAT = 'DD/MM/YYYY HH24:MI';
+
+-- Veamos qué nos informa el diccionario "user_triggers" respecto del trigger anteriormente creado:
+
+select * from user_triggers where trigger_name = 'TR_INGRESAR_LIBROS';
+
+-- obtenemos la siguiente información:
+-- trigger_name: nombre del disparador;
+-- trigger_type: momento y nivel, en este caso es un desencadenador "before" y a nivel de sentencia (statement);
+-- triggering_event: evento que lo dispara, en este caso, "insert";
+-- base_object_type: a qué objeto está asociado, puede ser una tabla o una vista, en este caso, una tabla (table);
+-- table_name: nombre de la tabla al que está asociado (libros);
+-- y otras columnas que no analizaremos por el momento.
+
+-- Ingresamos un registro en "libros":
+
+ insert into libros values(100,'Uno','Richard Bach',25);
+
+-- Verificamos que el trigger se disparó consultando la tabla "control" para ver si tiene un nuevo registro:
+
+select * from control;
+
+-- Ingresamos dos registros más en "libros":
+
+insert into libros values(150,'Matematica estas ahi','Paenza',12);
+insert into libros values(185,'El aleph','Borges',42);
+
+-- Verificamos que el trigger se disparó consultando la tabla "control" para ver si tiene dos nuevos registros:
+
+select * from control;
+
+
