@@ -136,9 +136,11 @@ select * from control;
  
  -- Establezca el formato de fecha para que muestre "DD/MM/YYYY HH24:MI":
 
+ alter session set NLS_DATE_FORMAT = 'DD/MM/YYYY HH24:MI';
 
 -- Cree un disparador que se dispare cuando se ingrese un nuevo registro en "ofertas"; el trigger debe ingresar en la tabla "control", el nombre del usuario, la fecha y la hora en la cual 
 -- se realizó un "insert" sobre "ofertas"
+
 
 
 -- Vea qué informa el diccionario "user_triggers" respecto del trigger anteriormente creado
