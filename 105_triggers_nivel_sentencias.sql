@@ -141,18 +141,32 @@ select * from control;
 -- Cree un disparador que se dispare cuando se ingrese un nuevo registro en "ofertas"; el trigger debe ingresar en la tabla "control", el nombre del usuario, la fecha y la hora en la cual 
 -- se realizó un "insert" sobre "ofertas"
 
-
+create or replace trigger tr_ingresar_ofertas
+before insert on ofertas
+begin
+insert into control values (user,sysdate);
+end tr_ingresar_ofertas;
+/
 
 -- Vea qué informa el diccionario "user_triggers" respecto del trigger anteriormente creado
 
+select * from user_triggers where trigger_name = 'TR_INGRESAR_OFERTAS';
 
 -- Ingrese algunos registros en "libros"
 
--- insert into libros values(100,'Uno','Richard Bach','Planeta',25); insert into libros values(102,'Matematica estas ahi','Paenza','Nuevo siglo',12); insert into libros values(105,'El aleph','Borges',
--- 'Emece',32); insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
+ insert into libros values(100,'Uno','Richard Bach','Planeta',25);
+ insert into libros values(102,'Matematica estas ahi','Paenza','Nuevo siglo',12);
+ insert into libros values(105,'El aleph','Borges','Emece',32);
+ insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
+
+
 
 -- Ingrese en "ofertas" los libros de "libros" cuyo precio no superen los $30, utilizando la siguiente sentencia:
 
  insert into ofertas select titulo,autor,precio from libros where precio<30;
 
 -- Verifique que el trigger se disparó consultando la tabla "control"
+
+ select *from control;
+
+
