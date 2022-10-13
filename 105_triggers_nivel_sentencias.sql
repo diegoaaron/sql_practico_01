@@ -109,4 +109,48 @@ insert into libros values(185,'El aleph','Borges',42);
 
 select * from control;
 
+-- Ejercicio 1
 
+ drop table libros;
+ drop table ofertas;
+ drop table control;
+
+ create table libros(
+  codigo number(6),
+  titulo varchar2(40),
+  autor varchar2(30),
+  editorial varchar2(20),
+  precio number(6,2)
+ );
+
+ create table ofertas(
+  titulo varchar2(40),
+  autor varchar2(30),
+  precio number(6,2)
+ );
+
+ create table control(
+  usuario varchar2(30),
+  fecha date
+ );
+ 
+ -- Establezca el formato de fecha para que muestre "DD/MM/YYYY HH24:MI":
+
+
+-- Cree un disparador que se dispare cuando se ingrese un nuevo registro en "ofertas"; el trigger debe ingresar en la tabla "control", el nombre del usuario, la fecha y la hora en la cual 
+-- se realizó un "insert" sobre "ofertas"
+
+
+-- Vea qué informa el diccionario "user_triggers" respecto del trigger anteriormente creado
+
+
+-- Ingrese algunos registros en "libros"
+
+-- insert into libros values(100,'Uno','Richard Bach','Planeta',25); insert into libros values(102,'Matematica estas ahi','Paenza','Nuevo siglo',12); insert into libros values(105,'El aleph','Borges',
+-- 'Emece',32); insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
+
+-- Ingrese en "ofertas" los libros de "libros" cuyo precio no superen los $30, utilizando la siguiente sentencia:
+
+ insert into ofertas select titulo,autor,precio from libros where precio<30;
+
+-- Verifique que el trigger se disparó consultando la tabla "control"
