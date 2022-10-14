@@ -79,4 +79,23 @@ select * from user_triggers where trigger_name = 'TR_INGRESAR_OFERTAS';
 
 -- Ingresamos algunos registros 
 
+ insert into libros values(100,'Uno','Richard Bach','Planeta',25);
+ insert into libros values(102,'Matematica estas ahi','Paenza','Nuevo siglo',12);
+ insert into libros values(105,'El aleph','Borges','Emece',32);
+ insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
+
+-- Ingresamos en "ofertas" los libros de "libros" cuyo precio no superen los $30, utilizando la siguiente sentencia:
+
+insert into ofertas select titulo, autor, precio from libros where precio < 30;
+
+-- Verificamos que el trigger se disparó 2 veces, una por cada fila afectada en la sentencia "insert" anteriormente ejecutada; 
+-- consultamos la tabla "control":
+
+select * from control;
+
+--Si el trigger hubiese sido creado a nivel de sentencia, no de fila, el "insert" anterior se hubiese activado una sola vez aun 
+-- cuando se ingresaron 2 registros.
+
+-- Ejercicio 1 
+
 
