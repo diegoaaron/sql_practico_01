@@ -98,4 +98,50 @@ select * from control;
 
 -- Ejercicio 1 
 
+ drop table empleados;
+ drop table control;
+
+ create table empleados(
+  documento char(8),
+  apellido varchar2(30),
+  nombre varchar2(30),
+  seccion varchar2(20)
+ );
+
+ create table control(
+  usuario varchar2(30),
+  fecha date
+ );
+
+-- Cree un disparador que se dispare una vez por cada registro ingresado en "empleados"; el trigger debe ingresar en la 
+-- tabla "control", el nombre del usuario y la fecha en la cual se realizó un "insert" sobre "empleados"
+
+create or replace trigger tr_ingresar_empleados
+before insert on empleados
+for each row
+begin 
+insert into control values(user, sysdate);
+end tr_ingresar_empleados;
+/
+
+-- Vea qué nos informa el diccionario "user_triggers" respecto del trigger anteriormente creado
+
+select * from user_triggers where trigger_name = 'TR_INGRESAR_EMPLEADOS';
+
+-- Ingrese algunos registros en "empleados":
+
+ insert into empleados values('22333444','ACOSTA','Ana','Secretaria');
+ insert into empleados values('22777888','DOMINGUEZ','Daniel','Secretaria');
+ insert into empleados values('22999000','FUENTES','Federico','Sistemas');
+ insert into empleados values('22555666','CASEROS','Carlos','Contaduria');
+ insert into empleados values('23444555','GOMEZ','Gabriela','Sistemas');
+ insert into empleados values('23666777','JUAREZ','Juan','Contaduria');
+
+-- Verifique que el trigger se disparó 6 veces, una por cada fila afectada en la sentencia "insert" anteriormente ejecutada; 
+-- consultamos la tabla "control":
+
+select * from control;
+
+-- Si el trigger hubiese sido creado a nivel de sentencia, no de fila, el "insert" anterior se hubiese activado una sola vez aún 
+-- cuando se ingresaron 6 registros.
 
