@@ -60,4 +60,23 @@ el trigger hubiese sido definido a nivel de sentencia (statement), se agregaría 
 
 -- Establecemos el formato de fecha para que muestre "DD/MM/YYYY HH24:MI":
 
+ alter session set NLS_DATE_FORMAT = 'DD/MM/YYYY HH24:MI';
+
+-- Creamos un disparador que se dispare una vez por cada registro ingresado en "ofertas"; el trigger debe ingresar en la 
+-- tabla "control", el nombre del usuario, la fecha y la hora en la cual se realizó un "insert" sobre "ofertas":
+
+create or replace trigger tr_ingresar_ofertas
+before insert on ofertas
+for each row
+begin
+insert into control values(user, sysdate);
+end tr_ingresar_ofertas;
+/
+
+-- Veamos qué nos informa el diccionario "user_triggers" respecto del trigger anteriormente creado:
+
+select * from user_triggers where trigger_name = 'TR_INGRESAR_OFERTAS';
+
+-- Ingresamos algunos registros 
+
 
