@@ -40,9 +40,62 @@ registro en "control" con el nombre del usuario que realizó la eliminación y la 
  /
 */
 
+ drop table libros;
+ drop table control;
 
+ create table libros(
+  codigo number(6),
+  titulo varchar2(40),
+  autor varchar2(30),
+  editorial varchar2(20),
+  precio number(6,2)
+ );
 
+ create table control(
+  usuario varchar2(30),
+  fecha date
+ );
 
+ insert into libros values(97,'Uno','Richard Bach','Planeta',25);
+ insert into libros values(98,'El aleph','Borges','Emece',28);
+ insert into libros values(99,'Matematica estas ahi','Paenza','Nuevo siglo',12);
+ insert into libros values(100,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
+ insert into libros values(101,'Alicia en el pais de las maravillas','Carroll','Planeta',35);
+ insert into libros values(102,'El experto en laberintos','Gaskin','Planeta',20);
 
+-- Establecemos el formato de fecha para que muestre "DD/MM/YYYY HH24:MI":
 
+alter session set NLS_DATE_FORMAT = 'DD/MM/YYYY HH24:MI';
+
+-- Creamos un disparador a nivel de fila, que se dispare cada vez que se borre un registro de "libros"; el trigger debe 
+-- ingresar en la tabla "control", el nombre del usuario, la fecha y la hora en la cual se realizó un "delete" sobre "libros":
+
+create or replace trigger tr_borrar_libros
+before delete on libros
+for each row
+begin
+insert into control values(user,sysdate);
+end tr_borrar_libros;
+/
+
+-- Veamos qué nos informa el diccionario "user_triggers" respecto del trigger anteriormente creado:
+
+select * from user_triggers where trigger_name = 'TR_BORRAR_LIBROS';
+
+-- obtenemos la siguiente información:
+-- trigger_name: nombre del disparador;
+-- trigger_type: momento y nivel, en este caso es un desencadenador "before" y a nivel de fila (each row);
+-- triggering_event: evento que lo dispara, en este caso, "delete";
+-- base_object_type: a qué objeto está asociado, puede ser una tabla o una vista, en este caso, una tabla (table);
+-- table_name: nombre de la tabla al que está asociado (libros);
+
+-- Eliminamos todos los libros cuyo código sea inferior a 100:
+
+delete from libros where codigo < 100;
+
+-- Veamos si el trigger se disparó consultando la tabla "control":
+
+select * from control;
+
+-- 
 
