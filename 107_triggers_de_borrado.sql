@@ -176,11 +176,24 @@ select * from control;
 
 -- Reemplace el disparador creado anteriormente por otro con igual código pero a nivel de sentencia
 
+create or replace trigger tr_borrar_empleados
+before delete on empleados
+begin
+insert into control values(user, sysdate);
+end tr_borrar_empleados;
+/
+
 -- Vea qué nos informa el diccionario "user_triggers" respecto del trigger anteriormente creado
 -- en este caso es un desencadenador a nivel de sentencia; en la columna "TRIGGER_TYPE" muestra "BEFORE STATEMENT".
+
+select * from user_triggers where trigger_name  = 'TR_BORRAR_EMPLEADOS';
 
 -- Elimine todos los empleados de la sección "Secretaria"
 -- Se han eliminado 2 registros, pero el trigger se ha disparado una sola vez.
 
+delete from empleados where seccion = 'Secretaria';
+
 -- Consultamos la tabla "control"
 -- Si el trigger hubiese sido definido a nivel de fila, se hubiese disparado dos veces.
+
+select * from control;
