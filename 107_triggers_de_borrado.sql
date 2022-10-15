@@ -97,5 +97,32 @@ delete from libros where codigo < 100;
 
 select * from control;
 
--- 
+-- Se eliminaron 3 registros, como el trigger fue definido a nivel de fila, se disparó 3 veces, una vez por cada registro 
+-- eliminado. Si el trigger hubiese sido definido a nivel de sentencia, se hubiese disparado una sola vez.
+
+-- Reemplazamos el disparador creado anteriormente por otro con igual código pero a nivel de sentencia:
+
+create or replace trigger tr_borrar_libros 
+before delete on libros
+begin
+insert into control values(user,sysdate);
+end tr_borrar_libros;
+/
+
+-- Veamos qué nos informa el diccionario "user_triggers" respecto del trigger anteriormente creado:
+-- en este caso es un desencadenador a nivel de sentencia.
+
+select * from user_triggers where trigger_name = 'TR_BORRAR_LIBROS';
+
+-- Eliminamos todos los libros cuya editorial sea "Planeta":
+
+delete from libros where editorial = 'Planeta';
+
+-- Se han eliminado 2 registros, pero el trigger se ha disparado una sola vez, consultamos la tabla "control":
+
+select * from control;
+
+-- Si el trigger hubiese sido definido a nivel de fila, se hubiese disparado dos veces.
+
+-- Ejercicio 1 
 
