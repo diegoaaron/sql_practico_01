@@ -44,7 +44,27 @@ Al ocurrir el evento de actualización sobre "libros", se ingresa en la tabla "co
 tabla "libros" (obtenida mediante la función "user") y la fecha en que lo hizo (mediante la función "sysdate").
 
 */
+ drop table libros;
+ drop table control;
 
+ create table libros(
+  codigo number(6),
+  titulo varchar2(40),
+  autor varchar2(30),
+  editorial varchar2(20),
+  precio number(6,2)
+ );
+
+ create table control(
+  usuario varchar2(30),
+  fecha date
+ );
+
+ insert into libros values(100,'Uno','Richard Bach','Planeta',25);
+ insert into libros values(103,'El aleph','Borges','Emece',28);
+ insert into libros values(105,'Matematica estas ahi','Paenza','Nuevo siglo',12);
+ insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
+ insert into libros values(145,'Alicia en el pais de las maravillas','Carroll','Planeta',35);
 
 
 
