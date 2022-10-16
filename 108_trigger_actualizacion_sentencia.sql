@@ -162,9 +162,16 @@ select * from user_triggers where trigger_name = 'TR_ACTUALIZAR_EMPLEADOS';
 
 -- Vea si el trigger se disparó consultando la tabla "control"
 
+select * from control;
+
 -- Actualice varios registros de "empleados" en una sola sentencia
+
+update empleados set sueldo = sueldo + sueldo * 0.1 where seccion = 'Secretaria';
 
 -- Vea si el trigger se disparó consultando la tabla "control"
 -- Note que se modificaron 2 registros de "empleados", pero como la modificación se realizó con una sola sentencia 
 -- "update" y el trigger es a nivel de sentencia, se agregó solamente una fila a la tabla "control"; si el trigger hubiese sido 
 -- creado a nivel de fila, la sentencia anterior, hubiese disparado el trigger 2 veces y habría ingresado en "control" 2 filas.
+
+select * from control;
+
