@@ -80,4 +80,44 @@ insert into control values(user,sysdate);
 end tr_actualizar_libros;
 /
 
--- 
+-- Veamos qué nos informa el diccionario "user_triggers" respecto del trigger anteriormente creado:
+
+select * from user_triggers where trigger_name = 'TR_ACTUALIZAR_LIBROS';
+
+-- obtenemos la siguiente información:
+
+-- trigger_name: nombre del disparador;
+
+-- trigger_type: momento y nivel, en este caso es un desencadenador "before" y a nivel de sentencia (statement);
+
+-- triggering_event: evento que lo dispara, en este caso, "update";
+
+-- base_object_type: a qué objeto está asociado, puede ser una tabla o una vista, en este caso, una tabla (table);
+
+-- table_name: nombre de la tabla al que está asociado (libros);
+
+-- .Actualizamos un registro en "libros":
+
+update libros set codigo = 99 where codigo = 100;
+
+-- Veamos si el trigger se disparó consultando la tabla "control":
+
+select * from control;
+
+-- Actualizamos varios registros de "libros":
+
+update libros set precio = precio + precio * 0.1 where editorial = 'Nuevo siglo';
+
+-- Veamos si el trigger se disparó consultando la tabla "control":
+
+select * from control;
+
+-- Note que se modificaron 2 registros de "libros", pero como la modificación se realizó con una sola sentencia "update" 
+-- y el trigger es a nivel de sentencia, se agregó solamente una fila a la tabla "control"; si el trigger hubiese sido creado a 
+-- nivel de fila, la sentencia anterior, hubiese disparado el trigger 2 veces y habría ingresado en "control" 2 filas.
+
+-- Ejercicio 1 
+
+
+
+
