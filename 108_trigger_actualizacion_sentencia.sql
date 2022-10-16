@@ -66,5 +66,18 @@ tabla "libros" (obtenida mediante la función "user") y la fecha en que lo hizo (
  insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
  insert into libros values(145,'Alicia en el pais de las maravillas','Carroll','Planeta',35);
 
+-- Establecemos el formato de fecha para que muestre "DD/MM/YYYY HH24:MI":
 
+alter session set NLS_DATE_FORMAT = 'DD/MM/YYYY HH24:MI';
 
+-- Creamos un disparador a nivel de sentencia, que se dispare cada vez que se actualice un registro en "libros"; el trigger 
+-- debe ingresar en la tabla "control", el nombre del usuario, la fecha y la hora en la cual se realizó un "update" sobre "libros":
+
+create or replace trigger tr_actualizar_libros
+before update on libros
+begin
+insert into control values(user,sysdate);
+end tr_actualizar_libros;
+/
+
+-- 
