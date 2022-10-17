@@ -98,3 +98,75 @@ select * from control;
 
 -- Ejercicio 1 
 
+ drop table control;
+ drop table libros;
+
+ create table libros(
+  codigo number(6),
+  titulo varchar2(40),
+  autor varchar2(30),
+  editorial varchar2(20),
+  precio number(6,2)
+ );
+
+ create table control(
+  usuario varchar2(30),
+  fecha date
+ );
+
+ insert into libros values(100,'Uno','Richard Bach','Planeta',25);
+ insert into libros values(103,'El aleph','Borges','Emece',28);
+ insert into libros values(105,'Matematica estas ahi','Paenza','Nuevo siglo',12);
+ insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
+ insert into libros values(145,'Alicia en el pais de las maravillas','Carroll','Planeta',35);
+ 
+-- Establezca el formato de fecha para que muestre "DD/MM/YYYY HH24:MI":
+
+alter session set NLS_DATE_FORMAT = 'DD/MM/YYYY HH24:MI';
+
+-- Cree un desencadenador a nivel de sentencia que se dispare cada vez que se actualicen los campos "precio" y "editorial" ; 
+-- el trigger debe ingresar en la tabla "control", el nombre del usuario, la fecha y la hora en la cual se realizó un "update" 
+-- sobre "precio" o "editorial" de "libros"
+
+create or replace trigger tr_actualizar_precio_libros
+before update of precio, editorial on libros
+begin
+insert into control values(user, sysdate);
+end tr_actualizar_precio_libros;
+/
+
+-- Vea qué informa el diccionario "user_triggers" respecto del trigger anteriormente creado
+
+select * from user_triggers where trigger_name = 'TR_ACTUALIZAR_PRECIO_LIBROS';
+
+-- Aumente en un 10% el precio de todos los libros de editorial "Nuevo siglo'
+
+update libros set precio = precio*1.1 where editorial = 'Nuevo siglo';
+
+-- Vea cuántas veces se disparó el trigger consultando la tabla "control"
+-- El trigger se disparó 1 vez.
+
+select * from control;
+
+-- Cambie la editorial, de "Planeta" a "Sudamericana"
+
+update libros set editorial = 'Sudamericana' where editorial = 'Planeta';
+
+-- Veamos si el trigger se disparó consultando la tabla "control"
+-- El trigger se disparó.
+
+select * from control;
+
+-- Modifique un campo diferente de los que activan el trigger
+
+update libros set titulo = 'Uno a uno' where titulo = 'Uno';
+
+-- Verifique que el cambio se realizó
+
+select * from libros;
+
+-- Verifique que el trigger no se disparó
+-- El trigger no se disparó (no hay nuevas filas en "control"), pues está definido únicamente sobre los campos "precio" 
+-- y "editorial".
+
+select * from control;
