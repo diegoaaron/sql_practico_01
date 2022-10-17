@@ -154,3 +154,127 @@ delete from libros where codigo = 145;
 
 select * from control;
 
+-- Ejercicio 1
+
+ drop table control;
+ drop table libros;
+
+ create table libros(
+  codigo number(6),
+  titulo varchar2(40),
+  autor varchar2(30),
+  editorial varchar2(20),
+  precio number(6,2)
+ );
+
+ create table control(
+  usuario varchar2(30),
+  fecha date,
+  operacion varchar2(20)
+ );
+
+ insert into libros values(100,'Uno','Richard Bach','Planeta',25);
+ insert into libros values(103,'El aleph','Borges','Emece',28);
+ insert into libros values(105,'Matematica estas ahi','Paenza','Nuevo siglo',12);
+ insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
+ insert into libros values(145,'Alicia en el pais de las maravillas','Carroll','Planeta',35);
+
+-- 4- El gerente permite:
+-- ingresar o borrar libros de la tabla "libros" unicamente los sábados de 8 a 12 hs.
+-- actualizar los precios de los libros de lunes a viernes de 8 a 18 hs. y sábados entre la 8 y 12 hs.
+-- Cree un disparador para los tres eventos que controle la hora en que se realizan las operaciones sobre "libros". Si se 
+-- intenta eliminar, ingresar o actualizar registros de "libros" fuera de los días y horarios permitidos, debe aparecer un 
+-- mensaje de error. Si la operación de ingreso, borrado o actualización de registros se realiza, se debe almacenar en 
+-- "control", el nombre del usuario, la fecha y el tipo de operación ejecutada
+
+create or replace trigger tr_cambios_libro
+before insert or update or delete on libros
+for each row
+begin
+if inserting then
+if ((to_char(sysdate,'dy','nls_date_language=SPANISH') in ('sáb')) and
+(to_number(to_char(sysdate,'HH24')) between 8 and 11)) then
+insert into control values(user, sysdate, 'ingreso');
+else
+raise_application_error(-20000,'Los ingresos sólo los Sab. de 8 a 12 hs.');
+end if;
+end if;
+ if deleting then
+  if (to_char(sysdate,'dy','nls_date_language=SPANISH') in ('sáb')) and
+     (to_number(to_char(sysdate,'HH24')) between 8 and 11) then
+   insert into control values (user, sysdate,'borrado');
+  else
+    raise_application_error(-20001,'Las eliminaciones solo los Sab. de 8 a 12 hs.');
+  end if;
+ end if; 
+ if updating then
+  if ((to_char(sysdate,'dy','nls_date_language=SPANISH') in ('lun','mar','mié','jue','vie')) and
+     (to_number(to_char(sysdate,'HH24')) between 8 and 19)) or
+     ((to_char(sysdate,'dy','nls_date_language=SPANISH') in('sáb')) and
+     (to_number(to_char(sysdate,'HH24')) between 8 and 11))then
+   insert into control values (user, sysdate,'actualización');
+  else
+    raise_application_error(-20002,'Las actualizaciones solo de L a V de 8 a 20 o S de 8 a 12 hs.');
+  end if;
+ end if;
+end tr_cambios_libros;
+/
+
+-- Intente ingresar un libro. Mensaje de error.
+
+ insert into libros values(150,'El experto en laberintos','Gaskin','Planeta',25);
+
+-- Realice un "select" sobre "libros" y sobre "control" para verificar que se han cargado los datos correspondientes/
+-- Aparece el nuevo libro en "libros" y una fila de "ingreso" en "control".
+
+select * from libros;
+
+select * from control;
+
+-- Cambie la fecha y hora del sistema a "domingo 18 hs.". Intente modificar el precio de un libro. Mensaje de error.
+
+create or replace trigger tr_cambios_libro
+before insert or update or delete on libros
+for each row
+begin
+if inserting then
+if ((to_char(sysdate,'dy','nls_date_language=SPANISH') in ('lun')) and
+(to_number(to_char(sysdate,'HH24')) between 1 and 11)) then
+insert into control values(user, sysdate, 'ingreso');
+else
+raise_application_error(-20000,'Los ingresos sólo los Sab. de 8 a 12 hs.');
+end if;
+end if;
+ if deleting then
+  if (to_char(sysdate,'dy','nls_date_language=SPANISH') in ('lun')) and
+     (to_number(to_char(sysdate,'HH24')) between 1 and 11) then
+   insert into control values (user, sysdate,'borrado');
+  else
+    raise_application_error(-20001,'Las eliminaciones solo los Sab. de 8 a 12 hs.');
+  end if;
+ end if; 
+ if updating then
+  if ((to_char(sysdate,'dy','nls_date_language=SPANISH') in ('lun','mar','mié','jue','vie')) and
+     (to_number(to_char(sysdate,'HH24')) between 1 and 11)) or
+     ((to_char(sysdate,'dy','nls_date_language=SPANISH') in('sáb')) and
+     (to_number(to_char(sysdate,'HH24')) between 8 and 11))then
+   insert into control values (user, sysdate,'actualización');
+  else
+    raise_application_error(-20002,'Las actualizaciones solo de L a V de 8 a 20 o S de 8 a 12 hs.');
+  end if;
+ end if;
+end tr_cambios_libros;
+/
+
+--  Intente ingresar, modificar y eliminar el precio de un libro. 
+
+ insert into libros values(150,'El experto en laberintos','Gaskin','Planeta',25);
+
+ update libros set precio=45 where codigo=150;
+
+ delete from libros where codigo=150;
+
+-- Realice un "select" sobre "libros" y sobre "control" para verificar que se han cargado los datos correspondientes.
+-- Se ha eliminado el registro en "libros" y se ha cargado una nueva fila de "borrado" en "control".
+
+select * from control;
