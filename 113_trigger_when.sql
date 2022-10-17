@@ -200,3 +200,87 @@ select * from user_triggers where trigger_name = 'TR_PRECIO_LIBROS';
 
 -- Ejercicio 1
 
+drop table libros;
+ drop table ofertas;
+
+ create table libros(
+  codigo number(6),
+  titulo varchar2(40),
+  autor varchar2(30),
+  editorial varchar(20),
+  precio number(6,2)
+ );
+
+ create table ofertas(
+  codigo number(6),
+  titulo varchar2(40)
+ );
+
+ insert into libros values(100,'Uno','Richard Bach','Planeta',25);
+ insert into libros values(103,'El aleph','Borges','Emece',28);
+ insert into libros values(105,'Matematica estas ahi','Paenza','Nuevo siglo',12);
+ insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
+ insert into libros values(145,'Alicia en el pais de las maravillas','Carroll','Planeta',35);
+ 
+ -- Cree un trigger a nivel de fila que se dispara "antes" que se ejecute un "insert" sobre "libros". Se activa solamente si el 
+ -- precio que se ingresa es inferior a $30, en caso de serlo, se ingresa en "ofertas" el código y precio del libro
+
+create or replace trigger tr_ingresar_libros_ofertas
+before insert on libros
+for each row when (new.precio < 30)
+begin
+insert into ofertas values(:new.codigo, :new.titulo);
+end tr_ingresar_libros_ofertas;
+/
+
+-- Ingrese un libro en "libros" cuyo precio sea inferior a $30
+
+ insert into libros values(150,'El experto en laberintos','Gaskin','Planeta',28);
+
+-- Verifique que el trigger se disparó consultando "ofertas"
+
+select * from ofertas;
+
+-- Ingrese un libro en "libros" cuyo precio supere los $30
+
+ insert into libros values(155,'El gato con botas',null,'Planeta',38);
+
+-- Verifique que el trigger no se disparó consultando "ofertas"
+
+  select * from ofertas;
+
+-- Cree un trigger a nivel de fila que se dispare al borrar un libro de "libros", únicamente si el precio del libro que se 
+-- elimina es inferior a $30, es decir, si existe en "ofertas"
+
+create or replace trigger tr_borrar_libros_ofertas
+before delete on libros
+for each row when(old.precio < 30)
+begin
+delete from ofertas where codigo = :old.codigo;
+end tr_borrar_libros_ofertas;
+/
+
+-- Elimine un registro de "libros" cuyo precio sea inferior a $30
+
+ delete from libros where codigo=150;
+
+-- Verifique que el trigger se disparó consultando "ofertas" y "libros"
+
+ select *from ofertas;
+ select *from libros;
+
+-- Elimine un registro de "libros" cuyo precio supere los $30
+
+ delete from libros where codigo=155;
+
+-- Verifique que el trigger no se disparó consultando "ofertas" y que si se ha eliminado el registro en "libros"
+ 
+ select *from ofertas;
+ select *from libros;
+ 
+ -- Ejercicio 2
+ 
+ 
+ 
+ 
+ 
