@@ -91,5 +91,55 @@ select * from user_triggers where trigger_name = 'TR_ACTUALIZAR_LIBROS';
 
 -- Ejercicio 1 
 
+ drop table empleados;
+ drop table control;
+
+ create table empleados(
+  documento char(8),
+  apellido varchar2(20),
+  nombre varchar2(20),
+  seccion varchar2(30),
+  sueldo number(8,2)
+ );
+
+ create table control(
+  usuario varchar2(30),
+  fecha date
+ );
+
+ insert into empleados values('22333444','ACOSTA','Ana','Secretaria',500);
+ insert into empleados values('22777888','DOMINGUEZ','Daniel','Secretaria',560);
+ insert into empleados values('22999000','FUENTES','Federico','Sistemas',680);
+ insert into empleados values('22555666','CASEROS','Carlos','Contaduria',900);
+ insert into empleados values('23444555','GOMEZ','Gabriela','Sistemas',1200);
+ insert into empleados values('23666777','JUAREZ','Juan','Contaduria',1000);
+
+-- Cree un disparador que se dispare cada vez que se actualice un registro en "empleados"; el trigger debe ingresar 
+-- en la tabla "control", el nombre del usuario y la fecha en la cual se realizó un "update" sobre "empleados"
+
+create or replace trigger tr_actualizar_empleados
+before update on empleados
+for each row
+begin
+insert into control values(user, sysdate);
+end tr_actualizar_empleados;
+/
+
+-- Actualice varios registros de "empleados". Aumentamos en un 10% el sueldo de todos los empleados de la seccion 
+-- "Secretaria'
+
+update empleados set sueldo = sueldo + sueldo * 0.1 where seccion = 'Secretaria';
+
+-- Vea cuántas veces se disparó el trigger consultando la tabla "control"
+-- El trigger se disparó 2 veces, una vez por cada registro modificado en "empleados". Si el trigger hubiese sido creado 
+-- a nivel de sentencia, el "update" anterior hubiese disparado el trigger 1 sola vez aún cuando se modifican 2 filas.
+
+select * from control;
+
+-- Vea qué informa el diccionario "user_triggers" respecto del trigger anteriormente creado
+-- obtenemos el nombre del disparador, el momento y nivel (before each row), evento que lo dispara (update), a qué 
+-- objeto está asociado (table), nombre de la tabla al que está asociado (empleados) 
+
+select * from user_triggers where trigger_name = 'TR_ACTUALIZAR_EMPLEADOS';
 
 
