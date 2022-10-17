@@ -262,3 +262,256 @@ create or replace trigger tr_libros
 
  select *from user_triggers where trigger_name ='TR_LIBROS';
  
+ -- Ejercicio 1
+ 
+  drop table control;
+ drop table articulos;
+
+ create table articulos(
+  codigo number(6),
+  descripcion varchar2(40),
+  precio number (6,2),
+  stock number(4)
+ );
+
+ create table control(
+  usuario varchar2(30),
+  fecha date,
+  codigo number(6)
+ );
+
+ insert into articulos values(100,'regla 20 cm.',5.4,100);
+ insert into articulos values(102,'regla 40 cm.',15,80);
+ insert into articulos values(109,'lapices color x12',6,150);
+ insert into articulos values(130,'lapices color x6',4.5,100);
+ insert into articulos values(200,'compas metal',21.8,50);
+ 
+ -- Cree un trigger a nivel de fila que se dispara "antes" que se ejecute un "insert" sobre la tabla "articulos". 
+ -- En el cuerpo del disparador se debe ingresar en la tabla "control", el nombre del usuario que realizó la inserción, la fecha 
+ -- y el código del articulo que se ha ingresado
+
+create or replace trigger tr_ingresar_art
+before insert on articulos
+for each row
+begin
+insert into control values(user, sysdate, :new.codigo);
+end tr_ingresar_art;
+/
+
+-- Ingrese un nuevo registro en "articulos"
+
+insert into articulos values(200, 'compas plastico', 18.3, 50);
+
+-- Vea qué se almacenó en "control"
+
+select * from control;
+
+-- Cree un disparador que calcule el código cada vez que se inserte un nuevo registro
+
+create or replace trigger tr_codigo
+before insert on articulos
+for each row 
+begin
+select max(codigo) + 1 into :new.codigo from articulos;
+if :new.codigo is null then 
+:new.codigo := 1;
+end if;
+end tr_codigo;
+/
+
+-- Ingrese un nuevo registro en "articulos"
+
+insert into articulos values(200, 'cuaderno rayado x 12', 6, 200);
+
+-- Vea qué se almacenó en "articulos".
+-- Note que ignora el valor de código ingresado y calcula el siguiente valor a partir del máximo existente.
+
+select * from articulos;
+
+-- Vea qué se almacenó en "control"
+
+select * from control;
+
+-- Ingrese un nuevo artículo sin especificar código
+
+ insert into articulos (descripcion,precio,stock) values('cuaderno liso x12',5.5,200);
+
+-- Vea qué se almacenó en "articulos"
+
+select * from articulos;
+
+-- Vea qué se almacenó en "control"
+
+select * from control;
+
+-- Ejercicio 2
+
+ drop table libros;
+ drop table ofertas;
+
+ create table libros(
+  codigo number(6),
+  titulo varchar2(40),
+  autor varchar2(30),
+  editorial varchar(20),
+  precio number(6,2)
+ );
+
+ create table ofertas(
+  codigo number(6),
+  precio number(6,2)
+ );
+
+ insert into libros values(100,'Uno','Richard Bach','Planeta',25);
+ insert into libros values(103,'El aleph','Borges','Emece',28);
+ insert into libros values(105,'Matematica estas ahi','Paenza','Nuevo siglo',12);
+ insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55);
+ insert into libros values(145,'Alicia en el pais de las maravillas','Carroll','Planeta',35);
+ 
+-- Cree un trigger a nivel de fila que se dispare al ingresar un registro en "libros"; si alguno de los libros ingresados tiene 
+-- un precio menor o igual a $30 debe ingresarlo en "ofertas"
+
+create or replace trigger tr_ingresar_libros_ofertas
+before insert on libros
+for each row 
+begin
+if (:new.precio <= 30) then
+insert into ofertas values(:new.codigo,:new.precio);
+end if;
+end tr_ingresar_libros_ofertas;
+/
+
+-- Ingrese un libro en "libros" cuyo precio sea inferior a $30
+
+insert into libros values(150,'El experto en laberintos', 'Gaskin', 'Planeta', 28);
+
+-- Verifique que el trigger se disparó consultando "ofertas"
+
+select * from ofertas;
+
+-- Ingrese un libro en "libros" cuyo precio supere los $30
+
+ insert into libros values(155,'El gato con botas',null,'Planeta',38);
+
+-- Verifique que no se ingresó ningún registro en "ofertas"
+
+select * from ofertas;
+
+-- Cree un trigger a nivel de fila que se dispare al modificar el precio de un libro. Si tal libro existe en "ofertas" y su nuevo 
+-- precio ahora es superior a $30, debe eliminarse de "ofertas"; si tal libro no existe en "ofertas" y su nuevo precio ahora 
+-- es inferior a $30, debe agregarse a "ofertas"
+
+create or replace trigger tr_modificar_libros_precio
+ before update of precio
+ on libros
+ for each row
+ begin
+  if (:old.precio<=30) and (:new.precio>30) then
+   delete from ofertas where codigo=:old.codigo;
+  end if;
+  if (:old.precio>30) and (:new.precio<=30) then
+   insert into ofertas values(:new.codigo,:new.precio);
+  end if;
+ end tr_modificar_libros_precio;
+ /
+
+-- Aumente a más de $30 el precio de un libro que se encuentra en "ofertas"
+
+ update libros set precio=50 where codigo=150;
+
+-- Verifique que el trigger se disparó consultando "libros" y "ofertas"
+
+select * from libros;
+
+select * from ofertas;
+
+-- Disminuya a menos de $31 el precio de un libro que no se encuentra en "ofertas"
+
+ update libros set precio=30 where codigo=155;
+
+-- Verifique que el trigger se disparó consultando "libros" y "ofertas"
+
+select * from libros;
+
+select * from ofertas;
+
+-- Cree un trigger a nivel de fila que se dispare al borrar un registro en "libros"; si alguno de los libros eliminados está en 
+-- "ofertas", también debe eliminarse de dicha tabla.
+
+create or replace trigger tr_eliminar_libros_ofertas
+before delete on libros
+for each row
+begin
+delete from ofertas where codigo = :old.codigo;
+end tr_eliminar_libros_ofertas;
+/
+
+-- Elimine un libro en "libros" que esté en "ofertas"
+
+ delete from libros where codigo=155;
+
+-- Verifique que el trigger se disparó consultando "libros" y "ofertas"
+
+  select *from libros;
+  
+  select *from ofertas;
+
+-- Elimine un libro en "libros" que No esté en "ofertas"
+
+ delete from libros where codigo=150;
+
+-- Verifique que el trigger se disparó consultando "libros" y "ofertas"
+
+select *from libros;
+  
+select *from ofertas;
+
+-- Cree una tabla llamada "control" que almacene el código, la fecha y el precio de un libro, antes elimínela por si existe
+
+ create table control(
+  codigo number(6),
+  fecha date,
+  precio number(6,2)
+ );
+
+-- Cree un disparador que se dispare cada vez que se actualice el precio de un libro; el trigger debe ingresar en la 
+-- tabla "control", el código del libro cuyo precio se actualizó, la fecha y el precio anterior.
+
+create or replace trigger tr_actualizar_precio
+before update of precio on libros
+for each row
+begin
+insert into control values(:old.codigo, sysdate, :old.precio);
+end tr_actualizar_precio;
+/
+
+-- Actualice el precio de un libro
+
+ update libros set precio=40 where codigo=120;
+
+-- Controle que el precio se ha modificado en "libros" y que se agregó un registro en "control"
+
+select *from libros where codigo=120;
+ select *from control;
+
+-- Modifique nuevamente el precio del libro cambiado en el punto 11
+
+ update libros set precio=45 where codigo=120;
+
+-- Controle que el precio se ha modificado en "libros" y que se agregó un nuevo registro en "control"
+
+ select *from libros where codigo=120;
+ select *from control;
+
+-- Modifique el precio de varios libros en una sola sentencia que incluya al modificado anteriormente
+
+ update libros set precio=precio+(precio*0.5) where codigo>=120;
+
+-- Controle que el precio se ha modificado en "libros" y que se agregó un nuevo registro en "control"
+
+ select *from libros where codigo>120;
+ select *from control;
+
+-- Vea qué informa el diccionario "user_triggers" respecto del trigger anteriormente creado
+
+ select *from user_triggers where trigger_name ='TR_ACTUALIZAR_PRECIO';
