@@ -280,7 +280,112 @@ end tr_borrar_libros_ofertas;
  
  -- Ejercicio 2
  
+  drop table empleados;
+
+ create table empleados(
+  documento char(8),
+  apellido varchar2(20),
+  nombre varchar2(20),
+  seccion varchar2(30),
+  sueldo number(8,2)
+ );
+
+ insert into empleados values('22333444','ACOSTA','Ana','Secretaria',500);
+ insert into empleados values('22555666','CASEROS','Carlos','Contaduria',900);
+ insert into empleados values('22777888','DOMINGUEZ','Daniel','Secretaria',560);
+ insert into empleados values('22999000','FUENTES','Federico','Sistemas',680);
+ insert into empleados values('23444555','GOMEZ','Gabriela','Sistemas',1200);
+ insert into empleados values('23666777','JUAREZ','Juan','Contaduria',1000);
+
+ drop table control;
+
+ create table control(
+  usuario varchar2(30),
+  fecha date,
+  documento char(8),
+  antiguosueldo number(8,2),
+  nuevosueldo number(8,2)
+ ); 
  
+ -- Cree un disparador que almacene el nombre del usuario, la fecha, documento, el antiguo y el nuevo sueldo en "control" 
+ -- cada vez que se actualice un sueldo de la tabla "empleados" a un valor mayor. Si el sueldo se disminuye, el trigger no 
+ -- debe activarse. Si se modifica otro campo diferente de "sueldo", no debe activarse.
  
- 
+ create or replace trigger tr_aumentar_sueldo_empleados
+ before update of sueldo on empleados
+ for each row when(new.sueldo > old.sueldo)
+ begin
+ insert into control values(user,sysdate,:old.documento,:old.sueldo,:new.sueldo);
+ end;
+ /
+
+-- Actualice el sueldo de todos los empleados de la sección "Sistemas" a "1000"
+
+update empleados set sueldo = 1000 where seccion = 'Sistemas';
+
+-- Consulte la tabla "control" para ver cuántas veces se ha disparado el trigger
+-- Se ha disparado una sola vez; se actualizaron 2 registros, pero en solo uno de ellos se aumentó el sueldo.
+
+select * from control;
+
+-- Al empleado con documento "22333444" se lo ha cambiado a la sección "contaduria". Realice el cambio en la tabla 
+-- "empleados"
+
+update empleados set seccion = 'Contaduria' where documento = '22333444';
+
+-- Verifique que el trigger no se ha activado porque no se ha modificado el campo "sueldo". Consulte "control"
+
+ select *from control;
+
+-- Cree un disparador a nivel de fila que se dispare cada vez que se ingrese un nuevo empleado y coloque en mayúsculas 
+-- el apellido ingresado. Además, si no se ingresa sueldo, debe ingresar '0'
+
+create or replace trigger tr_ingresar_empleados
+before insert on empleados
+for each row
+begin
+:new.apellido := upper(:new.apellido);
+if (:new.sueldo is null) then
+:new.sueldo := 0;
+end if;
+end;
+/
+
+-- Ingrese un nuevo empleado empleando minúsculas en el apellido
+
+ insert into empleados values('25666777','Lopez','Luisa','Secretaria',650);
+
+-- Verifique que el trigger "tr_ingresar_empleados" se disparó
+
+select * from empleados where documento = '25666777';
+
+-- Ingrese dos nuevos empleados, uno sin sueldo y otro con sueldo "null"
+
+insert into empleados (documento,apellido,nombre, seccion) values('26777888','Morales','Marta','Secretaria');
+ insert into empleados values('26999000','Perez','Patricia','Contaduria',null);
+
+-- Verifique que el trigger "tr_ingresar_empleados" se ha disparado
+-- Los dos registros deben tener el apellido en mayúsculas y deben tener el valor '0' en sueldo.
+
+select * from empleados;
+
+-- Cree un disparador a nivel de fila que se dispare cada vez que se ingresa un nuevo empleado y coloque "null" en 
+-- "sueldo" si el sueldo ingresado supera los $1000 o es inferior a $500
+
+create or replace trigger tr_ingresar_empleados
+before insert on empleados
+for each row when(new.sueldo > 1000 or new.sueldo < 500)
+begin
+:new.sueldo := null;
+end tr_ingresar_empleados;
+/
+
+-- Ingrese un nuevo empleado con un sueldo que dispare el trigger creado anteriormente
+
+ insert into empleados values('25666777','Lopez','Luisa','Secretaria',1650);
+
+-- Verifique que el trigger "tr_ingresar_empleados" se disparó
+
+select * from empleados;
+
  
