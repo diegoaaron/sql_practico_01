@@ -124,6 +124,80 @@ select * from controlprecios;
  insert into libros values(120,'Aprenda PHP','Molina Mario','Nuevo siglo',55,200);
  insert into libros values(145,'Alicia en el pais de las maravillas','Carroll','Planeta',35,10);
  
+ -- Cree un trigger a nivel de fila que se dispare "antes" que se ejecute un "update" sobre la tabla "libros". En el cuerpo del 
+ -- trigger se debe averiguar el campo que ha sido modificado. En caso de modificarse:
+-- el código, debe rechazarse la modificación con un mensaje de error.
+-- el "precio", se controla si es mayor o igual a cero, si lo es, debe dejarse el precio anterior y mostrar un mensaje de error.
+-- el stock, debe controlarse que no se ingrese un número negativo ni superior a 1000, en tal caso, debe rechazarse con un 
+-- mensaje de error.
+
+create or replace trigger tr_actualizar_libros
+before update on libros
+for each row
+begin
+if updating ('codigo') then
+raise_application_error(-20000,'No puede modificar el codigo');
+end if;
+if updating('precio') then
+if (:new.precio < 0) then
+raise_application_error(-20001,'No puede colocar precios negativos');
+end if;
+end if;
+if updating('stock') then
+if (:new.stock<0) or (:new.stock>1000) then
+raise_application_error(-20002,'El valor de stock debe estar entre 0 y 10000');
+end if;
+end if;
+end tr_actualizar_libros;
+/
+
+-- Intente modificar el precio de un libro con un valor negativo. Mensaje de error 20001;
+
+ update libros set precio=-50 where codigo=100;
+
+-- Verifique que el trigger se ha disparado consultando la tabla "libros"
+-- El cambio de precio no se realizó.
+
+select * from libros;
+
+-- Actualice un precio a un valor aceptado
+
+ update libros set precio=1 where codigo=100;
+
+-- Verifique que el trigger se ha disparado consultando la tabla "libros"
+-- El cambio de precio se realizó.
+
+select * from libros;
+
+-- Intente cambiar el código de un libro
+-- Mensaje de error 20000.
+
+ update libros set codigo=1 where codigo=100;
+
+-- Verifique que el cambio no se ha realizado
+
+select * from libros;
+
+-- Intente cambiar el stock de un libro a un valor negativo
+-- Mensaje de error 20002.
+
+ update libros set stock=-1 where codigo=100;
+
+-- Verifique que el cambio no se ha realizado
+
+select * from libros;
+
+-- Intente cambiar el stock de un libro a un valor que supere los 1000
+-- Mensaje de error 20002.
+
+ update libros set stock=2000 where codigo=100;
+
+-- Cambie el stock de un libro a un valor permitido
+
+ update libros set stock=200 where codigo=100;
+
+-- Verifique que el cambio se ha realizado
  
+ select * from libros;
  
  
