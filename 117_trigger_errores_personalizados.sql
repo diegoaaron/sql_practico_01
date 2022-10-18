@@ -126,4 +126,109 @@ del usuario y la fecha.
 
  select *from libros;
  
+ -- Ejercicio 1
  
+drop table empleados;
+ drop table control;
+
+ create table empleados(
+  documento char(8),
+  apellido varchar2(30),
+  nombre varchar2(30),
+  domicilio varchar2(30),
+  seccion varchar2(20),
+  sueldo number(8,2)
+ );
+
+ create table control(
+  usuario varchar2(30),
+  fecha date,
+  operacion varchar2(30)
+ );
+
+ insert into empleados values('22222222','Acosta','Ana','Avellaneda 11','Secretaria',1800);
+ insert into empleados values('23333333','Bustos','Betina','Bulnes 22','Gerencia',5000);
+ insert into empleados values('24444444','Caseres','Carlos','Colon 333','Contaduria',3000);
+
+-- Cree un trigger de inserción sobre "empleados" que guarde en "control" el nombre del usuario que ingresa datos, la 
+-- fecha y "insercion", en el campo "operacion". Pero, si el sueldo que se intenta ingresar supera los $5000, debe 
+-- mostrarse un mensaje de error y deshacer la transacción
+
+ create or replace trigger tr_insertar_empleados
+ before insert
+ on empleados
+ for each row
+ begin
+   if (:new.sueldo>5000)then
+    raise_application_error(-20000,'El sueldo no puede superar los $5000');
+   end if;
+   insert into control values(user,sysdate,'insercion');
+ end tr_insertar_empleados;
+ /
+
+-- Cree un trigger de borrado sobre "empleados" que guarde en "control" los datos requeridos (en "operacion" debe 
+-- almacenar "borrado". Si se intenta eliminar un empleado de la sección "gerencia", debe aparecer un mensaje de error y
+-- deshacer la operación
+
+ create or replace trigger tr_eliminar_empleados
+ before delete
+ on empleados
+ for each row
+ begin
+   if (:old.seccion='Gerencia')then
+    raise_application_error(-20001,'No puede eliminar empleados de gerencia');
+   end if;
+   insert into control values(user,sysdate,'borrado');
+ end;
+ /
+
+-- Cree un trigger de actualización. Ante cualquier modificación de los registros de "empleados", se debe ingresar en la 
+-- tabla "control", el nombre del usuario que realizó la actualización, la fecha y "actualizacion". Pero, controlamos que NO se 
+-- permita modificar el campo "documento", en caso de suceder, la acción no debe realizarse y debe mostrarse un mensaje 
+-- de error indicándolo
+
+ create or replace trigger tr_actualizar_empleados
+ before update
+ on empleados
+ for each row
+ begin
+   if updating('documento') then
+    raise_application_error(-20002,'No se puede modificar el documento de los empleados');
+   else
+    insert into control values(user,sysdate,'actualizacion');
+   end if;
+ end;
+ /
+
+-- Intente ingresar un empleado con sueldo superior a $5000:
+
+ insert into empleados values('25555555','Duarte','Dario','Dominicana 444','Secretaria',5800);
+
+-- Note que muestra el mensaje de error definido por usted.
+
+-- Ingrese un empleado con valores permitidos:
+
+ insert into empleados values('25555555','Duarte','Dario','Dominicana 444','Secretaria',2800);
+
+-- Intente borrar un empleado de "gerencia"
+-- Aparece un mensaje de error.
+
+ delete from empleados where documento='23333333';
+
+-- Elimine un empleado que no sea de "Gerencia"
+
+ delete from empleados where documento='25555555';
+
+-- Intente modificar el documento de un empleado
+-- Mensaje de error.
+
+ update empleados set documento='28888888' where documento='22222222';
+
+-- Modifique un campo diferente de "documento"
+
+ update empleados set nombre='Ana Laura' where nombre='Ana';
+
+-- Vea que se ha almacenado hasta el momento en "control"
+-- Debe haber 3 registros, de inserción, de borrado y actualización.
+ 
+  select *from control;
