@@ -405,10 +405,27 @@ select * from user_triggers where trigger_name='TR_ARTICULOS' or trigger_name='T
  execute dbms_output.enable (20000);
  
 -- En cada disparador que cree próximamente muestre un mensaje por pantalla que indique su nombre.
-
 -- Cree un disparador para que se ejecute cada vez que una instrucción "insert" ingrese datos en "empleados"; el mismo 
 -- debe verificar que el sueldo del empleado no sea mayor al sueldo máximo establecido para la sección, si lo es, debe 
 -- mostrar un mensaje indicando tal situación y deshacer la transacción
+
+  create or replace trigger tr_empleados_insertar
+  before insert
+  on empleados
+  for each row
+ declare
+   varsueldo number:=null;
+   varseccion varchar2(30):=null;
+ begin
+  dbms_output.put_line('Trigger de insercion de "empleados" activado');  
+  select sueldomaximo into varsueldo from secciones where codigo=:new.codigoseccion;   
+  select nombre into varseccion from secciones where codigo=:new.codigoseccion;
+  if (:new.sueldo>varsueldo) then
+    raise_application_error(-20001,'Ud. intenta ingresar un sueldo de $ '||to_char(:new.sueldo)
+|| ' y el máx. para ' || varseccion ||' es de '|| to_char(varsueldo));
+  end if;--sueldo mayor
+ end tr_empleados_insertar;
+ /
 
 -- Ingrese un nuevo registro en "empleados" cuyo sueldo sea menor o igual al establecido para la sección:
 
@@ -418,33 +435,71 @@ select * from user_triggers where trigger_name='TR_ARTICULOS' or trigger_name='T
 
 -- Verifique que el disparador se ejecutó consultando la tabla "empleados"
 
+select *from empleados;
+
 -- Intente ingresar un nuevo registro en "empleados" cuyo sueldo sea mayor al establecido para la sección
 -- El disparador se ejecutó mostrando un mensaje de error y la transacción se deshizo.
 
+ insert into empleados values('27777777','Gaston Garcia','Guemes 366',3,1200);
+
 -- Verifique que el registro no se agregó en "empleados"
+
+select *from empleados;
 
 -- Intente ingresar un empleado con código de sección inexistente
 -- Aparece un mensaje de error porque se viola la restricción "foreign key"; el trigger se ejecutó, aparece el mensaje 
 -- de texto que lo indica.
 
+ insert into empleados values('27777777','Gaston Garcia','Guemes 366',9,1200);
+
 -- Cree un disparador para que se ejecute cada vez que una instrucción "update" aumente el sueldo de "empleados"; el 
 -- mismo debe verificar que el sueldo del empleado no supere al sueldo máximo establecido para la sección, si lo es, debe 
 -- mostrar un mensaje indicando tal situación y deshacer la transacción
 
+create or replace trigger tr_empleados_update_sueldos
+  before update of sueldo
+  on empleados
+  for each row when (new.sueldo>old.sueldo)
+ declare
+   varsueldo number:=null;
+   varseccion varchar2(30):=null;
+ begin
+  dbms_output.put_line('Trigger de actualizacion de sueldo activado');  
+  select sueldomaximo into varsueldo from secciones where codigo=:new.codigoseccion;   
+  select nombre into varseccion from secciones where codigo=:new.codigoseccion;
+  if (:new.sueldo>varsueldo) then
+   raise_application_error(-20002,'Ud. intenta cambiar el sueldo de $ '||to_char(:old.sueldo)||' por '
+||to_char(:new.sueldo)||' y el máx. para ' || varseccion ||' es de '|| to_char(varsueldo));
+  end if;--sueldo mayor
+ end tr_empleados_update_sueldos;
+ /
+
 -- Modifique el sueldo de un empleado, debe ser menor o igual al establecido para la sección. El trigger se disparó.
 
+ update empleados set sueldo=1500 where documento='22222222';
+
 -- Verifique que el disparador se ejecutó consultando la tabla "empleados"
+
+ select *from empleados;
 
 -- Intente actualizar el sueldo de un empleado a un valor mayor al establecido para la sección
 -- El disparador se ejecutó mostrando un mensaje de error y la transacción se deshizo.
 
+ update empleados set sueldo=1600 where documento='22222222';
+
 -- Verifique que el registro no se modificó en "empleados"
+
+ select *from empleados;
 
 -- Disminuya el sueldo de un empleado
 -- El trigger no se disparo (no se mostró el texto con su nombre) porque se estableció en la condición "when" que el 
 -- sueldo nuevo fuera mayor al anterior.
 
+ update empleados set sueldo=sueldo-sueldo*0.1 where documento='22222222';
+
 -- Verifique que el registro se modificó en "empleados"
+
+ select *from empleados;
 
 -- Modifique el código de sección del empleado cuyo documento es "22222222" a "3"
 -- Note que el cambio se realizó, y ahora existe un empleado de la sección "Secretaria" con sueldo "1350" cuando el 
@@ -452,83 +507,223 @@ select * from user_triggers where trigger_name='TR_ARTICULOS' or trigger_name='T
 -- vez que se modifique la seccion de un empleado y verifique que el sueldo no supere el máximo de la nueva sección, si lo 
 -- supera, la transacción debe deshacerse
 
+ create or replace trigger tr_empleados_update_seccion
+  before update of codigoseccion
+  on empleados
+  for each row
+ declare
+   varsueldo number:=null;
+   varseccion varchar2(30):=null;
+ begin
+  dbms_output.put_line('Trigger de actualizacion de codigo de seccion activado');  
+  select sueldomaximo into varsueldo from secciones where codigo=:new.codigoseccion;
+  select nombre into varseccion from secciones where codigo=:new.codigoseccion;
+  if (:new.sueldo>varsueldo) then
+     raise_application_error(-20003,'Intenta cambiar la sección, pero el sueldo máx. para ' 
+|| varseccion ||' es de '|| to_char(varsueldo)|| ' y el sueldo actual de '||
+ to_char(:new.sueldo)|| ' lo supera');
+  end if;--sueldo mayor
+ end tr_empleados_update_seccion;
+ /
+
 -- Modifique el código de sección del empleado cuyo documento es "22222222" a "1"
 -- El trigger se disparó, como el sueldo no supera el máximo permitido para la nueva sección, el cambio se realizó.
 
+ update empleados set codigoseccion=1 where documento='22222222';
+
 -- Verifique que el cambio se realizó
+
+ select *from empleados;
 
 -- Modifique el código de sección del empleado cuyo documento es "23333333" a "3"
 -- El trigger se disparó y mostró el mensaje de error, la transacción se deshizo.
 
+ update empleados set codigoseccion=3 where documento='23333333';
+
 -- Verifique que el cambio no se realizó
+
+ select *from empleados;
 
 -- Modifique el sueldo del empleado cuyo documento es "23333333" a "1000" y el código de sección a "3"
 -- El trigger se disparó.
 
+ update empleados set sueldo=1000, codigoseccion=3 where documento='23333333';
+
 -- Verifique que el cambio se realizó
+
+ select *from empleados;
 
 -- Si modificamos el sueldo máximo de una sección de "secciones", disminuyéndolo, pueden quedar en "empleados" 
 -- valores de sueldos superiores al permitido para la sección. Para evitar esto debe crear un disparador sobre "secciones" 
 -- que se active cuando se disminuya el campo "sueldomaximo" y modifique el sueldo (al máximo permitido para la sección) 
 -- de todos los empleados de esa sección cuyos sueldos superen el nuevo máximo establecido
 
+create or replace trigger tr_secciones_maximo
+  before update of sueldomaximo
+  on secciones
+  for each row when (new.sueldomaximo<old.sueldomaximo)
+ declare
+   existen number:=0;
+ begin
+  dbms_output.put_line('Trigger de actualizacion de maximo sueldo activado');  
+  select count(*) into existen from empleados
+      where codigoseccion=:new.codigo
+      and sueldo>:new.sueldomaximo;
+  if (existen>0)Then
+   update empleados set sueldo=:new.sueldomaximo
+    where codigoseccion=:new.codigo
+    and sueldo>:new.sueldomaximo;
+   dbms_output.put_line(to_char(existen)|| ' registros de "empleados" actualizados');      
+  end if; 
+ end tr_secciones_maximo;
+ /
+
 -- Modifique el sueldo máximo para la sección "Administracion" a 2000, es decir, auméntelo
 -- Note que el trigger No se disparó, porque el trigger tiene una condición "when" que especifica que se active unicamente 
 -- cuando el nuevo sueldo maximo sea menor al anterior.
+ 
+ update secciones set sueldomaximo=2000 where nombre='Administracion';
 
 -- Verifique que el sueldo máximo de "Administracion" se ha modificado
+
+ select sueldomaximo from secciones where nombre='Administracion';
 
 -- Modifique el sueldo máximo para la sección "Administracion" a 1800, es decir, disminúyalo
 -- Note que el trigger se disparó, cumple con la condición "when". Pero, como no hay en "empleados", sueldos de tal 
 -- sección que superen tal valor, no se han modificado registros en "empleados".
 
+ update secciones set sueldomaximo=1800 where nombre='Administracion';
+
 -- Verifique que se modificó el sueldo máximo en "secciones" pero ningún registro en "empleados"
+
+ select sueldomaximo from secciones where nombre='Administracion';
+ select *from empleados where codigoseccion=1;
 
 -- Modifique el sueldo máximo para la sección "Administracion" a 1200, es decir, disminúyalo
 -- Note que el trigger se disparó, cumple con la condición "when". Como hay en "empleados" un sueldo de 1350, de 
 -- "Administracion", es decir supera el nuevo "sueldomaximo" que se intenta establecer, se modifica tal registro en "empleados".
 
+ update secciones set sueldomaximo=1200 where nombre='Administracion';
+
 -- Verifique que se modificó el sueldo máximo en "secciones" y un registro en "empleados"
+
+select sueldomaximo from secciones where nombre='Administracion';
+ select *from empleados where codigoseccion=1;
 
 -- Cree un trigger que no permita que se modifique el código de "secciones"
 
+create or replace trigger tr_secciones_update_codigo
+  before update of codigo
+  on secciones
+  for each row
+ begin
+  dbms_output.put_line('Trigger de actualizacion de codigo activado');  
+  raise_application_error(-20004,'El código de sección no puede modificarse');
+ end tr_secciones_update_codigo;
+ /
+
 -- Intente modificar el código de una sección de "secciones"
 -- Note que el trigger se disparó y muestra el mensaje de error. El código no se modificó. Verifíquelo
+
+ update secciones set codigo=9 where codigo=1;
 
 -- Actualice en una misma sentencia "update", el sueldo a "1800" y el codigo de sección a "2" del empleado cuyo documento 
 -- es "22222222"
 -- Note que se activan 2 triggers.
 
+ select *from secciones;
+
 -- Cree un trigger a nivel de sentencia sobre "empleados", que muestre un mensaje de error para evitar que se actualice el 
 -- campo "documento"
 
+create or replace trigger tr_empleados_documento
+  before update of documento
+  on empleados
+ begin
+  dbms_output.put_line('Trigger de actualizacion de documento activado');  
+  raise_application_error(-20005,'El documento no puede modificarse');
+ end tr_empleados_documento;
+ /
+ 
 -- Consulte el diccionario "user_triggers" para ver cuántos trigger están asociados a "empleados" y a "secciones"
+
+select table_name, trigger_name, triggering_event from user_triggers
+  where table_name ='EMPLEADOS' or table_name='SECCIONES';
 
 -- Elimine los 2 triggers asociados a la tabla "secciones"
 
+ drop trigger tr_secciones_maximo;
+ drop trigger tr_secciones_update_codigo;
+
 -- Consulte el diccionario "user_triggers" para verificar que "secciones" ya no tiene disparadores asociados a ella
+
+ select trigger_name, triggering_event from user_triggers
+  where table_name ='SECCIONES';
 
 -- Cree un trigger sobre "secciones", para el evento de actualización que realice todas las acciones que ejecutaban los 
 -- 2 triggers que "secciones" tenía asociados anteriormente; es decir:
 -- si se actualiza un sueldo máximo, modificar el sueldo, al máximo permitido, a todos los empleados (de la sección 
 -- modificada) cuyos sueldos superen el nuevo sueldo máximo;
 
+create or replace trigger tr_secciones
+  before update
+  on secciones
+  for each row
+ declare
+   existen number:=0;
+ begin
+  dbms_output.put_line('Trigger de actualizacion de secciones activado');  
+  if (updating('sueldomaximo'))then
+   if (:new.sueldomaximo<:old.sueldomaximo) then
+     select count(*) into existen from empleados where codigoseccion=:new.codigo and sueldo>:new.sueldomaximo;
+     if (existen>0)Then
+      update empleados set sueldo=:new.sueldomaximo
+      where codigoseccion=:new.codigo
+      and sueldo>:new.sueldomaximo;
+     end if; --existen
+     dbms_output.put_line(to_char(existen)|| ' registros de "empleados" actualizados');   
+   end if;--mayor
+  end if;--actualizacion de sueldo
+  if updating('codigo')then
+   raise_application_error(-20004,'El código no puede modificarse');
+  end if;
+ end tr_secciones;
+ /
+
 -- definir un mensaje de error si se intenta actualizar un código se sección.
+
+ update secciones set sueldomaximo=1100 where codigo=1;
 
 -- Probarlo. Disminuir el sueldo máximo de una sección que no supere el sueldo de ningun empleado:
 -- Se activó el trigger de actualizacion de secciones pero ningún registro de "empleados" fue modificado.
 
+ update secciones set sueldomaximo=1500 where codigo=2;
+
 -- Disminuir el sueldo máximo de una sección de modo que supere el sueldo de algún empleado
 -- Se activó el trigger de actualizacion de secciones y 2 registros de "empleados" fueron modificados.
 
--- Intente modificar un código de sección. Mensaje de error.
+ update secciones set codigo=10 where codigo=2;
+
 
 -- Consulte el diccionario "user_triggers" para ver cuántos triggers están asociados a las tablas "secciones" y "empleados"
 
+ select trigger_name, table_name, triggering_event from user_triggers
+  where table_name ='SECCIONES' or table_name ='EMPLEADOS';
+
 -- Elimine la tabla "empleados"
+
+ drop table empleados;
 
 -- Consulte el diccionario "user_triggers" para verificar que al borrar la tabla "empleados" se eliminaron todos los 
 -- disparadores asociados a ella
 
+ select trigger_name, table_name, triggering_event from user_triggers
+  where table_name ='EMPLEADOS';
+
 -- Elimine la tabla "secciones" y consulte "user_triggers" para verificar que al borrar la tabla "secciones" se eliminaron todos 
 -- los desencadenadores asociados a ella
+
+ drop table secciones;
+ select *from user_triggers
+  where table_name ='SECCIONES';
+  
