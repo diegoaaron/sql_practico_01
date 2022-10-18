@@ -334,17 +334,27 @@ select * from controlPrecios;
 -- Modifique el stock de varios artículos en una sola sentencia
 -- Cuatro mensajes muestran que el trigger se ha disparado 4 veces, por actualizaciones de stock.
 
+ update articulos set stock=10 where codigo>=104;
 
 -- Verifique que se han modificado 4 registros en "pedidos"
+
+ select *from pedidos;
 
 -- Modifique el precio de varios artículos en una sola sentencia
 -- Cuatro mensajes muestran que el trigger se ha disparado 4 veces, por actualizaciones de precio.
 
+ update articulos set precio=precio+precio*0.1 where codigo>=104;
+
 -- Verifique que se han agregado 4 nuevos registros en "controlPrecios"
+
+ select *from controlPrecios;
 
 -- Elimine varios artículos en una sola sentencia
 -- Cuatro mensajes muestran que el trigger se ha disparado 4 veces, por borrado de registros.
 
+ delete from articulos where codigo>=104;
+
 -- Verifique que se han eliminado 4 registros en "pedidos"
  
+ select * from pedidos;
  
