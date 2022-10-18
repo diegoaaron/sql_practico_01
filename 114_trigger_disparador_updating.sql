@@ -200,4 +200,151 @@ select * from libros;
  
  select * from libros;
  
+ -- Ejercicio 2
+ 
+ drop table articulos;
+ drop table pedidos;
+ drop table controlPrecios;
+
+ create table articulos(
+  codigo number(4),
+  descripcion varchar2(40),
+  precio number (6,2),
+  stock number(4)
+ );
+
+ create table pedidos(
+  codigo number(4),
+  cantidad number(4)
+ );
+
+ create table controlPrecios(
+  fecha date,
+  codigo number(4),
+  anterior number(6,2),
+  nuevo number(6,2)
+ );
+
+ insert into articulos values(100,'cuaderno rayado 24h',4.5,100);
+ insert into articulos values(102,'cuaderno liso 12h',3.5,150);
+ insert into articulos values(104,'lapices color x6',8.4,60);
+ insert into articulos values(160,'regla 20cm.',6.5,40);
+ insert into articulos values(173,'compas xxx',14,35);
+ insert into articulos values(234,'goma lapiz',0.95,200);
+ 
+ -- Ingrese en "pedidos" todos los códigos de "articulos", con "cantidad" cero
+ 
+insert into pedidos (codigo) select (codigo) from articulos;
+
+update pedidos set cantidad = 0;
+
+-- Active el paquete "dbms_output":
+
+ set serveroutput on;
+ execute dbms_output.enable(20000);
+
+-- Cada vez que se disminuye el stock de un artículo de la tabla "articulos", se debe incrementar la misma cantidad de ese 
+-- artículo en "pedidos" y cuando se incrementa en "articulos", se debe disminuir la misma cantidad en "pedidos". Si se 
+-- ingresa un nuevo artículo en "articulos", debe agregarse un registro en "pedidos" con "cantidad" cero. Si se elimina un 
+-- registro en "articulos", debe eliminarse tal artículo de "pedidos". Cree un trigger para los tres eventos (inserción, borrado y 
+-- actualización), a nivel de fila, sobre "articulos", para los campos "stock" y "precio", que realice las tareas descriptas 
+-- anteriormente, si el campo modificado es "stock". Si el campo modificado es "precio", almacene en la tabla "controlPrecios", 
+-- la fecha, el código del artículo, el precio anterior y el nuevo.
+-- El trigger muestra el mensaje "Trigger activado" cada vez que se dispara; en cada "if" muestra un segundo mensaje que 
+-- indica cuál condición se ha cumplido.
+
+create or replace trigger tr_articulos
+ before insert or delete or update of stock, precio
+ on articulos
+ for each row
+ begin
+  dbms_output.put_line('Trigger disparado');
+  if (inserting) then
+    insert into pedidos values(:new.codigo,0);
+    dbms_output.put_line(' insercion');
+  end if; 
+  if (deleting) then
+    delete from pedidos where codigo = :old.codigo;    
+    dbms_output.put_line(' borrado');
+  end if; 
+  if updating ('STOCK') then
+    update pedidos set cantidad=cantidad+(:old.stock - :new.stock) where codigo = :old.codigo;
+    dbms_output.put_line(' actualizacion de stock');
+  end if;
+  if updating('PRECIO') then
+    insert into controlPrecios values(sysdate,:old.codigo,:old.precio,:new.precio);
+    dbms_output.put_line(' actualizacion de precio');
+  end if;
+ end tr_articulos;
+ /
+
+-- Disminuya el stock del artículo "100" a 30
+-- Un mensaje muestra que el trigger se ha disparado actualizando el "stock".
+
+update articulos set stock = 30 where codigo = 100;
+
+-- Verifique que el trigger se disparó consultando la tabla "pedidos" (debe aparecer "70" en "cantidad" en el registro 
+-- correspondiente al artículo "100")
+
+select * from pedidos;
+
+-- Ingrese un nuevo artículo en "articulos"
+-- Un mensaje muestra que el trigger se ha disparado por una inserción.
+
+insert into articulos values(280, 'carpeta oficio', 15,50);
+
+-- Verifique que se ha agregado un registro en "pedidos" con código "280" y cantidad igual a 0
+
+select * from pedidos;
+
+-- Elimine un artículo de "articulos"
+-- Un mensaje muestra que el trigger se ha disparado por un borrado.
+
+delete articulos where codigo = 234;
+
+-- Verifique que se ha borrado el registro correspondiente al artículo con código "234" en "pedidos"
+
+ select *from pedidos;
+
+-- Modifique el precio de un artículo
+-- Un mensaje muestra que el trigger se ha disparado por una actualización de precio.
+
+update articulos set precio = 4.8 where codigo = 102;
+
+-- Verifique que se ha agregado un registro en "controlPrecios"
+
+select * from controlPrecios;
+
+-- Modifique la descripción de un artículo
+-- El trigger no se ha disparado, no aparece mensaje.
+
+ update articulos set descripcion='compas metal xxx' where codigo=173;
+
+-- Modifique el precio, stock y descripcion de un artículo
+-- Un mensaje muestra que el trigger se ha disparado por una actualización de stock y otra de precio. La actualización 
+-- de "descripcion" no disparó el trigger.
+
+ update articulos set precio=10, stock=55, descripcion='lapices colorx6 Faber' where codigo=104;
+
+-- Verifique que se ha agregado un registro en "controlPrecios" y se ha modificado el campo "cantidad" con el valor "5"
+
+ select *from controlPrecios;
+ select *from pedidos;
+
+-- Modifique el stock de varios artículos en una sola sentencia
+-- Cuatro mensajes muestran que el trigger se ha disparado 4 veces, por actualizaciones de stock.
+
+
+-- Verifique que se han modificado 4 registros en "pedidos"
+
+-- Modifique el precio de varios artículos en una sola sentencia
+-- Cuatro mensajes muestran que el trigger se ha disparado 4 veces, por actualizaciones de precio.
+
+-- Verifique que se han agregado 4 nuevos registros en "controlPrecios"
+
+-- Elimine varios artículos en una sola sentencia
+-- Cuatro mensajes muestran que el trigger se ha disparado 4 veces, por borrado de registros.
+
+-- Verifique que se han eliminado 4 registros en "pedidos"
+ 
  
