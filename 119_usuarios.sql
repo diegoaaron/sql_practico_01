@@ -45,6 +45,42 @@ Luego de crear un usuario, aún no podemos conectarnos, ya que no tenemos permiso
 se aprenderán próximamente.
 */
 
+-- Sabemos que para crear un usuario debemos conectarnos a la base datos como administradores (por ejemplo "system").
+
+-- Necesitamos crear un usuario "ana"; antes vamos a eliminarlo por si existe (luego veremos detenidamente cómo eliminar 
+-- usuarios y explicaremos la siguiente sentencia):
+
+ drop user ana cascade;
+
+-- Creamos un usuario denominado "ana" con la contraseña "anita":
+
+ create user ana1 identified by Anitax998;
+ 
+-- Aparece un mensaje indicando que el usuario "ana" ha sido creado.
+
+-- Necesitamos crear un usuario denominado "juan"; antes vamos a eliminarlo por si existe:
+
+ drop user juan cascade;
+
+-- Creamos el usuario "juan" con la contraseña "juancito", le asignamos un espacio de 100 mb en "system":
+
+ create user juan identified by juancito
+ default tablespace system
+ quota 100M on system;
+
+-- Si intentamos crear un usuario que ya existe, Oracle muestra un mensaje de error indicando tal situación.
+
+ create user juan identified by juancito;
+
+-- Mensaje de error.
+
+-- Consultamos el diccionario "dba_users" y analizamos la información que nos muestra:
+
+ select username, password, default_tablespace, created from dba_users;
+ 
+-- El resultado nos muestra el nombre de usuario, si tiene o no contraseña, el espacio asignado (tablespace) y fecha de creación.
+
+
 
 
 
