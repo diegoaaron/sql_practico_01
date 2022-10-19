@@ -86,14 +86,22 @@ se aprenderán próximamente.
 
 -- Cree un usuario "director", con contraseña "escuela" y 100M de espacio en "system"
 
+ create user director identified by escuela
+ default tablespace system
+ quota 100M on system;
+
 -- Elimine el usuario "profesor":
 
  drop user profesor cascade;
  
 -- Cree un usuario "profesor", con contraseña "maestro" y espacio en "system"
 
+ create user profesor identified by maestro
+ default tablespace system;
+
 -- Consulte el diccionario "dba_users" y analice la información que nos muestra
 
+ select username, password, default_tablespace, created from dba_users;
 
 
 
