@@ -80,7 +80,19 @@ se aprenderán próximamente.
  
 -- El resultado nos muestra el nombre de usuario, si tiene o no contraseña, el espacio asignado (tablespace) y fecha de creación.
 
+-- Primero eliminamos el usuario "director", porque si existe, aparecerá un mensaje de error:
 
+ drop user director cascade;
+
+-- Cree un usuario "director", con contraseña "escuela" y 100M de espacio en "system"
+
+-- Elimine el usuario "profesor":
+
+ drop user profesor cascade;
+ 
+-- Cree un usuario "profesor", con contraseña "maestro" y espacio en "system"
+
+-- Consulte el diccionario "dba_users" y analice la información que nos muestra
 
 
 
