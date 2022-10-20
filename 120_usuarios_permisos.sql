@@ -186,4 +186,56 @@ select grantee, privilege from dba_sys_privs where GRANTEE='ANA' or grantee='JUA
 
  select user from dual;
  
+ --  Ejercicio 1
  
+ Conéctese como administrador (por ejemplo "system").
+
+1- Elimine el usuario "director", porque si existe, aparecerá un mensaje de error:
+
+ drop user director cascade;
+2- Cree un usuario "director", con contraseña "dire" y 100M de espacio en "system"
+
+3- Elimine el usuario "profesor":
+
+ drop user profesor cascade;
+4- Cree un usuario "profesor", con contraseña "profe" y espacio en "system"
+
+5- Elimine el usuario "alumno" y luego créelo con contraseña "alu" y espacio en "system"
+
+6- Consulte el diccionario "dba_users" y analice la información que nos muestra
+Deben aparecer los tres usuarios creados anteriormente.
+
+7- Consulte el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a nuestros tres usuarios
+Nos muestra que estos usuarios no tienen ningún privilegio concedido.
+
+8- Conceda a "director" permiso para conectarse
+
+9- Conceda a "profesor" permiso para conectarse
+
+10- Consulte el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a nuestros 3 usuarios
+
+11- Abra una nueva conexión para "director". Se debe abrir una nueva solapa (nueva conexión) con el nombre del usuario (director)
+
+12- En la conexión de "director" consulte sus privilegios
+
+13- Obtenga el nombre del usuario conectado
+
+14- Vuelva a la conexión "system" (la otra solapa) y compruebe el usuario actual
+
+15- Intente abrir una nueva conexión para el usuario inexistente. Debe aparecer un mensaje de error y denegarse la conexión. Cancele.
+
+16- Intente abrir una nueva conexión para el usuario "profesor" colocando una contraseña incorrecta. Debe aparecer un mensaje de error y denegarse la conexión. Cancele.
+
+17- Abra una nueva conexión para "profesor" colocando los datos correctos. Se debe abrir una nueva solapa (nueva conexión) con el nombre del usuario (profesor).
+
+18- Intentemos abrir una nueva conexión para el usuario "alumno", el cual no tiene permiso. Un mensaje de error indica que el usuario "alumno" no tiene permiso "create session" por lo cual se deniega la conexión. Cancele.
+
+19- Conceda a "alumno" permiso de conexión
+
+20- Consulte el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a "alumno"
+
+21- Abra una nueva conexión para "ALUMNO". Se debe abrir una nueva solapa (nueva conexión) con el nombre del usuario (profesor)
+
+22- Consulte el diccionario "user_sys_privs"
+
+23- Compruebe que está en la sesión de "alumno"
