@@ -188,54 +188,101 @@ select grantee, privilege from dba_sys_privs where GRANTEE='ANA' or grantee='JUA
  
  --  Ejercicio 1
  
- Conéctese como administrador (por ejemplo "system").
-
-1- Elimine el usuario "director", porque si existe, aparecerá un mensaje de error:
+ -- Conéctese como administrador (por ejemplo "system").
+-- Elimine el usuario "director", porque si existe, aparecerá un mensaje de error:
 
  drop user director cascade;
-2- Cree un usuario "director", con contraseña "dire" y 100M de espacio en "system"
 
-3- Elimine el usuario "profesor":
+-- Cree un usuario "director", con contraseña "dire" y 100M de espacio en "system"
+
+ create user director identified by dire
+ default tablespace system
+ quota 100M on system;
+
+-- Elimine el usuario "profesor":
 
  drop user profesor cascade;
-4- Cree un usuario "profesor", con contraseña "profe" y espacio en "system"
 
-5- Elimine el usuario "alumno" y luego créelo con contraseña "alu" y espacio en "system"
+-- Cree un usuario "profesor", con contraseña "profe" y espacio en "system"
 
-6- Consulte el diccionario "dba_users" y analice la información que nos muestra
-Deben aparecer los tres usuarios creados anteriormente.
+ create user profesor identified by maestro
+ default tablespace system;
 
-7- Consulte el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a nuestros tres usuarios
-Nos muestra que estos usuarios no tienen ningún privilegio concedido.
+-- Elimine el usuario "alumno" y luego créelo con contraseña "alu" y espacio en "system"
 
-8- Conceda a "director" permiso para conectarse
+ drop user alumno cascade;
 
-9- Conceda a "profesor" permiso para conectarse
+ create user alumno identified by alu
+ default tablespace system;
 
-10- Consulte el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a nuestros 3 usuarios
+-- Consulte el diccionario "dba_users" y analice la información que nos muestra
+-- Deben aparecer los tres usuarios creados anteriormente.
 
-11- Abra una nueva conexión para "director". Se debe abrir una nueva solapa (nueva conexión) con el nombre del usuario (director)
+ select username, password, default_tablespace, created from dba_users;
 
-12- En la conexión de "director" consulte sus privilegios
+-- Consulte el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a nuestros tres usuarios
+-- Nos muestra que estos usuarios no tienen ningún privilegio concedido.
 
-13- Obtenga el nombre del usuario conectado
+ select grantee, privilege from dba_sys_privs where GRANTEE='DIRECTOR' or grantee='PROFESOR' or grantee='ALUMNO';
 
-14- Vuelva a la conexión "system" (la otra solapa) y compruebe el usuario actual
+-- Conceda a "director" permiso para conectarse
 
-15- Intente abrir una nueva conexión para el usuario inexistente. Debe aparecer un mensaje de error y denegarse la conexión. Cancele.
+ grant create session
+  to director;
 
-16- Intente abrir una nueva conexión para el usuario "profesor" colocando una contraseña incorrecta. Debe aparecer un mensaje de error y denegarse la conexión. Cancele.
+-- Conceda a "profesor" permiso para conectarse
 
-17- Abra una nueva conexión para "profesor" colocando los datos correctos. Se debe abrir una nueva solapa (nueva conexión) con el nombre del usuario (profesor).
+grant create session
+  to profesor;
 
-18- Intentemos abrir una nueva conexión para el usuario "alumno", el cual no tiene permiso. Un mensaje de error indica que el usuario "alumno" no tiene permiso "create session" por lo cual se deniega la conexión. Cancele.
+-- Consulte el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a nuestros 3 usuarios
+-- "director" y "profesor" tienen permiso "create session".
 
-19- Conceda a "alumno" permiso de conexión
+ select grantee,privilege from dba_sys_privs 
+  where grantee='DIRECTOR' or grantee='PROFESOR' or grantee='ALUMNO';
 
-20- Consulte el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a "alumno"
+-- Abra una nueva conexión para "director". Se debe abrir una nueva solapa (nueva conexión) con el nombre del 
+-- usuario (director)
+-- En la conexión de "director" consulte sus privilegios
 
-21- Abra una nueva conexión para "ALUMNO". Se debe abrir una nueva solapa (nueva conexión) con el nombre del usuario (profesor)
+ select username, privilege from user_sys_privs;
 
-22- Consulte el diccionario "user_sys_privs"
+-- Obtenga el nombre del usuario conectado
 
-23- Compruebe que está en la sesión de "alumno"
+ select user from dual;
+
+-- Vuelva a la conexión "system" (la otra solapa) y compruebe el usuario actual
+
+ select user from dual;
+
+-- Intente abrir una nueva conexión para el usuario inexistente. Debe aparecer un mensaje de error y denegarse la conexión. 
+-- Cancele.
+
+-- Intente abrir una nueva conexión para el usuario "profesor" colocando una contraseña incorrecta. Debe aparecer un mensaje 
+-- de error y denegarse la conexión. Cancele.
+
+-- Abra una nueva conexión para "profesor" colocando los datos correctos. Se debe abrir una nueva solapa (nueva conexión) 
+-- con el nombre del usuario (profesor).
+
+-- Intentemos abrir una nueva conexión para el usuario "alumno", el cual no tiene permiso. Un mensaje de error indica que el 
+-- usuario "alumno" no tiene permiso "create session" por lo cual se deniega la conexión. Cancele.
+
+-- Conceda a "alumno" permiso de conexión
+
+ grant create session
+  to alumno;
+
+-- Consulte el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a "alumno"
+
+ select grantee,privilege from dba_sys_privs 
+  where grantee='ALUMNO';
+
+-- Abra una nueva conexión para "ALUMNO". Se debe abrir una nueva solapa (nueva conexión) con el nombre del usuario 
+-- (profesor)
+-- Consulte el diccionario "user_sys_privs"
+
+ select username,privilege from user_sys_privs;
+
+-- Compruebe que está en la sesión de "alumno"
+
+ select user from dual;
