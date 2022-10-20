@@ -286,3 +286,4 @@ grant create session
 -- Compruebe que está en la sesión de "alumno"
 
  select user from dual;
+
