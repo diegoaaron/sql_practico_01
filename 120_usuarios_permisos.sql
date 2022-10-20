@@ -40,35 +40,42 @@ Podemos averiguar el nombre del usuario conectado con la siguiente sentencia:
 
 select user from dual;
 
-Creamos un usuario denominado "ana", con contraseña "anita", le asignamos espacio en "system" (100M). Antes lo eliminamos por si existe:
+-- Creamos un usuario denominado "ana", con contraseña "anita", le asignamos espacio en "system" (100M). Antes lo 
+-- eliminamos por si existe:
 
  drop user ana cascade;
 
  create user ana identified by anita
  default tablespace system
  quota 100M on system;
-Creamos un usuario denominado "juan", con contraseña "juancito", le asignamos espacio en "system" (100M). Antes lo eliminamos por si existe:
+
+-- Creamos un usuario denominado "juan", con contraseña "juancito", le asignamos espacio en "system" (100M). Antes lo 
+-- eliminamos por si existe:
 
  drop user juan cascade;
 
  create user juan identified by juancito
  default tablespace system
  quota 100M on system;
-Consultamos el diccionario "dba_users" y analizamos la información que nos muestra:
+
+-- Consultamos el diccionario "dba_users" y analizamos la información que nos muestra:
 
  select username, password, default_tablespace, created from dba_users;
-Verificamos que los usuarios "ana" y "juan" existen.
 
-Consultamos el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a nuestros usuarios. Nos mostrará el nombre del usuario (grantee) y el permiso (si lo tiene):
+-- Verificamos que los usuarios "ana" y "juan" existen.
+
+-- Consultamos el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a nuestros usuarios. Nos mostrará 
+-- el nombre del usuario (grantee) y el permiso (si lo tiene):
 
 select grantee, privilege from dba_sys_privs where GRANTEE='ANA' or grantee='JUAN';
-Nos muestra que estos usuarios no tienen ningún privilegio concedido.
 
-Concedemos a "juan" permiso para conectarse:
+-- Nos muestra que estos usuarios no tienen ningún privilegio concedido.
 
- grant create session
-  to juan;
-Consultamos el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a "juan":
+-- Concedemos a "juan" permiso para conectarse:
+
+ grant create session to juan;
+
+-- Consultamos el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a "juan":
 
  select grantee,privilege from dba_sys_privs 
   where grantee='JUAN';
