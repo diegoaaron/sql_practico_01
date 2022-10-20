@@ -79,102 +79,111 @@ select grantee, privilege from dba_sys_privs where GRANTEE='ANA' or grantee='JUA
 
  select grantee,privilege from dba_sys_privs 
   where grantee='JUAN';
-Tiene permiso "create session".
 
-Abrimos una nueva conexión para "juan":
+-- Tiene permiso "create session".
 
-Presionamos el ícono "new connection" en la solapa "connections"; se abre una ventana en la cual colocamos:
+-- Abrimos una nueva conexión para "juan":
 
-- "connection name" (nombre de la conexión): juan;
+-- Presionamos el ícono "new connection" en la solapa "connections"; se abre una ventana en la cual colocamos:
 
-- "username" (nombre del usuario): juan y
+-- "connection name" (nombre de la conexión): juan;
+-- "username" (nombre del usuario): juan y
 
-- "password" (contraseña): juancito.
+-- "password" (contraseña): juancito.
 
-Luego presionamos "connect"; se abre una nueva solapa (nueva conexión) con el nombre del usuario (juan).
+-- Luego presionamos "connect"; se abre una nueva solapa (nueva conexión) con el nombre del usuario (juan).
 
-En la conexión de "juan" podemos consultar sus privilegios:
+-- En la conexión de "juan" podemos consultar sus privilegios:
 
  select username, privilege from user_sys_privs;
-Note que únicamente aparecen los permisos del usuario actual.
 
-Para obtener el nombre del usuario conectado, empleamos la siguiente sentencia:
+-- Note que únicamente aparecen los permisos del usuario actual.
 
- select user from dual;
-Aparece Juan.
-
-Volvemos a la conexión "system" (la otra solapa).
-
-Comprobamos el usuario actual:
+-- Para obtener el nombre del usuario conectado, empleamos la siguiente sentencia:
 
  select user from dual;
-Aparece System.
 
-Ya sabemos abrir una nueva sessión de usuario. Aprendimos que existen 3 razones por las cuales una nueva sesión no se pueda iniciar; una de ellas es que el usuario no exista. Intentemos abrir una nueva conexión para un usuario inexistente:
+-- Aparece Juan.
 
-Presionamos el ícono "new connection" en la solapa "connections"; se abre una ventana en la cual colocamos:
+-- Volvemos a la conexión "system" (la otra solapa).
 
-- "connection name" (nombre de la conexión): pedro;
+-- Comprobamos el usuario actual:
 
-- "username" (nombre del usuario): pedro y
+ select user from dual;
 
-- "password" (contraseña): pedrito.
+-- Aparece System.
 
-Luego presionamos "connect"; la sessión no se abre, un mensaje de error indica que el nombre de usuario o la contraseña son inválidas y que la conexión se deniega.
+-- Ya sabemos abrir una nueva sessión de usuario. Aprendimos que existen 3 razones por las cuales una nueva sesión no 
+-- se pueda iniciar; una de ellas es que el usuario no exista. Intentemos abrir una nueva conexión para un usuario inexistente:
 
-Cancelamos.
+-- Presionamos el ícono "new connection" en la solapa "connections"; se abre una ventana en la cual colocamos:
 
-Otra razón por la cual la apertura de una nueva sesión puede fallar es que el usuario no tenga permiso de conexión. Intentemos abrir una nueva conexión para un usuario que no tenga tal permiso, caso de "ana":
+-- "connection name" (nombre de la conexión): pedro;
 
-Presionamos el ícono "new connection" en la solapa "connections"; se abre una ventana en la cual colocamos:
+-- "username" (nombre del usuario): pedro y
 
-- "connection name" (nombre de la conexión): ana;
+-- "password" (contraseña): pedrito.
 
-- "username" (nombre del usuario): ana y
+-- Luego presionamos "connect"; la sessión no se abre, un mensaje de error indica que el nombre de usuario o la contraseña 
+-- son inválidas y que la conexión se deniega.
 
-- "password" (contraseña): anita.
+-- Cancelamos.
 
-Luego presionamos "connect"; la sessión no se abre, un mensaje de error indica que el usuario "ana" no tiene permiso "create session" por lo cual se deniega la conexión. Cancelamos.
+-- Otra razón por la cual la apertura de una nueva sesión puede fallar es que el usuario no tenga permiso de conexión. 
+-- Intentemos abrir una nueva conexión para un usuario que no tenga tal permiso, caso de "ana":
 
-Concedemos a "ana" permiso de conexión:
+-- Presionamos el ícono "new connection" en la solapa "connections"; se abre una ventana en la cual colocamos:
 
- grant create session
-  to ana;
-Consultamos el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a "ana":
+-- "connection name" (nombre de la conexión): ana;
+
+-- "username" (nombre del usuario): ana y
+
+-- "password" (contraseña): anita.
+
+-- Luego presionamos "connect"; la sessión no se abre, un mensaje de error indica que el usuario "ana" no tiene permiso 
+-- "create session" por lo cual se deniega la conexión. Cancelamos.
+
+-- Concedemos a "ana" permiso de conexión:
+
+ grant create session to ana;
+
+-- Consultamos el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a "ana":
 
  select grantee,privilege from dba_sys_privs 
   where grantee='ANA';
-Tiene permiso "create session".
 
-La tercera razón por la cual puede no iniciarse una nueva sesión es que coloquemos la contraseña incorrecta. Intentemos abrir una nueva conexión para un usuario que tenga permiso, pero le demos una contraseña incorrecta:
+-- Tiene permiso "create session".
 
-Presionamos el ícono "new connection" en la solapa "connections"; se abre una ventana en la cual colocamos:
+-- La tercera razón por la cual puede no iniciarse una nueva sesión es que coloquemos la contraseña incorrecta. Intentemos 
+-- abrir una nueva conexión para un usuario que tenga permiso, pero le demos una contraseña incorrecta:
 
-- "connection name" (nombre de la conexión): ana;
+-- Presionamos el ícono "new connection" en la solapa "connections"; se abre una ventana en la cual colocamos:
 
-- "username" (nombre del usuario): ana y
+-- "connection name" (nombre de la conexión): ana;
 
-- "password" (contraseña): ana.
+-- "username" (nombre del usuario): ana y
 
-Luego presionamos "connect"; la sessión no se abre, un mensaje de error indica que el nombre de usuario o la contraseña son inválidas y que la conexión se deniega.
+-- "password" (contraseña): ana.
 
-Abramos una nueva conexión para "ana" colocando los datos correctos:
+-- Luego presionamos "connect"; la sessión no se abre, un mensaje de error indica que el nombre de usuario o la 
+-- contraseña son inválidas y que la conexión se deniega.
+-- Abramos una nueva conexión para "ana" colocando los datos correctos:
 
-Presionamos el ícono "new connection" en la solapa "connections"; se abre una ventana en la cual colocamos:
+-- Presionamos el ícono "new connection" en la solapa "connections"; se abre una ventana en la cual colocamos:
 
-- "connection name" (nombre de la conexión): ana;
+-- "connection name" (nombre de la conexión): ana;
+-- "username" (nombre del usuario): ana y
+-- "password" (contraseña): anita.
 
-- "username" (nombre del usuario): ana y
-
-- "password" (contraseña): anita.
-
-Presionamos "connect"; se abre una nueva solapa (nueva conexión) con el nombre del usuario (ana).
-
-Consultamos el diccionario "user_sys_privs":
+-- Presionamos "connect"; se abre una nueva solapa (nueva conexión) con el nombre del usuario (ana).
+-- Consultamos el diccionario "user_sys_privs":
 
  select username,privilege from user_sys_privs;
-Note que únicamente aparecen los permisos del usuario actual.
 
-Comprobamos que estamos en la sesión de "ana":
+-- Note que únicamente aparecen los permisos del usuario actual.
+
+-- Comprobamos que estamos en la sesión de "ana":
 
  select user from dual;
+ 
+ 
