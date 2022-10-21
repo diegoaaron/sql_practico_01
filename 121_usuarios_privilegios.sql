@@ -61,6 +61,98 @@ Consultando el diccionario "dba_sys_privs" encontramos los privilegios concedido
 "user_sys_privs" obtendremos la misma información pero únicamente del usuario actual.
 */
 
+ drop user ana cascade;
 
+ create user ana identified by anita
+ default tablespace system
+ quota 100M on system;
+ 
+-- Creamos un usuario denominado "juan", con contraseña "juancito", le asignamos espacio en "system" (100M). Antes lo 
+-- eliminamos por si existe:
+
+ drop user juan cascade;
+
+ create user juan identified by juancito
+ default tablespace system
+ quota 100M on system;
+ 
+-- Concedemos a ambos usuarios permiso para conectarse:
+
+ grant create session
+  to ana, juan;
+
+-- Concedemos permiso para crear tablas y vistas al usuario "ana":
+
+ grant create table, create view
+ to ana;
+
+-- Concedemos permiso para crear disparadores y procedimientos a ambos usuarios:
+
+ grant create trigger, create procedure
+ to juan, ana;
+
+-- Consultamos el diccionario "dba_sys_privs" para ver los privilegios concedidos a "ana" y "juan":
+
+select grantee, privilege from dba_sys_privs
+where grantee='ANA' or grantee='JUAN'
+order by grantee; Obtenemos la siguiente información:
+
+-- Iniciamos una nueva sesión como "ana". Como "ana" creamos una tabla:
+
+ create table prueba(
+  nombre varchar2(30),
+  apellido varchar2(30)
+ );
+ 
+-- La tabla ha sido creada, porque "ana" tiene pivilegio "create table".
+
+-- Podemos consultar el diccionario "user_sys_privs" para corroborar sus privilegios:
+
+select privilege from user_sys_privs; -- Obtenemos la siguiente información:
+PRIVILEGE
+
+CREATE TRIGGER
+CREATE TABLE
+CREATE SESSION
+CREATE VIEW
+CREATE PROCEDURE
+
+-- Iniciamos una nueva sesión como "juan". Como "juan" intentamos crear una tabla:
+
+ create table prueba(
+  nombre varchar2(30),
+  apellido varchar2(30)
+ );
+
+-- Mensaje de error "privilegios insuficientes". Esto sucede porque "juan", no tiene permiso para crear tablas.
+
+-- Vemos los permisos de "juan":
+
+select privilege from user_sys_privs;
+
+-- No tiene permiso para crear tablas.
+-- Cambiamos a la conexión "system" y concedemos a "juan" permiso para crear tablas:
+
+ grant create table
+ to juan;
+ 
+-- Cambiamos a la solapa "juan" y creamos una tabla:
+
+ create table prueba(
+  nombre varchar2(30),
+  apellido varchar2(30)
+ );
+
+-- Podemos hacerlo porque "juan" ahora tiene el permiso.
+
+-- Vemos los permisos de "juan":
+
+ select privilege from user_sys_privs;
+
+-- Cambiamos a la conexión "system". Veamos todas las tablas denominadas "PRUEBA":
+
+ select *from dba_objects where object_name='PRUEBA';
+
+-- Note que hay una tabla propiedad de "ana" y otra que pertenece a "juan".
 
 
