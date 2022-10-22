@@ -200,21 +200,26 @@ create user estudiante identified by alumno
 
 -- Consulte el diccionario de datos correspondiente para ver si existen los 3 usuarios creados
 
-
+ select username, password, default_tablespace, created from dba_users;
 
 -- Conceda a "profesor" y a "estudiante" permiso para conectarse
 
+ grant create session
+  to profesor, estudiante;
+
 -- Conceda a "estudiante" permiso para crear tablas
+
+ grant create table
+  to estudiante;
 
 -- Consulte el diccionario de datos "sys_privs" para ver los permisos de los 3 usuarios creados
 -- "director" y "estudiante" tienen permisos para conectarse y para crear tablas, "profesor" tiene permiso para conectarse.
 
--- Retome su sesión como "director" y cree una tabla:
+ select *from dba_sys_privs where grantee='DIRECTOR'
+ or grantee='PROFESOR'
+ or grantee='ESTUDIANTE';
 
- create table prueba(
-  nombre varchar2(30),
-  apellido varchar2(30)
- );
+-- Retome su sesión como "director" y cree una tabla:
 
 -- Podemos hacerlo poque "director" tiene el permiso necesario y espacio en "system".
 
@@ -230,13 +235,25 @@ create user estudiante identified by alumno
 -- Consulte los permisos de "profesor"
 -- No tiene permiso para crear tablas, únicamente para crear sesión.
 
+ select *from user_sys_privs;
+
 -- Cambie a la conexión de administrador y conceda a "profesor" permiso para crear tablas
+
+ grant create table
+  to profesor;
 
 -- Cambie a la sesión de "profesor" y cree una tabla
 -- Ahora si podemos hacerlo, "profesor" tiene permiso "create table".
 
+ create table prueba(
+  nombre varchar2(30),
+  apellido varchar2(30)
+ );
+
 -- Consulte nuevamente los permisos de "profesor"
 -- Tiene permiso para crear tablas y para crear sesión.
+
+ select *from user_sys_privs;
 
 -- Inicie una sesión como "estudiante" e intente crear una tabla:
 
@@ -245,11 +262,9 @@ create user estudiante identified by alumno
   apellido varchar2(30)
  );
 
-
 -- Mensaje de error "no existen privilegios en tablespace SYSTEM". Esto sucede porque "estudiante", si bien tiene permiso 
 -- para crear tablas, no tiene asignado espacio (recuerde que al crearlo no especificamos "quota", por lo tanto, por defecto 
 -- es cero).
-
 
 -- Vuelva a la conexión de "administrador" y consulte todas las tablas denominadas "PRUEBA"
 -- Note que hay una tabla propiedad de "director" y otra que pertenece a "profesor".
