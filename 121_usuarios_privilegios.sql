@@ -155,4 +155,103 @@ select privilege from user_sys_privs;
 
 -- Note que hay una tabla propiedad de "ana" y otra que pertenece a "juan".
 
+-- Cree un usuario denominado "director", con contraseña "escuela", asignándole 100M de espacio en "system" (100M).  
+-- Antes elimínelo por si existe:
+
+ drop user director cascade;
+
+-- Intente iniciar una sesión como "director".
+-- No es posible, no hemos concedido el permiso correspondiente. Aparece un mensaje indicando que el usuario "director" 
+-- no tiene permiso "create session" por lo tanto no puede conectarse.
+
+ create user director identified by escuela
+ default tablespace system
+ quota 100M on system;
+
+-- Vea los permisos de "director". No tiene ningún permiso.
+
+ select *from dba_sys_privs where grantee='DIRECTOR';
+
+-- Conceda a "director" permiso para iniciar sesion y para crear tablas
+
+ grant create session, create table
+  to director;
+
+-- Vea los permisos de "director". Tiene permiso "create session" y para crear tablas.
+
+ select *from dba_sys_privs where grantee='DIRECTOR';
+
+-- Inicie una sesión como "director".
+-- Como "administrador", elimine los usuarios "profesor" y "alumno", por si existen
+
+drop user profesor cascade;
+ drop user alumno cascade;
+
+-- Cree un usuario denominado "profesor", con contraseña "maestro", asigne espacio en "system" (100M)
+
+ create user profesor identified by maestro
+ default tablespace system
+ quota 100M on system;
+
+-- Cree un usuario denominado "estudiante", con contraseña "alumno" y tablespace "system" (no asigne "quota")
+
+create user estudiante identified by alumno
+ default tablespace system;
+
+-- Consulte el diccionario de datos correspondiente para ver si existen los 3 usuarios creados
+
+
+
+-- Conceda a "profesor" y a "estudiante" permiso para conectarse
+
+-- Conceda a "estudiante" permiso para crear tablas
+
+-- Consulte el diccionario de datos "sys_privs" para ver los permisos de los 3 usuarios creados
+-- "director" y "estudiante" tienen permisos para conectarse y para crear tablas, "profesor" tiene permiso para conectarse.
+
+-- Retome su sesión como "director" y cree una tabla:
+
+ create table prueba(
+  nombre varchar2(30),
+  apellido varchar2(30)
+ );
+
+-- Podemos hacerlo poque "director" tiene el permiso necesario y espacio en "system".
+
+-- Inicie una sesión como "profesor" e intente crear una tabla:
+
+ create table prueba(
+  nombre varchar2(30),
+  apellido varchar2(30)
+ );
+
+-- Mensaje de error "privilegios insuficientes". Esto sucede porque "profesor" NO tiene permiso para crear tablas.
+
+-- Consulte los permisos de "profesor"
+-- No tiene permiso para crear tablas, únicamente para crear sesión.
+
+-- Cambie a la conexión de administrador y conceda a "profesor" permiso para crear tablas
+
+-- Cambie a la sesión de "profesor" y cree una tabla
+-- Ahora si podemos hacerlo, "profesor" tiene permiso "create table".
+
+-- Consulte nuevamente los permisos de "profesor"
+-- Tiene permiso para crear tablas y para crear sesión.
+
+-- Inicie una sesión como "estudiante" e intente crear una tabla:
+
+ create table prueba(
+  nombre varchar2(30),
+  apellido varchar2(30)
+ );
+
+
+-- Mensaje de error "no existen privilegios en tablespace SYSTEM". Esto sucede porque "estudiante", si bien tiene permiso 
+-- para crear tablas, no tiene asignado espacio (recuerde que al crearlo no especificamos "quota", por lo tanto, por defecto 
+-- es cero).
+
+
+-- Vuelva a la conexión de "administrador" y consulte todas las tablas denominadas "PRUEBA"
+-- Note que hay una tabla propiedad de "director" y otra que pertenece a "profesor".
+
 
