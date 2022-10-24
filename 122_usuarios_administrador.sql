@@ -11,6 +11,7 @@ Sintaxis:
  grant PERMISODESISTEMA
   to USUARIO
  with admin option;
+ 
 En el siguiente ejemplo, concedemos el permiso de crear tablas al usuario "juan" y con "with admin option", el usuario "juan" 
 podrá conceder este permiso de crear tablas a otros usuarios:
 
