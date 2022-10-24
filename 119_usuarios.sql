@@ -50,7 +50,6 @@ se aprenderán próximamente.
 */
 
 -- Sabemos que para crear un usuario debemos conectarnos a la base datos como administradores (por ejemplo "system").
-
 -- Necesitamos crear un usuario "ana"; antes vamos a eliminarlo por si existe (luego veremos detenidamente cómo eliminar 
 -- usuarios y explicaremos la siguiente sentencia):
 
@@ -77,7 +76,6 @@ se aprenderán próximamente.
  create user juan identified by juancito;
 
 -- Mensaje de error.
-
 -- Consultamos el diccionario "dba_users" y analizamos la información que nos muestra:
 
  select username, password, default_tablespace, created from dba_users;
