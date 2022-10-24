@@ -26,8 +26,10 @@ Ejemplo:
 
  create user ana identified by anita;
  
+ 
 Con la sentencia anterior se crea un usuario denominado "ana" con la clave "anita", el tablespace por defecto es "system" 
 porque no se especificó otro.
+
 
 Con la siguiente sentencia se crea un usuario denominado "juan" con la clave "juancito", se le asigna un espacio de 100 mb:
 
@@ -35,11 +37,13 @@ Con la siguiente sentencia se crea un usuario denominado "juan" con la clave "ju
  default tablespace system
  quota 100M on system;
  
+ 
 Si intentamos crear un usuario que ya existe, Oracle muestra un mensaje de error indicando tal situación.
 
 El diccionario "dba_users" muestra información sobre todos los usuarios; el nombre de usuario (username), contraseña 
 (password), estado (account_status), espacio (default_tablespace), fecha de expiración (expiry_date), fecha de creación 
 (created), entre otros.
+
 
 Luego de crear un usuario, aún no podemos conectarnos, ya que no tenemos permiso para crear una sesión. Los permisos 
 se aprenderán próximamente.
