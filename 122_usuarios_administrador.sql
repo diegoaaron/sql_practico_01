@@ -18,8 +18,8 @@ podrá conceder este permiso de crear tablas a otros usuarios:
   to juan
  with admin option;
   
-Podemos consultar el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a los usuarios. Nos mostrará una 
-tabla con las siguientes columnas:
+Podemos consultar el diccionario "dba_sys_privs" para encontrar los privilegios concedidos a los usuarios. 
+Nos mostrará una tabla con las siguientes columnas:
 
 - grantee: el nombre del usuario,
 
