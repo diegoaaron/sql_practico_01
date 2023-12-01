@@ -1,11 +1,11 @@
-# Practica de ORACLE SQL
+# Practica de SQL en ORACLE DB
 
-## Description
+### 📝 Descripción
 
-Practicando ejercicios de SQL en BD Oracle. 
+Practicando teoria y ejercicios de SQL en Oracle Database.
 
-## Fuente
+### ⚙️Fuente
 
-Contributors names and contact info
+Información de referencia
 
-* [tutorial_programacion_ya](https://www.tutorialesprogramacionya.com/oracleya/)
+* [tutorial de programacion YA](https://www.tutorialesprogramacionya.com/oracleya/)
