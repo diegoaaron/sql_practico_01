@@ -2,7 +2,7 @@
 
 ### 📝 Descripción
 
-Practicando teoria y ejercicios de SQL en Oracle Database.
+Practica de teoria y ejercicios de SQL en Oracle Database.
 
 ### ⚙️Fuente
 
