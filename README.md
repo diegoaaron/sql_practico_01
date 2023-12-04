@@ -6,6 +6,6 @@ Teoria y ejercicios de SQL en Oracle Database.
 
 ### ⚙️Fuente
 
-Información de referencia para los ejercicios.
+Información de referencia para todos los ejercicios.
 
 * [tutorial de programacion YA](https://www.tutorialesprogramacionya.com/oracleya/)
